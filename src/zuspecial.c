@@ -9,6 +9,7 @@ SEXP zsp_call_c(SEXP name, SEXP z);
 SEXP zsp_call_dd(SEXP name, SEXP a, SEXP b);
 SEXP zsp_call_ddd(SEXP name, SEXP a, SEXP b, SEXP c);
 SEXP zsp_call_id(SEXP name, SEXP k, SEXP x);
+SEXP zsp_info(void);
 
 static const R_CallMethodDef call_methods[] = {
   {"zsp_call_d", (DL_FUNC) &zsp_call_d, 2},
@@ -16,6 +17,7 @@ static const R_CallMethodDef call_methods[] = {
   {"zsp_call_dd", (DL_FUNC) &zsp_call_dd, 3},
   {"zsp_call_ddd", (DL_FUNC) &zsp_call_ddd, 4},
   {"zsp_call_id", (DL_FUNC) &zsp_call_id, 3},
+  {"zsp_info", (DL_FUNC) &zsp_info, 0},
   {NULL, NULL, 0}
 };
 
