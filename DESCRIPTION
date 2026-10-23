@@ -1,14 +1,28 @@
 Package: zuspecial
-Title: What the Package Does (One Line, Title Case)
+Title: Special Functions from 'SciPy' for Real and Complex Arguments
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Pedro", "Baltazar", , "pedrobtz@gmail.com",
+           role = c("aut", "cre", "cph"))
+Description: Evaluates the special functions of mathematical physics and
+    statistics, including gamma, beta, error, Bessel, Airy, hypergeometric,
+    elliptic and zeta functions, for real and complex arguments, using the
+    same kernels as the 'SciPy' library's 'scipy.special' module
+    (<https://docs.scipy.org/doc/scipy/reference/special.html>). Functions
+    keep 'SciPy' names and argument order so that code translates directly
+    between 'Python' and R, and results agree with 'SciPy' to within its
+    own test tolerances. A registered C interface lets other packages call
+    the functions from compiled code.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 8.1.1
+URL: https://github.com/pedrobtz/zuspecial,
+    https://pedrobtz.github.io/zuspecial/
+BugReports: https://github.com/pedrobtz/zuspecial/issues
+Depends: 
+    R (>= 4.1)
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://pedrobtz.github.io/zuspecial/
+Encoding: UTF-8
+Language: en-GB
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.1.1
