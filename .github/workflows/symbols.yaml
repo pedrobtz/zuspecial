@@ -37,4 +37,6 @@ jobs:
           echo "Compile and install on ${{ matrix.os }}: ${secs}s" >> "$GITHUB_STEP_SUMMARY"
       - name: Check symbols
         shell: bash
-        run: tools/check-symbols src
+        # R's own nm, which on Windows is Rtools' rather than whatever Git
+        # Bash finds first.
+        run: NM="$(R CMD config NM)" tools/check-symbols src

@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: c(
     person("Pedro", "Baltazar", , "pedrobtz@gmail.com",
            role = c("aut", "cre", "cph")),
-    person("SciPy developers", role = "cph",
+    person("SciPy", role = "cph",
            comment = "bundled xsf library"),
     person("Stephen L.", "Moshier", role = "cph",
            comment = "Cephes code in the bundled xsf library"),

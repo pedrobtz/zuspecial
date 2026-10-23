@@ -1,32 +1,34 @@
 zuspecial is released under the MIT licence (see LICENSE). It bundles the
 header-only xsf library, in src/vendor/xsf, whose files carry the notices
-below. src/vendor/PROVENANCE records the exact upstream commit.
+below. src/vendor/PROVENANCE records the exact upstream commit. The full
+licence texts are installed with the package, in its licenses/ directory
+(inst/licenses/ in the source), so that binary packages carry them too.
 
 xsf
 ---
 Files:     src/vendor/xsf/include/xsf/**
-Copyright: (C) 2024 SciPy developers
-Licence:   BSD-3-Clause, src/vendor/xsf/LICENSE
+Copyright: (c) 2024, SciPy
+Licence:   BSD-3-Clause, licenses/xsf-LICENSE
 
 Cephes Math Library
 -------------------
 Files:     src/vendor/xsf/include/xsf/cephes/*
 Copyright: 1984-2000 Stephen L. Moshier
-Licence:   BSD-3-Clause, by the author's permission to SciPy; see
-           src/vendor/xsf/LICENSES_bundled.txt
+Licence:   BSD-3-Clause, by the author's permission to SciPy;
+           licenses/xsf-LICENSES_bundled.txt
 
 Faddeeva package
 ----------------
 Files:     src/vendor/xsf/include/xsf/faddeeva.h
 Copyright: (c) 2012 Massachusetts Institute of Technology (Steven G. Johnson)
-Licence:   MIT, see src/vendor/xsf/LICENSES_bundled.txt
+Licence:   MIT, licenses/xsf-LICENSES_bundled.txt
 
 qd (double-double arithmetic)
 -----------------------------
 Files:     src/vendor/xsf/include/xsf/cephes/dd_real.h
 Copyright: (c) 2003-2009 The Regents of the University of California,
            through Lawrence Berkeley National Laboratory
-Licence:   BSD-3-Clause-LBNL, see src/vendor/xsf/LICENSES_bundled.txt
+Licence:   BSD-3-Clause-LBNL, licenses/xsf-LICENSES_bundled.txt
 
 Boost-derived code
 ------------------
@@ -35,7 +37,13 @@ Files:     src/vendor/xsf/include/xsf/cephes/igami.h, cephes/lanczos.h,
            cephes/owens_t.h (Benjamin Sobotta, 2012);
            cephes/scipy_iv.h (Xiaogang Zhang, 2006; with Pauli Virtanen
            and Stephen L. Moshier)
-Licence:   Boost Software License 1.0, as stated in each file
+Licence:   Boost Software License 1.0, licenses/LICENSE_1_0.txt
+
+Struve functions
+----------------
+Files:     src/vendor/xsf/include/xsf/cephes/struve.h
+Copyright: (C) 2013 Pauli Virtanen
+Licence:   BSD-3-Clause, licenses/struve-BSD-3.txt
 
 AMOS
 ----
@@ -56,6 +64,10 @@ Origin:    Shanjie Zhang and Jianming Jin, "Computation of Special
 Files "distributed under the same license as SciPy" (BSD-3-Clause)
 -----------------------------------------------------------------
 lambertw.h (Yosef Meller, 2009), wright_bessel.h (Christian Lorentzen),
-binom.h and cephes/struve.h (Pauli Virtanen), cephes/ellie.h and
-cephes/ellik.h (Eric W. Moore, 2014), digamma.h, sph_bessel.h,
-loggamma.h, hyp2f1.h.
+digamma.h, sph_bessel.h, loggamma.h, hyp2f1.h.
+
+Files with an author notice and no licence of their own, covered by
+xsf's BSD-3-Clause licence
+-------------------------------------------------------------------
+binom.h (Pauli Virtanen, Eric Moore), cephes/ellie.h and cephes/ellik.h
+(Eric W. Moore, 2014).

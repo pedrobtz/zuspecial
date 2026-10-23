@@ -27,7 +27,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item SciPy developers (bundled xsf library) [copyright holder]
+  \item SciPy (bundled xsf library) [copyright holder]
   \item Stephen L. Moshier (Cephes code in the bundled xsf library) [copyright holder]
   \item Massachusetts Institute of Technology (Faddeeva code in the bundled xsf library) [copyright holder]
   \item The Regents of the University of California (qd code in the bundled xsf library) [copyright holder]

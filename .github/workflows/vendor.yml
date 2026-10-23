@@ -15,7 +15,7 @@ jobs:
   vendor:
     uses: pedrobtz/r-actions/.github/workflows/vendor.yml@v1
     with:
-      vendor-dir: src/vendor
+      vendor-dir: src/vendor/xsf
       verify: tools/vendor/verify
       must-update: |
         tools/vendor/manifest.tsv
