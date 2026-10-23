@@ -245,6 +245,12 @@ R result: double or complex vector, or a named list for multi-output
 - The shim is split into one translation unit per family (gamma and
   beta, error, Bessel, hypergeometric, elliptic, zeta and miscellaneous,
   Boost) so that `make -j` compiles them in parallel (§12.3).
+  **As built (2026-10-24, Stage 2):** one translation unit,
+  `src/zsp_shim.cpp`, including one header per family. xsf defines 42
+  non-inline, non-template functions in its headers (it is built as one
+  unit in SciPy), so a second unit including them fails to link. Splitting
+  would need patches, which §8 rules out. The Boost wrappers (Stage 4)
+  include no xsf kernels and may still be a unit of their own.
 - `std::complex<double>` and R's `Rcomplex` never alias; the shim takes
   and returns a `{double re, im}` struct and converts by member.
 - Multi-output functions (`airy`, `airye`, `ellipj`) fill several output
