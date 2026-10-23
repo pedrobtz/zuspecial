@@ -1,0 +1,41 @@
+#!/bin/sh
+# Fail when compiled objects import symbols CRAN's compiled-code check
+# rejects, or when a shim object holds mutable state.
+#
+# Usage: tools/check-symbols [<dir>]   (default src; run after R CMD INSTALL,
+# which leaves the *.o files there)
+#
+# 1. No object may import stdio output, process termination, assert or the
+#    C library RNG (CLAUDE.md, Vendored native code).
+# 2. No src/zsp_shim_*.o may define writable data: the error mask in
+#    zsp_error.o is the only mutable state (design section 8).
+set -eu
+
+dir=${1:-src}
+NM=${NM:-nm}
+status=0
+
+forbidden='^_?(v?f?printf|puts|putchar|fputs|fputc|fwrite|f?flush|stdout|stderr|_?_?std(out|err)p?|__acrt_iob_func|__mingw_v?f?printf|__ms_v?f?printf|abort|exit|_exit|_Exit|__assert_fail|__assert_rtn|_assert|_wassert|rand|srand|random|srandom|_ZSt4cout|_ZSt4cerr|_ZNSt3__14coutE|_ZNSt3__14cerrE)$'
+
+set -- "$dir"/*.o
+[ -e "$1" ] || { echo "no objects in $dir; build first" >&2; exit 2; }
+
+for obj in "$@"; do
+  bad=$("$NM" -u "$obj" | awk '{print $NF}' | grep -E "$forbidden" || true)
+  if [ -n "$bad" ]; then
+    echo "$obj imports:" $bad >&2
+    status=1
+  fi
+done
+
+for obj in "$dir"/zsp_shim_*.o; do
+  [ -e "$obj" ] || continue
+  state=$("$NM" "$obj" | awk '$2 ~ /^[BbDd]$/ {print $3}')
+  if [ -n "$state" ]; then
+    echo "$obj defines mutable data:" $state >&2
+    status=1
+  fi
+done
+
+[ "$status" -eq 0 ] && echo "symbols ok: $# objects in $dir"
+exit "$status"
