@@ -1,0 +1,20 @@
+#!/bin/sh
+# Check src/vendor/xsf against tools/vendor/checksums.sha256: every listed
+# file matches, and no file is unlisted. Run from the package root.
+set -eu
+
+sums=tools/vendor/checksums.sha256
+shasum -a 256 -c --quiet "$sums"
+
+listed=$(mktemp)
+found=$(mktemp)
+trap 'rm -f "$listed" "$found"' EXIT
+sed 's/^[0-9a-f]*  //' "$sums" | LC_ALL=C sort > "$listed"
+find src/vendor/xsf -type f | LC_ALL=C sort > "$found"
+extra=$(comm -13 "$listed" "$found")
+if [ -n "$extra" ]; then
+  echo "unlisted files under src/vendor/xsf:" >&2
+  echo "$extra" >&2
+  exit 1
+fi
+echo "src/vendor/xsf matches $sums"

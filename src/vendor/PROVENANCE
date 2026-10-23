@@ -1,0 +1,27 @@
+xsf: special function kernels from SciPy
+========================================
+
+Upstream:   https://github.com/scipy/xsf
+Commit:     f7b85f505a94fd398024478d2e747b01dd2d7a6d
+Pinned by:  SciPy v1.18.1 (e4e854eaa8f18d807cd3496028e257e36caa93cc),
+            through its subprojects/xsf gitlink
+Licence:    BSD-3-Clause (xsf/LICENSE), with bundled code under the
+            licences listed in xsf/LICENSES_bundled.txt and inst/COPYRIGHTS
+
+Vendored:   include/xsf/** as xsf/include/xsf/, plus LICENSE and
+            LICENSES_bundled.txt
+Excluded:   include/xsf/numpy.h (includes Python.h and NumPy headers)
+            include/xsf/third_party/ (mdspan, reached only from numpy.h)
+
+Patches:    none. Files are byte-identical to upstream; the checksums are in
+            tools/vendor/checksums.sha256 and tools/vendor/verify checks them.
+
+Update procedure
+----------------
+1. tools/vendor/vendor-xsf <scipy-tag>   (a SciPy release tag, e.g. v1.19.0)
+2. tools/vendor/verify
+3. Update this file's commit lines, then run the full test suite, including
+   the xsref and SciPy-value tables, before merging.
+
+The pin follows SciPy releases rather than xsf tags, so that zuspecial's
+values match a SciPy users can install (design.md section 8 and 16).
