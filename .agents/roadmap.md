@@ -17,7 +17,7 @@ tables built in Stage 3.
 | Stage | Title | CI | Issue | Pull request | Done |
 | --- | --- | --- | --- | --- | --- |
 | 0 | [Package identity](#stage-0--package-identity) | quick | [#2](https://github.com/pedrobtz/zuspecial/issues/2) | [#16](https://github.com/pedrobtz/zuspecial/pull/16) | 2026-10-23 |
-| 1 | [Vendored xsf and the build](#stage-1--vendored-xsf-and-the-build) | full | [#3](https://github.com/pedrobtz/zuspecial/issues/3) | | 2026-10-23 |
+| 1 | [Vendored xsf and the build](#stage-1--vendored-xsf-and-the-build) | full | [#3](https://github.com/pedrobtz/zuspecial/issues/3) | [#17](https://github.com/pedrobtz/zuspecial/pull/17) | 2026-10-23 |
 | 2 | [Glue, error state, gamma and error functions](#stage-2--glue-error-state-gamma-and-error-functions) | full | [#4](https://github.com/pedrobtz/zuspecial/issues/4) | | |
 | 3 | [Test oracles: xsref and SciPy values](#stage-3--test-oracles-xsref-and-scipy-values) | quick | [#5](https://github.com/pedrobtz/zuspecial/issues/5) | | |
 | 4 | [Incomplete gamma and beta, Boost backend, normal functions](#stage-4--incomplete-gamma-and-beta-boost-backend-normal-functions) | quick | [#6](https://github.com/pedrobtz/zuspecial/issues/6) | | |
