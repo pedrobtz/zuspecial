@@ -124,7 +124,8 @@ question 1; "c" marks complex-argument support, as SciPy registers it):
   SciPy), `hyp2f1` c, `hyperu`.
 - Elliptic: `ellipk`, `ellipkm1`, `ellipkinc`, `ellipe`, `ellipeinc`,
   `ellipj` (four outputs); Carlson `elliprc` c, `elliprd`, `elliprf`,
-  `elliprg`, `elliprj`.
+  `elliprg`, `elliprj`. The Carlson forms wait for a SciPy release whose
+  xsf has them (D12, 2026-10-23).
 - Zeta and friends: `zeta` (Riemann c, and Hurwitz), `zetac`,
   `lambertw` c, `wrightomega` c, `spence` c.
 - Struve: `struve`, `modstruve`.
@@ -406,6 +407,18 @@ only, never xsf or Boost headers.
 
 ## 8. The vendored library, as zuspecial uses it
 
+**As built (2026-10-23, Stage 1).** The pin is SciPy v1.18.1's xsf gitlink,
+`f7b85f5` (2026-05-20), per D12, not `471c1b5`. That commit predates both the
+Carlson integrals and the `cpu/` move, so its headers sit directly under
+`include/xsf/` (`specfun.h`, `amos/`, `cephes/`). The tree lives in
+`src/vendor/xsf/include/xsf/`, not `src/xsf/`, because xsf's own includes
+are `"xsf/..."` and the portfolio keeps vendored code under `src/vendor/`;
+`tools/vendor/vendor-xsf`, `tools/vendor/manifest.tsv`,
+`tools/vendor/checksums.sha256` and `tools/vendor/verify` replace
+`tools/vendor-xsf` and `src/xsf/VERSION`. The build also defines `NDEBUG`:
+`specfun/specfun.h` has a bare `assert`, which would link `abort`. The text
+below is the RFC as drafted.
+
 - `include/xsf/**` from xsf at the commit SciPy pins (`471c1b5` at the
   time of writing), without `numpy.h` (it includes `Python.h`) and
   without `third_party/` (the Apache-2.0 `mdspan`, reached only from
@@ -553,6 +566,10 @@ zuspecial is MIT. `inst/COPYRIGHTS` records every bundled licence:
   move to Later and the helpers need a replacement, which would be a
   patch (§8).
 
+  **Decided 2026-10-23 (D13):** accepted as SciPy ships it, recorded in
+  `inst/COPYRIGHTS`. If a CRAN reviewer objects, the specfun-backed
+  functions move to Later then.
+
 ### 12.3 Everywhere
 
 - C++17 for the vendored code and the shim (`CXX_STD = CXX17`; xsf's
@@ -607,8 +624,17 @@ zuspecial is MIT. `inst/COPYRIGHTS` records every bundled licence:
 | D9 | Recycling | length one or the common length; otherwise an error |
 | D10 | Provider | a versioned C table of scalar functions |
 | D11 | Info function | `zuspecial_info()`, the package name (R1) |
+| D12 | xsf pin | the gitlink of the latest SciPy release (v1.18.1: `f7b85f5`); Carlson integrals wait for a release that has them (2026-10-23) |
+| D13 | specfun licence | accepted as SciPy ships it (§12.2; 2026-10-23) |
+| D14 | Prefix | `sc_` (§16 question 1; 2026-10-23) |
+| D15 | Error-state storage | R options (§16 question 5; 2026-10-23) |
+| D16 | Multi-output shape | a named list (§16 question 6; 2026-10-23) |
 
 ## 16. Open questions
+
+Questions 1, 3, 5 and 6 were decided on 2026-10-23 as recommended (D14,
+D12, D15, D16). Question 2 is settled by the repository's name. Question 4
+is decided in roadmap Stage 4, from the SciPy-value tables.
 
 1. **The prefix.** `sf_` is taken by association: `sf` exports seven
    `sf_` functions (`sf_project()`, `sf_use_s2()` …) and is attached in

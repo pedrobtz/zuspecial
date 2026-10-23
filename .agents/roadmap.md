@@ -112,8 +112,8 @@ to prove the C-to-C++ path.
 
 **Exit criteria.**
 
-- `src/xsf/VERSION` names the SciPy release and xsf commit, and the verify
-  script passes in CI.
+- `tools/vendor/manifest.tsv` names the SciPy release and xsf commit, and
+  `tools/vendor/verify` passes in CI.
 - The full-profile r-actions run is green on the pull request, including
   sanitizers, valgrind and rchk.
 - The `nm -u` check passes on every leg.
@@ -121,6 +121,13 @@ to prove the C-to-C++ path.
 - The quick profile still finishes in under five minutes.
 
 **Design.** §4, §8, §12.2, §12.3.
+
+**Deviation (2026-10-23).** The tree is vendored to
+`src/vendor/xsf/include/xsf/`, with the manifest and checksums in
+`tools/vendor/`, instead of `src/xsf/` and `src/xsf/VERSION`: xsf's includes
+are `"xsf/..."`, and r-actions' `vendor.yml` and the portfolio template
+expect `src/vendor/` and `tools/vendor/`. The build adds `-DNDEBUG` for a
+bare `assert` in `specfun.h`. Recorded in design §8.
 
 ## Stage 2 — Glue, error state, gamma and error functions
 
@@ -272,19 +279,18 @@ argument order.
 
 - Exported: `sc_hyp0f1`, `sc_hyp1f1` (real path through the Boost backend),
   `sc_hyp2f1`, `sc_hyperu`; `sc_ellipk`, `sc_ellipkm1`, `sc_ellipkinc`,
-  `sc_ellipe`, `sc_ellipeinc`, `sc_ellipj`; `sc_elliprc`, `sc_elliprd`,
-  `sc_elliprf`, `sc_elliprg`, `sc_elliprj`; `sc_zeta(x, q = NULL)`,
+  `sc_ellipe`, `sc_ellipeinc`, `sc_ellipj`; `sc_zeta(x, q = NULL)`,
   `sc_zetac`, `sc_lambertw`, `sc_wrightomega`, `sc_spence`; `sc_struve`,
   `sc_modstruve`.
-- Anything Stage 1 moved to After 0.1.0 under the specfun decision is left
-  out.
+- The Carlson integrals are not in this stage: the SciPy 1.18.1 pin's xsf
+  predates them (2026-10-23, design D12).
 
 **Exit criteria.**
 
 - Each function passes its xsref cases and SciPy-value table on the quick
   profile.
 - `zuspecial_info()`'s function table lists every function in design §2's
-  v0.1.0 list, less any the specfun decision deferred.
+  v0.1.0 list, less the Carlson integrals (design D12).
 
 **Design.** §2 (hypergeometric, elliptic, zeta, Struve).
 
@@ -425,17 +431,17 @@ branch's code and everything it finds is fixed.
   `*dtr*` inverses).
 - Derivatives through xsf's `dual` type.
 - Parallel evaluation of long vectors.
-- Any function the Stage 1 specfun decision defers.
+- The Carlson elliptic integrals (`sc_elliprc`, `sc_elliprd`, `sc_elliprf`,
+  `sc_elliprg`, `sc_elliprj`), with the re-vendor for the first SciPy
+  release whose xsf has them. Moved here 2026-10-23 when the pin was set to
+  SciPy 1.18.1 (design D12).
 
 ## Open questions
 
-- **§16 question 1, the `sc_` prefix.** Blocks Stage 2, the first exported
-  function.
-- **§16 question 3, tracking SciPy releases or `main`.** Blocks Stage 1,
-  which picks the pin.
 - **§16 question 4, `BH` or vendored Boost.Math.** Decided in Stage 4 from
   the tables.
-- **§16 question 5, error-state storage.** Blocks Stage 2.
-- **§16 question 6, multi-output shape.** Blocks Stage 5.
-- **§12.2, the specfun licence.** Decided in Stage 1; blocks Stage 6.
-- **§16 question 2, the name**, is settled by the repository: `zuspecial`.
+
+Resolved 2026-10-23 (design §15): the `sc_` prefix (D14), the xsf pin
+follows SciPy releases (D12), error state in R options (D15), multi-output
+results as named lists (D16), the specfun licence accepted (D13), and the
+name `zuspecial`.

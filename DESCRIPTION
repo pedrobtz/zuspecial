@@ -1,9 +1,35 @@
 Package: zuspecial
 Title: Special Functions from 'SciPy' for Real and Complex Arguments
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R: c(
     person("Pedro", "Baltazar", , "pedrobtz@gmail.com",
-           role = c("aut", "cre", "cph"))
+           role = c("aut", "cre", "cph")),
+    person("SciPy developers", role = "cph",
+           comment = "bundled xsf library"),
+    person("Stephen L.", "Moshier", role = "cph",
+           comment = "Cephes code in the bundled xsf library"),
+    person("Massachusetts Institute of Technology", role = "cph",
+           comment = "Faddeeva code in the bundled xsf library"),
+    person("The Regents of the University of California", role = "cph",
+           comment = "qd code in the bundled xsf library"),
+    person("Shanjie", "Zhang", role = "cph",
+           comment = "specfun code in the bundled xsf library"),
+    person("Jianming", "Jin", role = "cph",
+           comment = "specfun code in the bundled xsf library"),
+    person("John", "Maddock", role = "cph",
+           comment = "Boost-derived code in the bundled xsf library"),
+    person("Xiaogang", "Zhang", role = "cph",
+           comment = "Boost-derived code in the bundled xsf library"),
+    person("Benjamin", "Sobotta", role = "cph",
+           comment = "Owen's T code in the bundled xsf library"),
+    person("Pauli", "Virtanen", role = "cph",
+           comment = "code in the bundled xsf library"),
+    person("Yosef", "Meller", role = "cph",
+           comment = "Lambert W code in the bundled xsf library"),
+    person("Christian", "Lorentzen", role = "cph",
+           comment = "Wright Bessel code in the bundled xsf library"),
+    person("Eric W.", "Moore", role = "cph",
+           comment = "elliptic integral code in the bundled xsf library"))
 Description: Evaluates the special functions of mathematical physics and
     statistics, including gamma, beta, error, Bessel, Airy, hypergeometric,
     elliptic and zeta functions, for real and complex arguments, using the
@@ -14,6 +40,7 @@ Description: Evaluates the special functions of mathematical physics and
     own test tolerances. A registered C interface lets other packages call
     the functions from compiled code.
 License: MIT + file LICENSE
+Copyright: See inst/COPYRIGHTS and src/vendor/PROVENANCE.
 URL: https://github.com/pedrobtz/zuspecial,
     https://pedrobtz.github.io/zuspecial/
 BugReports: https://github.com/pedrobtz/zuspecial/issues

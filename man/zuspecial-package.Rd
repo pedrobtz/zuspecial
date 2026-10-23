@@ -25,5 +25,22 @@ Authors:
   \item Pedro Baltazar \email{pedrobtz@gmail.com} [copyright holder]
 }
 
+Other contributors:
+\itemize{
+  \item SciPy developers (bundled xsf library) [copyright holder]
+  \item Stephen L. Moshier (Cephes code in the bundled xsf library) [copyright holder]
+  \item Massachusetts Institute of Technology (Faddeeva code in the bundled xsf library) [copyright holder]
+  \item The Regents of the University of California (qd code in the bundled xsf library) [copyright holder]
+  \item Shanjie Zhang (specfun code in the bundled xsf library) [copyright holder]
+  \item Jianming Jin (specfun code in the bundled xsf library) [copyright holder]
+  \item John Maddock (Boost-derived code in the bundled xsf library) [copyright holder]
+  \item Xiaogang Zhang (Boost-derived code in the bundled xsf library) [copyright holder]
+  \item Benjamin Sobotta (Owen's T code in the bundled xsf library) [copyright holder]
+  \item Pauli Virtanen (code in the bundled xsf library) [copyright holder]
+  \item Yosef Meller (Lambert W code in the bundled xsf library) [copyright holder]
+  \item Christian Lorentzen (Wright Bessel code in the bundled xsf library) [copyright holder]
+  \item Eric W. Moore (elliptic integral code in the bundled xsf library) [copyright holder]
+}
+
 }
 \keyword{internal}
