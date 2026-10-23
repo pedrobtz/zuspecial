@@ -52,8 +52,9 @@ complex; real input always stays real (\code{sc_gamma(-1)} is \code{NaN}).
 \itemize{
 \item \code{sc_gamma()}: \eqn{\Gamma(z)}, complex. Base R: \code{\link[=gamma]{gamma()}}.
 \item \code{sc_gammaln()}: \eqn{\log|\Gamma(x)|}. Base R: \code{\link[=lgamma]{lgamma()}}.
-\item \code{sc_loggamma()}: the principal branch of \eqn{\log \Gamma(z)}, complex.
-For real \code{z < 0} it is \code{NaN}, unlike \code{sc_gammaln()}.
+\item \code{sc_loggamma()}: the principal branch of \eqn{\log \Gamma(z)}, complex,
+with a branch cut on the negative real axis. For real \code{z < 0} it is
+\code{NaN}, unlike \code{sc_gammaln()}.
 \item \code{sc_rgamma()}: \eqn{1 / \Gamma(z)}, complex; zero at the poles.
 \item \code{sc_gammasgn()}: the sign of \eqn{\Gamma(x)}.
 \item \code{sc_psi()}: the digamma function \eqn{\psi(z)}, complex. Base R:
@@ -66,9 +67,10 @@ R: \code{\link[=beta]{beta()}}, \code{\link[=lbeta]{lbeta()}}.
 }
 
 Arguments are recycled: each must have length one or the common length.
-\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result keeps the
-names or dimensions of the first argument of full length. Conditions the
-kernels raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does. Conditions the kernels raise, such as a pole, are handled as
+\code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \examples{
 sc_gamma(c(0.5, 5))

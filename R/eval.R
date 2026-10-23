@@ -13,7 +13,9 @@ zsp_eval <- function(name, args, complex_ok = character(), whole = character(),
     prep$args[complex_ok] <- lapply(prep$args[complex_ok], as.complex)
     prep$complex <- TRUE
   }
+  nan_order <- logical(prep$n)
   for (arg in whole) {
+    nan_order <- nan_order | is.nan(prep$args[[arg]])
     prep$args[[arg]] <- zsp_whole(prep$args[[arg]], arg, call)
   }
 
@@ -28,6 +30,7 @@ zsp_eval <- function(name, args, complex_ok = character(), whole = character(),
 
   report <- attr(value, "zsp_err")
   attr(value, "zsp_err") <- NULL
+  value[nan_order] <- NaN
   value <- zsp_finish(value, prep$template)
   if (!is.null(report)) {
     zsp_signal_report(report, paste0("sc_", name), call)

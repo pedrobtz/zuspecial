@@ -18,23 +18,26 @@ sc_expn(n, x)
 
 \item{x}{Numeric vector; in \code{sc_expi()}, also complex.}
 
-\item{n}{Whole numbers within integer range; other values are an error,
-as NumPy refuses to cast a float to an integer loop.}
+\item{n}{Whole numbers within integer range. \code{NaN} gives \code{NaN}, as in
+SciPy. A non-whole \code{n} is an error: SciPy truncates it with a warning,
+and zuspecial refuses it so that a fractional order cannot slip
+through.}
 }
 \value{
 A double vector, or a complex vector for complex input.
 }
 \description{
 \itemize{
-\item \code{sc_exp1()}: \eqn{E_1(z) = \int_1^\infty e^{-zt} / t \, dt}, complex.
+\item \code{sc_exp1()}: \eqn{E_1(z) = \int_1^\infty e^{-zt} / t \, dt}, complex,
+with a branch cut on the negative real axis.
 \item \code{sc_expi()}: \eqn{\mathrm{Ei}(x)}, complex.
 \item \code{sc_expn()}: the generalised \eqn{E_n(x)} for whole \code{n}.
 }
 }
 \details{
-Arguments are recycled, \code{NA} gives \code{NA}, and the result keeps the names
-or dimensions of the first argument of full length; see
-\code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
 \examples{
 sc_exp1(c(0.5, 1, 2))

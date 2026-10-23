@@ -19,15 +19,17 @@ sc_seterr(
   no_result = NULL,
   domain = NULL,
   arg = NULL,
-  other = NULL
+  other = NULL,
+  memory = NULL
 )
 
 sc_errstate(expr, ...)
 }
 \arguments{
-\item{all}{Action for every code, applied before the named ones.}
+\item{all}{Action for every code, \code{memory} included, applied before the
+named ones.}
 
-\item{singular, underflow, overflow, slow, loss, no_result, domain, arg, other}{Action for that code: \code{"ignore"}, \code{"warn"} or \code{"raise"}. \code{NULL} leaves
+\item{singular, underflow, overflow, slow, loss, no_result, domain, arg, other, memory}{Action for that code: \code{"ignore"}, \code{"warn"} or \code{"raise"}. \code{NULL} leaves
 it unchanged.}
 
 \item{expr}{An expression to evaluate under the temporary actions.}

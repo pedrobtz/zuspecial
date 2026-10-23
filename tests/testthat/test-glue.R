@@ -10,22 +10,22 @@ test_that("NA is decided before the kernel", {
   expect_true(is.nan(out[2]))
   report <- attr(out, "zsp_err")
   # NA never reaches the kernel, so the singular count is 1, at index 2.
-  expect_identical(report[c(1, 11)], c(1L, 2L))
+  expect_identical(report[c(1, 11)], c(1, 2))
 })
 
 test_that("the report counts every element and keeps the first index", {
   out <- .Call(zsp_call_d, "gamma", c(1, -1, -2))
   report <- attr(out, "zsp_err")
   expect_length(report, 20)
-  expect_identical(report[c(1, 11)], c(2L, 2L))
-  expect_identical(sum(report[-c(1, 11)]), 0L)
+  expect_identical(report[c(1, 11)], c(2, 2))
+  expect_identical(sum(report[-c(1, 11)]), 0)
 })
 
 test_that("the complex loop treats either NA part as NA and passes NaN", {
   z <- complex(real = c(NA, 1, NaN), imaginary = c(0, NA, 0))
   out <- .Call(zsp_call_c, "gamma", z)
   expect_identical(out[1:2], c(NA_complex_, NA_complex_))
-  expect_false(is.na(Re(out[3])) && !is.nan(Re(out[3])))
+  expect_true(is.nan(Re(out[3])))
   expect_equal(
     .Call(zsp_call_c, "gamma", complex(real = 5, imaginary = 0)),
     24 + 0i,

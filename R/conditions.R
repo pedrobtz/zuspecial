@@ -29,18 +29,20 @@ zsp_warn <- function(class, message, ..., call = NULL) {
   ))
 }
 
-# Signals the codes in a report from the C glue: an integer vector of length
-# 20, the count for code k at k and its first (1-based) index at 10 + k. Each
-# raised code is signalled once, under its action in sc_geterr().
+# Signals the codes in a report from the C glue: a double vector of length
+# 20, the count for code k at k and its first (1-based) index at 10 + k
+# (doubles, so long vectors are counted exactly). Each raised code is
+# signalled once, under its action in sc_geterr().
 zsp_signal_report <- function(report, fn, call = NULL) {
   actions <- sc_geterr()
-  for (k in which(report[1:10] > 0L)) {
+  for (k in which(report[1:10] > 0)) {
     code <- zsp_codes[[k]]
     count <- report[[k]]
     first <- report[[10L + k]]
     message <- sprintf(
-      "%s: %s in %d element%s, first at index %d.",
-      fn, code, count, if (count == 1L) "" else "s", first
+      "%s: %s in %s element%s, first at index %s.",
+      fn, code, format(count, scientific = FALSE),
+      if (count == 1) "" else "s", format(first, scientific = FALSE)
     )
     switch(
       actions[[code]],

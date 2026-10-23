@@ -3,16 +3,18 @@
 # `args` is a named list of the user's arguments, `complex_ok` the names that
 # may be complex. If any of those is complex, all of them become complex and
 # the call takes the complex path. Returns the recycled arguments, their
-# common length `n`, whether the path is complex, and the `template`: the
-# first argument whose length is `n`, whose attributes the result takes.
+# common length `n` (a double, so long vectors work), whether the path is
+# complex, and the `template` whose attributes the result takes: as in base
+# R arithmetic, the first full-length argument with a dim, else the first
+# with names, else the first of full length.
 zsp_prep <- function(args, complex_ok = character(), call = NULL) {
   for (name in names(args)) {
     zsp_check_type(args[[name]], name, name %in% complex_ok, call)
   }
 
-  lengths <- vapply(args, length, integer(1))
-  n <- if (any(lengths == 0L)) 0L else max(lengths)
-  bad <- n > 0L & lengths != 1L & lengths != n
+  lengths <- vapply(args, length, numeric(1))
+  n <- if (any(lengths == 0)) 0 else max(lengths)
+  bad <- n > 0 & lengths != 1 & lengths != n
   if (any(bad)) {
     zsp_abort(
       "zuspecial_recycle_error",
@@ -26,9 +28,15 @@ zsp_prep <- function(args, complex_ok = character(), call = NULL) {
   }
 
   complex <- any(vapply(args[complex_ok], is.complex, logical(1)))
-  template <- NULL
-  if (n > 0L) {
-    template <- args[[which(lengths == n)[[1]]]]
+  full <- args[lengths == n]
+  has_dim <- vapply(full, function(x) !is.null(dim(x)), logical(1))
+  has_names <- vapply(full, function(x) !is.null(names(x)), logical(1))
+  template <- if (any(has_dim)) {
+    full[[which(has_dim)[[1]]]]
+  } else if (any(has_names)) {
+    full[[which(has_names)[[1]]]]
+  } else if (length(full) > 0L) {
+    full[[1]]
   }
 
   for (name in names(args)) {
@@ -42,8 +50,15 @@ zsp_prep <- function(args, complex_ok = character(), call = NULL) {
 
 zsp_check_type <- function(x, name, complex_ok, call) {
   ok_types <- c("double", "integer", "logical", if (complex_ok) "complex")
-  if (is.factor(x) || !typeof(x) %in% ok_types) {
-    what <- if (is.factor(x)) "a factor" else paste("of type", typeof(x))
+  # Classed numbers (factors, dates, difftimes) carry meaning the kernels
+  # would discard; plain matrices and arrays are fine.
+  classed <- is.object(x) && !all(class(x) %in% c("matrix", "array"))
+  if (classed || !typeof(x) %in% ok_types) {
+    what <- if (classed) {
+      paste0("an object of class <", class(x)[[1]], ">")
+    } else {
+      paste("of type", typeof(x))
+    }
     zsp_abort(
       "zuspecial_invalid_argument",
       sprintf(
@@ -73,12 +88,12 @@ zsp_finish <- function(value, template) {
   value
 }
 
-# Integer-order arguments must be whole numbers within int range; NA is kept
-# (design 6.2).
+# Integer-order arguments must be whole numbers within int range (design
+# 6.2). NA and NaN become NA_integer_; zsp_eval() puts NaN back in the
+# result, as SciPy returns NaN for a NaN order.
 zsp_whole <- function(x, name, call = NULL) {
-  bad <- !is.na(x) & (is.nan(x) | !is.finite(x) | x != trunc(x) |
+  bad <- !is.na(x) & (!is.finite(x) | x != trunc(x) |
     abs(x) > .Machine$integer.max)
-  bad[is.nan(x)] <- TRUE
   if (any(bad)) {
     index <- which(bad)[[1]]
     zsp_abort(

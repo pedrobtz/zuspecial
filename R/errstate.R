@@ -21,8 +21,9 @@ zsp_default_errstate <- function() {
 #' raises. The state lives in the option `zuspecial.errstate`, so parallel
 #' workers start from the defaults.
 #'
-#' @param all Action for every code, applied before the named ones.
-#' @param singular,underflow,overflow,slow,loss,no_result,domain,arg,other
+#' @param all Action for every code, `memory` included, applied before the
+#'   named ones.
+#' @param singular,underflow,overflow,slow,loss,no_result,domain,arg,other,memory
 #'   Action for that code: `"ignore"`, `"warn"` or `"raise"`. `NULL` leaves
 #'   it unchanged.
 #' @param expr An expression to evaluate under the temporary actions.
@@ -49,22 +50,30 @@ sc_geterr <- function() {
 sc_seterr <- function(all = NULL, singular = NULL, underflow = NULL,
                       overflow = NULL, slow = NULL, loss = NULL,
                       no_result = NULL, domain = NULL, arg = NULL,
-                      other = NULL) {
+                      other = NULL, memory = NULL) {
+  zsp_seterr(
+    list(
+      all = all, singular = singular, underflow = underflow,
+      overflow = overflow, slow = slow, loss = loss, no_result = no_result,
+      domain = domain, arg = arg, other = other, memory = memory
+    ),
+    sys.call()
+  )
+}
+
+zsp_seterr <- function(actions, call) {
   old <- sc_geterr()
   new <- old
-  given <- list(
-    singular = singular, underflow = underflow, overflow = overflow,
-    slow = slow, loss = loss, no_result = no_result, domain = domain,
-    arg = arg, other = other
-  )
+  all <- actions$all
+  given <- actions[names(actions) != "all"]
   if (!is.null(all)) {
-    zsp_check_action(all, "all")
+    zsp_check_action(all, "all", call)
     new[] <- all
   }
   for (code in names(given)) {
     action <- given[[code]]
     if (!is.null(action)) {
-      zsp_check_action(action, code)
+      zsp_check_action(action, code, call)
       new[[code]] <- action
     }
   }
@@ -75,12 +84,23 @@ sc_seterr <- function(all = NULL, singular = NULL, underflow = NULL,
 #' @rdname errstate
 #' @export
 sc_errstate <- function(expr, ...) {
-  old <- sc_seterr(...)
+  actions <- list(...)
+  unknown <- setdiff(names(actions), c("all", zsp_codes))
+  if (length(actions) > 0L && (is.null(names(actions)) ||
+      any(!nzchar(names(actions))) || length(unknown) > 0L)) {
+    zsp_abort(
+      "zuspecial_invalid_argument",
+      "Actions in `...` must be named `all` or an error code.",
+      argument = "...",
+      call = sys.call()
+    )
+  }
+  old <- zsp_seterr(actions, sys.call())
   on.exit(options(zuspecial.errstate = old), add = TRUE)
   expr
 }
 
-zsp_check_action <- function(action, name) {
+zsp_check_action <- function(action, name, call) {
   if (!is.character(action) || length(action) != 1L || is.na(action) ||
       !action %in% zsp_actions) {
     zsp_abort(
@@ -89,7 +109,7 @@ zsp_check_action <- function(action, name) {
         "`%s` must be one of \"ignore\", \"warn\" or \"raise\".", name
       ),
       argument = name,
-      call = sys.call(-1)
+      call = call
     )
   }
 }

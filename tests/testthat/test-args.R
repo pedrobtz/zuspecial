@@ -1,6 +1,6 @@
 test_that("length-one arguments recycle to the common length", {
   prep <- zsp_prep(list(a = 1, b = c(1, 2, 3)))
-  expect_identical(prep$n, 3L)
+  expect_identical(prep$n, 3)
   expect_identical(prep$args$a, c(1, 1, 1))
   expect_false(prep$complex)
 })
@@ -10,12 +10,12 @@ test_that("other mismatched lengths are an error", {
     zsp_prep(list(a = c(1, 2), b = c(1, 2, 3))),
     class = "zuspecial_recycle_error"
   )
-  expect_identical(cnd$lengths, c(a = 2L, b = 3L))
+  expect_identical(cnd$lengths, c(a = 2, b = 3))
 })
 
 test_that("a zero-length argument gives zero-length output", {
   prep <- zsp_prep(list(a = numeric(), b = c(1, 2, 3)))
-  expect_identical(prep$n, 0L)
+  expect_identical(prep$n, 0)
   expect_identical(prep$args$b, numeric())
 })
 
@@ -61,7 +61,8 @@ test_that("the template is the first argument of the result's length", {
 
 test_that("integer orders must be whole and within int range", {
   expect_identical(zsp_whole(c(1, NA, -3), "n"), c(1L, NA, -3L))
-  for (bad in list(c(1, 2.5), 2^31, Inf, NaN)) {
+  expect_identical(zsp_whole(NaN, "n"), NA_integer_)
+  for (bad in list(c(1, 2.5), 2^31, Inf)) {
     expect_error(zsp_whole(bad, "n"), class = "zuspecial_invalid_argument")
   }
   cnd <- expect_error(zsp_whole(c(1, 2.5), "n"))

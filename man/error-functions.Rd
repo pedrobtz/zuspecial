@@ -64,9 +64,9 @@ density with standard deviation \code{sigma} and a Cauchy density with half
 width \code{gamma}.
 }
 
-Arguments are recycled, \code{NA} gives \code{NA}, and the result keeps the names
-or dimensions of the first argument of full length; see
-\code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
 \examples{
 sc_erf(c(-1, 0, 1))

@@ -20,9 +20,9 @@
 #'   density with standard deviation `sigma` and a Cauchy density with half
 #'   width `gamma`.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and the result keeps the names
-#' or dimensions of the first argument of full length; see
-#' [sc_seterr()] for the conditions the kernels raise.
+#' Arguments are recycled, `NA` gives `NA`, and the result takes its
+#' dimensions, or else its names, from the arguments as base R arithmetic
+#' does; see [sc_seterr()] for the conditions the kernels raise.
 #'
 #' @param z,x Numeric vector; for `z`, and for `x` in `sc_erfc()`,
 #'   `sc_erfcx()` and `sc_dawsn()`, also complex.

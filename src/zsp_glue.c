@@ -1,7 +1,6 @@
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
-#include <limits.h>
 #include <string.h>
 
 #include "zsp_shim.h"
@@ -10,25 +9,26 @@
    checked, coerced and recycled the arguments, so every input is a REALSXP,
    CPLXSXP or INTSXP of the same length. NA is decided here, before any
    kernel is called (section 6.3). After the loop, the error report goes on
-   the result as attribute "zsp_err": count for sf_error code k at k and the
-   first 1-based index at 10 + k, k = 1..10 (section 6.4). */
+   the result as attribute "zsp_err", a double vector: count for sf_error
+   code k at k and the first 1-based index at 10 + k, k = 1..10 (section
+   6.4). */
 
 #define ZSP_NCODES 10
 
+/* Counts and indices are R_xlen_t, and go to R as doubles, so long vectors
+   are reported exactly. */
 typedef struct {
-  int count[ZSP_NCODES];
-  int first[ZSP_NCODES];
+  R_xlen_t count[ZSP_NCODES];
+  R_xlen_t first[ZSP_NCODES];
 } zsp_report;
 
 static void zsp_note(zsp_report *r, unsigned int bits, R_xlen_t i) {
   for (int k = 1; k <= ZSP_NCODES; k++) {
     if (bits & (1u << k)) {
       if (r->count[k - 1] == 0) {
-        r->first[k - 1] = i < INT_MAX ? (int) (i + 1) : INT_MAX;
+        r->first[k - 1] = i + 1;
       }
-      if (r->count[k - 1] < INT_MAX) {
-        r->count[k - 1]++;
-      }
+      r->count[k - 1]++;
     }
   }
 }
@@ -38,16 +38,16 @@ static void zsp_note(zsp_report *r, unsigned int bits, R_xlen_t i) {
 static void zsp_attach(SEXP out, const zsp_report *r) {
   int any = 0;
   for (int k = 0; k < ZSP_NCODES; k++) {
-    any |= r->count[k];
+    any |= r->count[k] > 0;
   }
   if (!any) {
     return;
   }
-  SEXP rep = PROTECT(Rf_allocVector(INTSXP, 2 * ZSP_NCODES));
-  int *p = INTEGER(rep);
+  SEXP rep = PROTECT(Rf_allocVector(REALSXP, 2 * ZSP_NCODES));
+  double *p = REAL(rep);
   for (int k = 0; k < ZSP_NCODES; k++) {
-    p[k] = r->count[k];
-    p[ZSP_NCODES + k] = r->first[k];
+    p[k] = (double) r->count[k];
+    p[ZSP_NCODES + k] = (double) r->first[k];
   }
   Rf_setAttrib(out, Rf_install("zsp_err"), rep);
   UNPROTECT(1);

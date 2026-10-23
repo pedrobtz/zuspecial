@@ -290,7 +290,7 @@ sc_lambertw(z, k = 0L, tol = 1e-8)   # always complex, as in SciPy
 sc_geterr()                       # named character vector of actions
 sc_seterr(all = NULL, singular = NULL, underflow = NULL, overflow = NULL,
           slow = NULL, loss = NULL, no_result = NULL, domain = NULL,
-          arg = NULL, other = NULL)   # returns the previous state
+          arg = NULL, other = NULL, memory = NULL)   # previous state
 sc_errstate(expr, ...)            # evaluate expr under temporary actions
 
 zuspecial_info()                  # versions, backends, function table
@@ -313,6 +313,11 @@ per exported function: R name, SciPy name, backend (`"xsf"` or
   zero-length output.
 - The result takes `dim`, `dimnames` and `names` from the first argument
   whose length equals the result's, as base R's arithmetic does.
+  **As built (2026-10-24):** as base R does it: `dim` and `dimnames` from
+  the first full-length argument that has them, else `names` from the
+  first that has them; a zero-length input keeps its `dim`. Classed
+  numbers (dates, difftimes) are refused with `zuspecial_invalid_argument`
+  rather than stripped.
 - Integer and logical input is converted to double; character, factor
   and list input is refused with `zuspecial_invalid_argument`.
 
@@ -329,6 +334,11 @@ per exported function: R name, SciPy name, backend (`"xsf"` or
   `k` in `sc_lambertw()`) must be whole numbers within `int` range;
   others are refused with `zuspecial_invalid_argument`, matching
   NumPy's refusal to cast a float to an integer loop.
+  **Corrected 2026-10-24 (Stage 2):** for `expn` SciPy 1.18.1 also
+  registers a `dd->d` loop that truncates a non-whole `n` with a
+  RuntimeWarning and returns `NaN` for a `NaN` `n`. zuspecial returns
+  `NaN` for `NaN` but keeps refusing a non-whole `n`, a deliberate
+  difference from SciPy, documented on `sc_expn()`.
 - Branch cuts and principal values are xsf's, documented per function
   from SciPy's documentation.
 

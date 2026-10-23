@@ -7,8 +7,9 @@
 #'
 #' - `sc_gamma()`: \eqn{\Gamma(z)}, complex. Base R: [gamma()].
 #' - `sc_gammaln()`: \eqn{\log|\Gamma(x)|}. Base R: [lgamma()].
-#' - `sc_loggamma()`: the principal branch of \eqn{\log \Gamma(z)}, complex.
-#'   For real `z < 0` it is `NaN`, unlike `sc_gammaln()`.
+#' - `sc_loggamma()`: the principal branch of \eqn{\log \Gamma(z)}, complex,
+#'   with a branch cut on the negative real axis. For real `z < 0` it is
+#'   `NaN`, unlike `sc_gammaln()`.
 #' - `sc_rgamma()`: \eqn{1 / \Gamma(z)}, complex; zero at the poles.
 #' - `sc_gammasgn()`: the sign of \eqn{\Gamma(x)}.
 #' - `sc_psi()`: the digamma function \eqn{\psi(z)}, complex. Base R:
@@ -20,9 +21,10 @@
 #' - `sc_poch()`: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
 #'
 #' Arguments are recycled: each must have length one or the common length.
-#' `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result keeps the
-#' names or dimensions of the first argument of full length. Conditions the
-#' kernels raise, such as a pole, are handled as [sc_seterr()] says.
+#' `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
+#' dimensions, or else its names, from the arguments as base R arithmetic
+#' does. Conditions the kernels raise, such as a pole, are handled as
+#' [sc_seterr()] says.
 #'
 #' @param z,x Numeric vector; for `z`, also complex.
 #' @param a,b,y,m Numeric vectors.
