@@ -39,7 +39,11 @@ for obj in "$dir"/zsp_shim_*.o; do
   # u, V and v: GNU unique and weak objects, which GCC uses for statics in
   # inline functions and for inline variables.
   syms=$($NM "$obj")
-  state=$(printf '%s\n' "$syms" | awk '$2 ~ /^[BbDduVv]$/ {print $3}')
+  # Not state: section symbols (.bss, .data), which mingw's nm lists even
+  # when empty, and GCC's DW.ref.__gxx_personality_v0, the exception
+  # personality pointer every C++ object with unwind tables carries.
+  state=$(printf '%s\n' "$syms" | awk '$2 ~ /^[BbDduVv]$/ {print $3}' |
+    grep -Ev '^(\.|DW\.ref\.__gxx_personality_v0$)' || true)
   if [ -n "$state" ]; then
     echo "$obj defines mutable data:" $state >&2
     status=1
