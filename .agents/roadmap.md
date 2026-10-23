@@ -129,6 +129,15 @@ are `"xsf/..."`, and r-actions' `vendor.yml` and the portfolio template
 expect `src/vendor/` and `tools/vendor/`. The build adds `-DNDEBUG` for a
 bare `assert` in `specfun.h`. Recorded in design §8.
 
+**Measured (2026-10-24, [#17](https://github.com/pedrobtz/zuspecial/pull/17)).**
+Compile and install with one shim unit (gamma): 3 s on Ubuntu, 8 s on macOS,
+12 s on Windows (`symbols` workflow). The full profile was green on every
+leg, including Windows R-devel, valgrind, ASan, gctorture at step 20 and
+rchk. The quick profile's package work fits in five minutes, but
+`setup-r` took 1150–1200 s on some jobs, as in Stage 0;
+[pedrobtz/r-actions#73](https://github.com/pedrobtz/r-actions/issues/73).
+Stages 3 to 6 add shim units; re-measure when they land.
+
 ## Stage 2 — Glue, error state, gamma and error functions
 
 **Issue.** [#4](https://github.com/pedrobtz/zuspecial/issues/4), sub-issue of
