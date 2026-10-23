@@ -7,7 +7,7 @@
 #
 # 1. No object may import stdio output, process termination, assert or the
 #    C library RNG (CLAUDE.md, Vendored native code).
-# 2. No src/zsp_shim_*.o may define writable data: the error mask in
+# 2. No src/zsp_shim*.o may define writable data: the error mask in
 #    zsp_error.o is the only mutable state (design section 8).
 set -eu
 
@@ -34,7 +34,7 @@ for obj in "$@"; do
   fi
 done
 
-for obj in "$dir"/zsp_shim_*.o; do
+for obj in "$dir"/zsp_shim*.o; do
   [ -e "$obj" ] || continue
   # u, V and v: GNU unique and weak objects, which GCC uses for statics in
   # inline functions and for inline variables.
