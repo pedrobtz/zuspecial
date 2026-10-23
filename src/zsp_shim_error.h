@@ -6,7 +6,7 @@
 #include "xsf/erf.h"
 #include "xsf/expint.h"
 
-#include "zsp_complex.hpp"
+#include "zsp_complex.h"
 
 extern "C" {
 

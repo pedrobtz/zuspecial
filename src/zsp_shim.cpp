@@ -6,5 +6,5 @@
 // breaks the one-definition rule at link time, so every family's entries
 // live in a header included here and nowhere else.
 
-#include "zsp_shim_error.hpp"
-#include "zsp_shim_gamma.hpp"
+#include "zsp_shim_error.h"
+#include "zsp_shim_gamma.h"

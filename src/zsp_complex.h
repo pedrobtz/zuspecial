@@ -1,5 +1,5 @@
-#ifndef ZSP_COMPLEX_HPP
-#define ZSP_COMPLEX_HPP
+#ifndef ZSP_COMPLEX_H
+#define ZSP_COMPLEX_H
 
 // zsp_complex and std::complex<double> never alias: convert by member
 // (design section 4).

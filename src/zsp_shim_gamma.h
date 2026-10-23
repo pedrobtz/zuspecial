@@ -7,7 +7,7 @@
 #include "xsf/gamma.h"
 #include "xsf/loggamma.h"
 
-#include "zsp_complex.hpp"
+#include "zsp_complex.h"
 
 extern "C" {
 
