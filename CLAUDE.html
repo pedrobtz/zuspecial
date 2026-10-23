@@ -77,14 +77,31 @@
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::test(shuffle = TRUE)'</span>      <span class="co"># order independence</span></span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::check()'</span>                   <span class="co"># R CMD check</span></span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="ex">air</span> format .                                     <span class="co"># format R sources</span></span></code></pre></div>
+<p>Occasional, for vendoring and the native build:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">tools/vendor/vendor-xsf</span> v1.18.1   <span class="co"># re-vendor xsf at a SciPy release's pin</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">tools/vendor/verify</span>               <span class="co"># vendored tree matches the checksums</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="ex">R</span> CMD INSTALL . <span class="kw">&amp;&amp;</span> <span class="ex">tools/check-symbols</span> src   <span class="co"># forbidden imports, shim state</span></span></code></pre></div>
+<p><code>devtools::load_all()</code> builds with <code>-UNDEBUG</code>, so run <code>tools/check-symbols</code> on objects from <code>R CMD INSTALL</code>, never from <code>load_all()</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a></h2>
-<p>To be written as stages land; see <code>.agents/design.md</code> §4. The scaffold set up C through <code>use_c()</code>: <a href="src/zuspecial.c">src/zuspecial.c</a> and <code>useDynLib(zuspecial, .registration = TRUE)</code>. The design adds a C++17 shim per function family between that C glue and the vendored xsf headers.</p>
-</div>
+<p>The full picture is <code>.agents/design.md</code> §4. Built so far:</p>
+<ul><li>
+<a href="src/zuspecial.c">src/zuspecial.c</a>: <code>R_init_zuspecial</code>, the only exported symbol, registers every <code>.Call</code> routine.</li>
+<li>
+<a href="src/zsp_shim.h">src/zsp_shim.h</a>: the C/C++ boundary. Plain C types only; every function is <code>extern "C"</code> and <code>noexcept</code>.</li>
+<li>
+<code>src/zsp_shim_&lt;family&gt;.cpp</code>: one translation unit per function family, each wrapping xsf kernels. Only <a href="src/zsp_shim_gamma.cpp">src/zsp_shim_gamma.cpp</a> exists yet.</li>
+<li>
+<a href="src/zsp_error.cpp">src/zsp_error.cpp</a>: defines <code>xsf::set_error</code> (declared because the build sets <code>SP_SPECFUN_ERROR</code>) and <code>zsp_err_take()</code>. It holds the only mutable state: a thread-local bitmask, bit <code>1 &lt;&lt; code</code> per <code>sf_error_t</code>.</li>
+<li>
+<code>src/vendor/xsf/include/</code>: the include root (<code>-Ivendor/xsf/include</code> in <code>src/Makevars</code>), since xsf includes itself as <code>"xsf/..."</code>.</li>
+<li>
+<a href="src/zsp_spike.c">src/zsp_spike.c</a>: Stage 1’s internal <code>gamma</code> routine, replaced by the Stage 2 glue.</li>
+</ul></div>
 <div class="section level2">
 <h2 id="invariants-that-are-easy-to-break">Invariants that are easy to break<a class="anchor" aria-label="anchor" href="#invariants-that-are-easy-to-break"></a></h2>
-<p>These come from the design; none is in code yet.</p>
+<p>These come from the design. Stage 1 put the shim boundary and <code>set_error</code> in code.</p>
 <ul><li>
 <strong>No C++ crosses into C or R.</strong> The shim is <code>extern "C"</code> and <code>noexcept</code>, catches Boost.Math exceptions into sf_error codes, and never calls R’s API. An R error raised under a C++ frame longjmps past destructors.</li>
 <li>
@@ -95,6 +112,8 @@
 <strong><code>xsf::set_error</code> only records.</strong> It writes a thread-local accumulator and never signals, allocates or calls R. Conditions are signalled once per call, after the loop, under the R function’s name.</li>
 <li>
 <strong>The C table is append-only.</strong> <code>struct_size</code> is the only version discriminator. Never reorder or remove members. A layout change in <code>zuspecial_complex</code> bumps the registered name <code>zuspecial_api_v1</code>. Consumers include only <code>inst/include/zuspecial.h</code>, never xsf or Boost.</li>
+<li>
+<strong><code>src/Makevars</code> and <code>src/Makevars.win</code> keep <code>-DNDEBUG</code>.</strong> Without it the bare <code>assert</code> in xsf’s <code>specfun/specfun.h</code> links <code>abort</code>, which CRAN’s compiled-code check rejects. <code>tools/check-symbols</code> catches it.</li>
 <li>
 <strong>No automatic complex promotion.</strong> Real input stays on the real path, so <code>sc_jv(0.5, -1)</code> is <code>NaN</code>, as in SciPy.</li>
 </ul></div>
@@ -169,7 +188,7 @@
 </div>
 <div class="section level2">
 <h2 id="vendored-native-code">Vendored native code<a class="anchor" aria-label="anchor" href="#vendored-native-code"></a></h2>
-<p>The design plans to vendor xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun code) at the commit SciPy’s <code>subprojects/xsf</code> gitlink pins (<code>471c1b5</code> when the RFC was written), without <code>numpy.h</code> and <code>third_party/</code>; see design §8 and §12.2. Not vendored yet. Fill in the commit, checksums and update procedure when Stage 0 vendors it.</p>
+<p>xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun code; <code>inst/COPYRIGHTS</code> lists every notice) is vendored in <code>src/vendor/xsf/</code> at <code>f7b85f5</code>, the commit SciPy v1.18.1’s <code>subprojects/xsf</code> gitlink names, without <code>numpy.h</code> and <code>third_party/</code>. The pin follows SciPy releases, not xsf tags (design D12), so this one exception to “pin a stable upstream release” is deliberate: the release pinned is SciPy’s. <code>tools/vendor/manifest.tsv</code> and <code>tools/vendor/checksums.sha256</code> record it, <code>src/vendor/PROVENANCE</code> gives the update procedure, and <code>vendor-upstream.yml</code> opens an issue when SciPy releases. No patches; the build defines <code>NDEBUG</code> instead, because of a bare <code>assert</code> in <code>specfun/specfun.h</code>.</p>
 <ul><li>Pin a stable upstream release, never <code>master</code> or a release candidate.</li>
 <li>Record the tag, the commit and the checksums, and write down the update procedure so the next bump is mechanical.</li>
 <li>Keep upstream <code>LICENSE</code> and <code>NOTICE</code> under <code>src/vendor/&lt;lib&gt;/</code>, declare the vendored code in <code>DESCRIPTION</code> and <code>inst/COPYRIGHTS</code>.</li>

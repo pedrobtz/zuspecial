@@ -4,6 +4,45 @@
 
 - **Pedro Baltazar**. Author, maintainer, copyright holder.
 
+- **SciPy**. Copyright holder.  
+  bundled xsf library
+
+- **Stephen L. Moshier**. Copyright holder.  
+  Cephes code in the bundled xsf library
+
+- **Massachusetts Institute of Technology**. Copyright holder.  
+  Faddeeva code in the bundled xsf library
+
+- **The Regents of the University of California**. Copyright holder.  
+  qd code in the bundled xsf library
+
+- **Shanjie Zhang**. Copyright holder.  
+  specfun code in the bundled xsf library
+
+- **Jianming Jin**. Copyright holder.  
+  specfun code in the bundled xsf library
+
+- **John Maddock**. Copyright holder.  
+  Boost-derived code in the bundled xsf library
+
+- **Xiaogang Zhang**. Copyright holder.  
+  Boost-derived code in the bundled xsf library
+
+- **Benjamin Sobotta**. Copyright holder.  
+  Owen's T code in the bundled xsf library
+
+- **Pauli Virtanen**. Copyright holder.  
+  code in the bundled xsf library
+
+- **Yosef Meller**. Copyright holder.  
+  Lambert W code in the bundled xsf library
+
+- **Christian Lorentzen**. Copyright holder.  
+  Wright Bessel code in the bundled xsf library
+
+- **Eric W. Moore**. Copyright holder.  
+  elliptic integral code in the bundled xsf library
+
 ## Citation
 
 Source:

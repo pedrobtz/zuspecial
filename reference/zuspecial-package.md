@@ -27,3 +27,42 @@ Useful links:
 Authors:
 
 - Pedro Baltazar <pedrobtz@gmail.com> \[copyright holder\]
+
+Other contributors:
+
+- SciPy (bundled xsf library) \[copyright holder\]
+
+- Stephen L. Moshier (Cephes code in the bundled xsf library)
+  \[copyright holder\]
+
+- Massachusetts Institute of Technology (Faddeeva code in the bundled
+  xsf library) \[copyright holder\]
+
+- The Regents of the University of California (qd code in the bundled
+  xsf library) \[copyright holder\]
+
+- Shanjie Zhang (specfun code in the bundled xsf library) \[copyright
+  holder\]
+
+- Jianming Jin (specfun code in the bundled xsf library) \[copyright
+  holder\]
+
+- John Maddock (Boost-derived code in the bundled xsf library)
+  \[copyright holder\]
+
+- Xiaogang Zhang (Boost-derived code in the bundled xsf library)
+  \[copyright holder\]
+
+- Benjamin Sobotta (Owen's T code in the bundled xsf library)
+  \[copyright holder\]
+
+- Pauli Virtanen (code in the bundled xsf library) \[copyright holder\]
+
+- Yosef Meller (Lambert W code in the bundled xsf library) \[copyright
+  holder\]
+
+- Christian Lorentzen (Wright Bessel code in the bundled xsf library)
+  \[copyright holder\]
+
+- Eric W. Moore (elliptic integral code in the bundled xsf library)
+  \[copyright holder\]

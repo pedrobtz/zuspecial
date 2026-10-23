@@ -86,18 +86,45 @@ Rscript -e 'devtools::check()'                   # R CMD check
 air format .                                     # format R sources
 ```
 
+Occasional, for vendoring and the native build:
+
+``` sh
+tools/vendor/vendor-xsf v1.18.1   # re-vendor xsf at a SciPy release's pin
+tools/vendor/verify               # vendored tree matches the checksums
+R CMD INSTALL . && tools/check-symbols src   # forbidden imports, shim state
+```
+
+`devtools::load_all()` builds with `-UNDEBUG`, so run
+`tools/check-symbols` on objects from `R CMD INSTALL`, never from
+`load_all()`.
+
 ## Architecture
 
-To be written as stages land; see `.agents/design.md` §4. The scaffold
-set up C through `use_c()`:
-[src/zuspecial.c](https://pedrobtz.github.io/zuspecial/src/zuspecial.c)
-and `useDynLib(zuspecial, .registration = TRUE)`. The design adds a
-C++17 shim per function family between that C glue and the vendored xsf
-headers.
+The full picture is `.agents/design.md` §4. Built so far:
+
+- [src/zuspecial.c](https://pedrobtz.github.io/zuspecial/src/zuspecial.c):
+  `R_init_zuspecial`, the only exported symbol, registers every `.Call`
+  routine.
+- [src/zsp_shim.h](https://pedrobtz.github.io/zuspecial/src/zsp_shim.h):
+  the C/C++ boundary. Plain C types only; every function is `extern "C"`
+  and `noexcept`.
+- `src/zsp_shim_<family>.cpp`: one translation unit per function family,
+  each wrapping xsf kernels. Only
+  [src/zsp_shim_gamma.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_shim_gamma.cpp)
+  exists yet.
+- [src/zsp_error.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_error.cpp):
+  defines `xsf::set_error` (declared because the build sets
+  `SP_SPECFUN_ERROR`) and `zsp_err_take()`. It holds the only mutable
+  state: a thread-local bitmask, bit `1 << code` per `sf_error_t`.
+- `src/vendor/xsf/include/`: the include root (`-Ivendor/xsf/include` in
+  `src/Makevars`), since xsf includes itself as `"xsf/..."`.
+- [src/zsp_spike.c](https://pedrobtz.github.io/zuspecial/src/zsp_spike.c):
+  Stage 1’s internal `gamma` routine, replaced by the Stage 2 glue.
 
 ## Invariants that are easy to break
 
-These come from the design; none is in code yet.
+These come from the design. Stage 1 put the shim boundary and
+`set_error` in code.
 
 - **No C++ crosses into C or R.** The shim is `extern "C"` and
   `noexcept`, catches Boost.Math exceptions into sf_error codes, and
@@ -114,6 +141,9 @@ These come from the design; none is in code yet.
   discriminator. Never reorder or remove members. A layout change in
   `zuspecial_complex` bumps the registered name `zuspecial_api_v1`.
   Consumers include only `inst/include/zuspecial.h`, never xsf or Boost.
+- **`src/Makevars` and `src/Makevars.win` keep `-DNDEBUG`.** Without it
+  the bare `assert` in xsf’s `specfun/specfun.h` links `abort`, which
+  CRAN’s compiled-code check rejects. `tools/check-symbols` catches it.
 - **No automatic complex promotion.** Real input stays on the real path,
   so `sc_jv(0.5, -1)` is `NaN`, as in SciPy.
 
@@ -238,12 +268,17 @@ the main thing slowing roadmaps down, so:
 
 ## Vendored native code
 
-The design plans to vendor xsf (BSD-3-Clause, with bundled Cephes,
-Faddeeva, qd, AMOS and specfun code) at the commit SciPy’s
-`subprojects/xsf` gitlink pins (`471c1b5` when the RFC was written),
-without `numpy.h` and `third_party/`; see design §8 and §12.2. Not
-vendored yet. Fill in the commit, checksums and update procedure when
-Stage 0 vendors it.
+xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun
+code; `inst/COPYRIGHTS` lists every notice) is vendored in
+`src/vendor/xsf/` at `f7b85f5`, the commit SciPy v1.18.1’s
+`subprojects/xsf` gitlink names, without `numpy.h` and `third_party/`.
+The pin follows SciPy releases, not xsf tags (design D12), so this one
+exception to “pin a stable upstream release” is deliberate: the release
+pinned is SciPy’s. `tools/vendor/manifest.tsv` and
+`tools/vendor/checksums.sha256` record it, `src/vendor/PROVENANCE` gives
+the update procedure, and `vendor-upstream.yml` opens an issue when
+SciPy releases. No patches; the build defines `NDEBUG` instead, because
+of a bare `assert` in `specfun/specfun.h`.
 
 - Pin a stable upstream release, never `master` or a release candidate.
 - Record the tag, the commit and the checksums, and write down the
