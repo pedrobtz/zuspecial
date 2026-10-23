@@ -63,6 +63,16 @@ quick pull request run finishes in under five minutes.
 
 **Design.** §3 (identity table).
 
+**Deviation (2026-10-23).** The quick profile's package work is well under
+five minutes: on [#16](https://github.com/pedrobtz/zuspecial/pull/16)'s
+rerun, clang23 took 128 s and the Ubuntu leg's dependencies and check took
+54 s. The Ubuntu leg still took 336 s because `r-lib/actions/setup-r`
+spent 269 s installing R itself (the first attempt stalled there for 17
+minutes and was cancelled), and pkgdown's 693 s was 247 s of `setup-r` plus
+427 s of cold-cache dependency installs. Neither is something `quick-step`
+or `quick-containers` can tune. Merged on green; Stage 1 re-times the quick
+profile and, if `setup-r` is still the bottleneck, raises it upstream.
+
 ## Stage 1 — Vendored xsf and the build
 
 **Issue.** [#3](https://github.com/pedrobtz/zuspecial/issues/3), sub-issue of
