@@ -2,18 +2,21 @@
 
 ## Authors
 
-- **First Last**. Author, maintainer.
+- **Pedro Baltazar**. Author, maintainer, copyright holder.
 
 ## Citation
 
-Last F (2026). *zuspecial: What the Package Does (One Line, Title
-Case)*. R package version 0.0.0.9000,
-<https://pedrobtz.github.io/zuspecial/>.
+Source:
+[`DESCRIPTION`](https://github.com/pedrobtz/zuspecial/blob/main/DESCRIPTION)
+
+Baltazar P (2026). *zuspecial: Special Functions from 'SciPy' for Real
+and Complex Arguments*. R package version 0.0.0.9000,
+<https://github.com/pedrobtz/zuspecial>.
 
     @Manual{,
-      title = {zuspecial: What the Package Does (One Line, Title Case)},
-      author = {First Last},
+      title = {zuspecial: Special Functions from 'SciPy' for Real and Complex Arguments},
+      author = {Pedro Baltazar},
       year = {2026},
       note = {R package version 0.0.0.9000},
-      url = {https://pedrobtz.github.io/zuspecial/},
+      url = {https://github.com/pedrobtz/zuspecial},
     }

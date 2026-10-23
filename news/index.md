@@ -1,5 +1,5 @@
 # Changelog
 
-## zuspecial (development version)
+## zuspecial 0.0.0.9000
 
-- Initial CRAN submission.
+- Initial development version; no user-facing functions yet.

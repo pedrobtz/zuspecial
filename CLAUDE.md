@@ -27,8 +27,10 @@ open questions (§16) and the Stage 0 decisions on the Boost backend
 
 ## Current state
 
-Scaffolded 2026-10-23 with `create-pkg.sh`; no functionality yet. The
-roadmap in `.agents/roadmap.md` takes it to v0.1.0.
+Scaffolded 2026-10-23 with `create-pkg.sh`; package identity and CI set
+up in Stage 0 (2026-10-23). No functionality yet. The roadmap in
+`.agents/roadmap.md` takes it to v0.1.0, tracked in
+[\#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
 ## Stage tracking
 
