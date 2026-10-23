@@ -1,0 +1,54 @@
+#!/bin/sh
+# Fail when compiled objects import symbols CRAN's compiled-code check
+# rejects, or when a shim object holds mutable state.
+#
+# Usage: tools/check-symbols [<dir>]   (default src; run after R CMD INSTALL,
+# which leaves the *.o files there)
+#
+# 1. No object may import stdio output, process termination, assert or the
+#    C library RNG (CLAUDE.md, Vendored native code).
+# 2. No src/zsp_shim_*.o may define writable data: the error mask in
+#    zsp_error.o is the only mutable state (design section 8).
+set -eu
+
+dir=${1:-src}
+NM=${NM:-nm}
+status=0
+
+# The entry points R's own compiled-code check flags, plus the fortified
+# (_chk) and mingw-w64 spellings the same calls compile to.
+forbidden='^_?(v?f?printf|v?sprintf|__v?f?printf_chk|__v?sprintf_chk|puts|putchar|fputs|fputc|fwrite|f?flush|stdout|stderr|_?_?std(out|err)p?|__acrt_iob_func|__mingw_v?[fs]?printf|__ms_v?[fs]?printf|abort|exit|_exit|_Exit|__assert_fail|__assert_rtn|_assert|_wassert|rand|rand_r|srand|srand48|random|srandom|_ZSt4cout|_ZSt4cerr|_ZNSt3__14coutE|_ZNSt3__14cerrE)$'
+
+command -v "${NM%% *}" >/dev/null 2>&1 || { echo "nm not found: $NM" >&2; exit 2; }
+
+set -- "$dir"/*.o
+[ -e "$1" ] || { echo "no objects in $dir; build first" >&2; exit 2; }
+
+for obj in "$@"; do
+  # Capture first, so set -e stops on an nm failure instead of passing.
+  undef=$($NM -u "$obj")
+  bad=$(printf '%s\n' "$undef" | awk '{print $NF}' | grep -E "$forbidden" || true)
+  if [ -n "$bad" ]; then
+    echo "$obj imports:" $bad >&2
+    status=1
+  fi
+done
+
+for obj in "$dir"/zsp_shim_*.o; do
+  [ -e "$obj" ] || continue
+  # u, V and v: GNU unique and weak objects, which GCC uses for statics in
+  # inline functions and for inline variables.
+  syms=$($NM "$obj")
+  # Not state: section symbols (.bss, .data), which mingw's nm lists even
+  # when empty, and GCC's DW.ref.__gxx_personality_v0, the exception
+  # personality pointer every C++ object with unwind tables carries.
+  state=$(printf '%s\n' "$syms" | awk '$2 ~ /^[BbDduVv]$/ {print $3}' |
+    grep -Ev '^(\.|DW\.ref\.__gxx_personality_v0$)' || true)
+  if [ -n "$state" ]; then
+    echo "$obj defines mutable data:" $state >&2
+    status=1
+  fi
+done
+
+[ "$status" -eq 0 ] && echo "symbols ok: $# objects in $dir"
+exit "$status"

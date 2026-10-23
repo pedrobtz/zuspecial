@@ -1,0 +1,42 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+name: symbols
+
+permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+# tools/check-symbols on the objects a real R CMD INSTALL builds, on every
+# OS: no stdio, termination, assert or RNG imports, and no mutable state in
+# the shim. Also records the compile time per leg (design section 12.3).
+jobs:
+  symbols:
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+      - name: Build
+        shell: bash
+        run: |
+          lib=$(mktemp -d)
+          start=$(date +%s)
+          R CMD INSTALL --no-test-load --no-multiarch -l "$lib" .
+          secs=$(( $(date +%s) - start ))
+          echo "Compile and install on ${{ matrix.os }}: ${secs}s" >> "$GITHUB_STEP_SUMMARY"
+      - name: Check symbols
+        shell: bash
+        # R's own nm, which on Windows is Rtools' rather than whatever Git
+        # Bash finds first.
+        run: NM="$(R CMD config NM)" tools/check-symbols src

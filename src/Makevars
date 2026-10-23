@@ -1,0 +1,8 @@
+CXX_STD = CXX17
+
+# xsf's includes are "xsf/...". SP_SPECFUN_ERROR makes xsf declare
+# set_error, which src/zsp_error.cpp defines. NDEBUG compiles out the bare
+# assert in xsf/specfun/specfun.h, which would otherwise link abort.
+PKG_CPPFLAGS = -Ivendor/xsf/include -DSP_SPECFUN_ERROR -DNDEBUG
+PKG_CFLAGS = $(C_VISIBILITY)
+PKG_CXXFLAGS = $(CXX_VISIBILITY)

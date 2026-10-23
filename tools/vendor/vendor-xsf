@@ -1,0 +1,44 @@
+#!/bin/sh
+# Vendor xsf's headers at the commit a SciPy release pins.
+#
+# Usage: tools/vendor/vendor-xsf [<scipy-tag>]   (default v1.18.1)
+#
+# Copies include/xsf/** from the xsf commit that SciPy's subprojects/xsf
+# gitlink names at <scipy-tag>, without numpy.h (it includes Python.h) and
+# third_party/ (mdspan, reached only from numpy.h), into src/vendor/xsf/,
+# then rewrites tools/vendor/manifest.tsv and tools/vendor/checksums.sha256.
+# Run from the package root. Needs git, gh and shasum.
+set -eu
+
+tag=${1:-v1.18.1}
+dest=src/vendor/xsf
+[ -f DESCRIPTION ] || { echo "run from the package root" >&2; exit 1; }
+
+scipy_commit=$(gh api "repos/scipy/scipy/commits/$tag" --jq .sha)
+xsf_commit=$(gh api "repos/scipy/scipy/contents/subprojects/xsf?ref=$tag" --jq .sha)
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+git -C "$tmp" init -q
+git -C "$tmp" fetch -q --depth 1 https://github.com/scipy/xsf "$xsf_commit"
+git -C "$tmp" checkout -q FETCH_HEAD
+
+rm -rf "$dest"
+mkdir -p "$dest/include"
+cp -R "$tmp/include/xsf" "$dest/include/"
+rm -f "$dest/include/xsf/numpy.h"
+rm -rf "$dest/include/xsf/third_party"
+cp "$tmp/LICENSE" "$tmp/LICENSES_bundled.txt" "$dest/"
+
+if grep -rnE '#[[:space:]]*include[[:space:]]*[<"].*(numpy\.h|Python\.h|third_party)' "$dest"; then
+  echo "a vendored header includes an excluded file" >&2
+  exit 1
+fi
+
+printf 'name\tupstream\tcommit\tscipy_tag\tscipy_commit\n' > tools/vendor/manifest.tsv
+printf 'xsf\thttps://github.com/scipy/xsf\t%s\t%s\t%s\n' \
+  "$xsf_commit" "$tag" "$scipy_commit" >> tools/vendor/manifest.tsv
+
+find "$dest" -type f | LC_ALL=C sort | xargs shasum -a 256 > tools/vendor/checksums.sha256
+
+echo "xsf $xsf_commit (SciPy $tag) vendored: $(find "$dest" -type f | wc -l | tr -d ' ') files"
