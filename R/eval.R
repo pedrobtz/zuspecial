@@ -54,6 +54,12 @@ zsp_eval <- function(
     ic = zsp_call_ic,
     d4 = zsp_call_d4,
     c4 = zsp_call_c4,
+    dd4 = zsp_call_dd4,
+    dddd = zsp_call_dddd,
+    dddc = zsp_call_dddc,
+    ddc = zsp_call_ddc,
+    cd = zsp_call_cd,
+    cid = zsp_call_cid,
     stop("internal: no loop for signature ", signature)
   )
   value <- do.call(.Call, c(list(routine, name), unname(prep$args)))

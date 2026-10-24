@@ -79,4 +79,13 @@ scipy/special/_ndtri_exp.pxd, (C) Albert Steppi, "distributed under the same
 license as SciPy" (BSD-3-Clause, licenses/xsf-LICENSE).
 src/zsp_boost.cpp: the wrappers around Boost.Math follow SciPy 1.18.1's
 scipy/special/boost_special_functions.h, (C) SciPy developers, BSD-3-Clause.
+src/zsp_shim_hyper.h, hyp0f1, hyperu and complex spence: ported from SciPy
+1.18.1's scipy/special/_hyp0f1.pxd, _hypergeometric.pxd and _spence.pxd,
+(C) SciPy developers, BSD-3-Clause.
+src/zsp_wright.h, the Wright omega function: ported from SciPy 1.18.1's
+scipy/special/wright.cc, (C) Piers Lawrence, BSD-3-Clause (the notice is in
+that file), and scipy/special/_round.h, (C) SciPy developers, BSD-3-Clause.
+src/zsp_ccomplex.c, npy_cpow: ported from NumPy's
+numpy/_core/src/npymath/npy_math_complex.c.src, (C) NumPy developers,
+BSD-3-Clause.
 Boost.Math itself is not bundled: it comes from the BH package (LinkingTo).

@@ -8,8 +8,11 @@
 # outside tolerance. <xsref-tables> and <scipy-tables> are the full .rds
 # tables that run tested (tools/xsref-extract --cap 0, and tools/scipy-values.py
 # --cap 0 --random 200 then tools/xsref-extract), from which each row's inputs
-# are read. Only rows with an argument of at least 1e5 are listed: smaller
-# ones are not this defect, and must be fixed rather than excused.
+# are read. Only rows where the defect can act are listed: an argument of
+# at least 1e5, or ellipj with m = 0, which is sin(u) and cos(u) directly and
+# meets x87's 66-bit pi reduction near the zeros of cos (u near pi/2). Any
+# other failing row is not this defect, and must be fixed rather than
+# excused. test-xsref.R applies the same rule (helper-oracle.R).
 
 args <- commandArgs(trailingOnly = TRUE)
 stopifnot(length(args) == 3L)
@@ -33,8 +36,10 @@ for (i in seq_len(nrow(keys))) {
   at <- match(rows$xsref_row, ids)
   stopifnot(!anyNA(at))
   biggest <- do.call(pmax, lapply(entry$inputs, function(x) mag(x)[at]))
-  small <- small + sum(biggest < 1e5)
-  keep <- biggest >= 1e5
+  direct_trig <- if (k$r_name == "sc_ellipj") entry$inputs[[2]][at] == 0 else FALSE
+  eligible <- biggest >= 1e5 | direct_trig
+  small <- small + sum(!eligible)
+  keep <- eligible
   if (any(keep)) {
     out[[i]] <- data.frame(
       r_name = k$r_name, sig = k$sig, kind = k$kind,
@@ -43,7 +48,7 @@ for (i in seq_len(nrow(keys))) {
   }
 }
 if (small > 0L) {
-  stop(small, " rows outside tolerance have no argument >= 1e5: not this defect")
+  stop(small, " rows outside tolerance are not this defect")
 }
 
 known <- do.call(rbind, out)

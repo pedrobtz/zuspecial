@@ -120,6 +120,39 @@ void zsp_airy_c4(zsp_complex z, zsp_complex *out) ZSP_NOEXCEPT;
 void zsp_airye_d4(double x, double *out) ZSP_NOEXCEPT;
 void zsp_airye_c4(zsp_complex z, zsp_complex *out) ZSP_NOEXCEPT;
 
+/* Hypergeometric, elliptic, zeta, Lambert W, Wright omega, Spence, Struve:
+   src/zsp_shim_hyper.h (and the Boost unit for real hyp1f1). */
+double zsp_hyp0f1_dd(double v, double z) ZSP_NOEXCEPT;
+zsp_complex zsp_hyp0f1_dc(double v, zsp_complex z) ZSP_NOEXCEPT;
+double zsp_hyp1f1_ddd(double a, double b, double x) ZSP_NOEXCEPT;
+zsp_complex zsp_hyp1f1_ddc(double a, double b, zsp_complex z) ZSP_NOEXCEPT;
+double zsp_hyp2f1_dddd(double a, double b, double c, double x) ZSP_NOEXCEPT;
+zsp_complex zsp_hyp2f1_dddc(double a, double b, double c, zsp_complex z) ZSP_NOEXCEPT;
+double zsp_hyperu_ddd(double a, double b, double x) ZSP_NOEXCEPT;
+double zsp_ellipk_d(double m) ZSP_NOEXCEPT;
+double zsp_ellipkm1_d(double p) ZSP_NOEXCEPT;
+double zsp_ellipkinc_dd(double phi, double m) ZSP_NOEXCEPT;
+double zsp_ellipe_d(double m) ZSP_NOEXCEPT;
+double zsp_ellipeinc_dd(double phi, double m) ZSP_NOEXCEPT;
+void zsp_ellipj_dd4(double u, double m, double *out) ZSP_NOEXCEPT;
+double zsp_zeta_d(double x) ZSP_NOEXCEPT;
+zsp_complex zsp_zeta_c(zsp_complex z) ZSP_NOEXCEPT;
+double zsp_zeta_q_dd(double x, double q) ZSP_NOEXCEPT;
+zsp_complex zsp_zeta_q_cd(zsp_complex z, double q) ZSP_NOEXCEPT;
+double zsp_zetac_d(double x) ZSP_NOEXCEPT;
+zsp_complex zsp_lambertw_cid(zsp_complex z, int k, double tol) ZSP_NOEXCEPT;
+double zsp_wrightomega_d(double x) ZSP_NOEXCEPT;
+zsp_complex zsp_wrightomega_c(zsp_complex z) ZSP_NOEXCEPT;
+double zsp_spence_d(double x) ZSP_NOEXCEPT;
+zsp_complex zsp_spence_c(zsp_complex z) ZSP_NOEXCEPT;
+double zsp_struve_dd(double v, double x) ZSP_NOEXCEPT;
+double zsp_modstruve_dd(double v, double x) ZSP_NOEXCEPT;
+
+/* NumPy's complex sqrt and power, for code ported from SciPy's Cython:
+   src/zsp_ccomplex.c. */
+zsp_complex zsp_csqrt(zsp_complex z) ZSP_NOEXCEPT;
+zsp_complex zsp_cpow(zsp_complex a, zsp_complex b) ZSP_NOEXCEPT;
+
 /* Boost.Math, as SciPy calls it: src/zsp_boost.cpp. */
 double zsp_betainc_ddd(double a, double b, double x) ZSP_NOEXCEPT;
 double zsp_betaincc_ddd(double a, double b, double x) ZSP_NOEXCEPT;

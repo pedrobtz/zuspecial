@@ -13,7 +13,12 @@ test_that("every function matches xsref within xsf's tolerance", {
       # xsref's "other" table, on every platform: its platform tables
       # describe xsf's own CI toolchains, and zuspecial is built with R's
       # (design 10). Precision is held by the same-platform SciPy check.
-      oracle_check(entry, part$got, xsf_tol(entry$err[["other"]]))
+      tol <- xsf_tol(entry$err[["other"]])
+      # Fallback rows hold an earlier SciPy's value where mpmath had none,
+      # so they are not truth: hyp2f1(-1, 1, -10, -10) is NaN there but 0 in
+      # SciPy 1.18.1 (and zuspecial). Agreement with SciPy covers them.
+      tol[entry$fallback] <- Inf
+      oracle_check(entry, part$got, tol)
     }
   }
 })
@@ -30,7 +35,9 @@ test_that("every function agrees with SciPy 1.18.1", {
     }
     for (part in oracle_outputs(whole, oracle_eval(whole))) {
       oracle_check(
-        part$entry, part$got, scipy_row_tol(part$entry, same_platform)
+        part$entry,
+        part$got,
+        scipy_row_tol(part$entry, same_platform)
       )
     }
   }

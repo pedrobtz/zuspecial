@@ -27,6 +27,14 @@
 * Airy functions `sc_airy()` and `sc_airye()`, returning `ai`, `aip`, `bi`
   and `bip` as a named list.
 
+* Hypergeometric functions `sc_hyp0f1()`, `sc_hyp1f1()`, `sc_hyp2f1()` and
+  `sc_hyperu()`; elliptic integrals `sc_ellipk()`, `sc_ellipkm1()`,
+  `sc_ellipkinc()`, `sc_ellipe()`, `sc_ellipeinc()` and the Jacobi functions
+  `sc_ellipj()`; `sc_zeta()` (Riemann and Hurwitz), `sc_zetac()`,
+  `sc_lambertw()`, `sc_wrightomega()`, `sc_spence()`, `sc_struve()` and
+  `sc_modstruve()`. The Carlson elliptic integrals wait for a SciPy release
+  whose xsf has them.
+
 * Normal distribution functions: `sc_ndtr()`, `sc_log_ndtr()`, `sc_ndtri()`,
   `sc_ndtri_exp()`, `sc_owens_t()`, and `sc_erfinv()`.
 

@@ -58,7 +58,8 @@ test_that("info reports the Boost backend and version", {
       "sc_betaincc",
       "sc_betaincinv",
       "sc_betainccinv",
-      "sc_erfinv"
+      "sc_erfinv",
+      "sc_hyp1f1"
     )
   )
   expect_match(info$boost_version, "^1\\.[0-9]+\\.[0-9]+$")

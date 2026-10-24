@@ -22,7 +22,7 @@ tables built in Stage 3.
 | 3 | [Test oracles: xsref and SciPy values](#stage-3--test-oracles-xsref-and-scipy-values) | quick | [#5](https://github.com/pedrobtz/zuspecial/issues/5) | [#20](https://github.com/pedrobtz/zuspecial/pull/20) | 2026-10-24 |
 | 4 | [Incomplete gamma and beta, Boost backend, normal functions](#stage-4--incomplete-gamma-and-beta-boost-backend-normal-functions) | quick | [#6](https://github.com/pedrobtz/zuspecial/issues/6) | [#21](https://github.com/pedrobtz/zuspecial/pull/21) | 2026-10-24 |
 | 5 | [Bessel, Hankel, spherical Bessel, Airy](#stage-5--bessel-hankel-spherical-bessel-airy) | quick | [#7](https://github.com/pedrobtz/zuspecial/issues/7) | [#22](https://github.com/pedrobtz/zuspecial/pull/22) | 2026-10-24 |
-| 6 | [Hypergeometric, elliptic, zeta, Lambert W, Struve](#stage-6--hypergeometric-elliptic-zeta-lambert-w-struve) | quick | [#8](https://github.com/pedrobtz/zuspecial/issues/8) | | |
+| 6 | [Hypergeometric, elliptic, zeta, Lambert W, Struve](#stage-6--hypergeometric-elliptic-zeta-lambert-w-struve) | quick | [#8](https://github.com/pedrobtz/zuspecial/issues/8) | [#23](https://github.com/pedrobtz/zuspecial/pull/23) | 2026-10-24 |
 | 7 | [Independent oracles and mpfr checks](#stage-7--independent-oracles-and-mpfr-checks) | quick | [#9](https://github.com/pedrobtz/zuspecial/issues/9) | | |
 | 8 | [The C table and a consumer fixture](#stage-8--the-c-table-and-a-consumer-fixture) | quick | [#10](https://github.com/pedrobtz/zuspecial/issues/10) | | |
 | 9 | [Benchmarks and documentation](#stage-9--benchmarks-and-documentation) | quick | [#11](https://github.com/pedrobtz/zuspecial/issues/11) | | |

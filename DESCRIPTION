@@ -31,7 +31,11 @@ Authors@R: c(
     person("Eric W.", "Moore", role = "cph",
            comment = "elliptic integral code in the bundled xsf library"),
     person("Albert", "Steppi", role = "cph",
-           comment = "ndtri_exp, ported from SciPy"))
+           comment = "ndtri_exp, ported from SciPy"),
+    person("Piers", "Lawrence", role = "cph",
+           comment = "Wright omega function, ported from SciPy"),
+    person("NumPy developers", role = "cph",
+           comment = "complex power, ported from NumPy"))
 Description: Evaluates the special functions of mathematical physics and
     statistics, including gamma, beta, error, Bessel, Airy, hypergeometric,
     elliptic and zeta functions, for real and complex arguments, using the

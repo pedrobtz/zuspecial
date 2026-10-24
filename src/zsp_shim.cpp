@@ -9,3 +9,4 @@
 #include "zsp_shim_bessel.h"
 #include "zsp_shim_error.h"
 #include "zsp_shim_gamma.h"
+#include "zsp_shim_hyper.h"

@@ -143,10 +143,17 @@ oracle_ids <- function(entry) {
 # so elsewhere the same rows are checked like any other; and on every
 # platform each listed row must have an argument of at least 1e5, so the list
 # can only ever hold large-argument rows.
-known_windows <- utils::read.delim(
-  test_path("known-windows.tsv.gz"),
-  comment.char = "#"
-)
+# The header lines start with "#"; the data may contain "#" too, in the
+# signatures of multi-output functions ("d_d-d_d_d_d#2"), so comments are
+# dropped by line rather than by read.delim's comment.char.
+known_windows <- local({
+  lines <- readLines(test_path("known-windows.tsv.gz"))
+  utils::read.delim(
+    text = lines[!startsWith(lines, "#")],
+    comment.char = "",
+    colClasses = c("character", "character", "character", "integer", "integer")
+  )
+})
 
 oracle_known <- function(entry, ids) {
   known <- known_windows[
@@ -160,11 +167,18 @@ oracle_known <- function(entry, ids) {
     mag <- function(x) {
       if (is.complex(x)) pmax(abs(Re(x)), abs(Im(x))) else abs(x)
     }
+    # The rows the defect can reach, as tools/known-windows decides them: an
+    # argument of at least 1e5, or ellipj with m = 0 (sin and cos directly).
     biggest <- do.call(pmax, lapply(entry$inputs, function(x) mag(x)[listed]))
+    direct_trig <- if (entry$r_name == "sc_ellipj") {
+      entry$inputs[[2]][listed] == 0
+    } else {
+      FALSE
+    }
     expect(
-      all(biggest >= 1e5),
+      all(biggest >= 1e5 | direct_trig),
       sprintf(
-        "%s %s: known-windows.tsv.gz lists rows with no argument >= 1e5",
+        "%s %s: known-windows.tsv.gz lists rows the defect cannot reach",
         entry$r_name,
         entry$sig
       )

@@ -41,6 +41,8 @@ Other contributors:
   \item Christian Lorentzen (Wright Bessel code in the bundled xsf library) [copyright holder]
   \item Eric W. Moore (elliptic integral code in the bundled xsf library) [copyright holder]
   \item Albert Steppi (ndtri_exp, ported from SciPy) [copyright holder]
+  \item Piers Lawrence (Wright omega function, ported from SciPy) [copyright holder]
+  \item NumPy developers (complex power, ported from NumPy) [copyright holder]
 }
 
 }
