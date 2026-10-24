@@ -529,6 +529,17 @@ carry the same fields.
   them (the report still counts them), since agreement with SciPy 1.18.1 is
   the SciPy check's job. `hyp2f1(-1, 1, -10, -10)` is `NaN` in its fallback
   row but 0 in SciPy 1.18.1, the terminating polynomial's value.
+- **Independent oracles (2026-10-24, Stage 7).** `test-oracle-packages.R`
+  checks against `gsl` (real arguments, with its modulus `k` where SciPy
+  takes `m = k^2`), `Bessel` (complex Bessel, Hankel, Airy), `hypergeo`
+  (complex 2F1), `lamW` and `expint`; `test-mpfr.R` sweeps a few hundred
+  points per family against 200-bit `Rmpfr` values, judging oscillating
+  functions against their envelope, with absolute checks at zeros. All
+  agree; the explained disagreements are recorded in the tests: `gsl`'s
+  `dilog()` returns the real part of a complex value where SciPy's real
+  `spence()` is `NaN`; `gammaln` near 1 and `psi` beside its poles are less
+  accurate in xsf, and so in SciPy, than MPFR (identical values to SciPy
+  1.18.1). All six are Suggests; the suite passes without them.
 - **Windows (2026-10-24).** Rtools45 uses mingw-w64 v11, whose `sin` and
   `cos` lose accuracy from |x| ~ 1e5 (about 18 ulps at 1e5, 400 at 1e8)
   and are wrong in value and sign beyond ~1e15, as base R's `sin()` is on
