@@ -97,6 +97,7 @@ static const struct {
   {"exp1", zsp_exp1_d},         {"expi", zsp_expi_d},
   {"ndtr", zsp_ndtr_d},         {"log_ndtr", zsp_log_ndtr_d},
   {"ndtri", zsp_ndtri_d},       {"ndtri_exp", zsp_ndtri_exp_d},
+  {"erfinv", zsp_erfinv_d},
 };
 
 static const struct {
@@ -132,6 +133,10 @@ static const struct {
   zsp_fn_ddd fn;
 } zsp_table_ddd[] = {
   {"voigt_profile", zsp_voigt_profile_ddd},
+  {"betainc", zsp_betainc_ddd},
+  {"betaincc", zsp_betaincc_ddd},
+  {"betaincinv", zsp_betaincinv_ddd},
+  {"betainccinv", zsp_betainccinv_ddd},
 };
 
 static const struct {

@@ -2,6 +2,7 @@
 #include <R.h>
 #include <Rinternals.h>
 
+#include "zsp_shim.h"
 #include "zsp_xsf_version.h"
 
 #if defined(__clang__)
@@ -13,6 +14,8 @@
 #endif
 
 /* The vendored versions and the compiler, for zuspecial_info(). */
+SEXP zsp_boost_version_r(void) { return Rf_ScalarInteger(zsp_boost_version()); }
+
 SEXP zsp_info(void) {
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 4));
   SET_STRING_ELT(out, 0, Rf_mkChar(ZSP_XSF_COMMIT));

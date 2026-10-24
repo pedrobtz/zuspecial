@@ -8,7 +8,11 @@
 # 1. No object may import stdio output, process termination, assert or the
 #    C library RNG (CLAUDE.md, Vendored native code).
 # 2. No src/zsp_shim*.o may define writable data: the error mask in
-#    zsp_error.o is the only mutable state (design section 8).
+#    zsp_error.o is the only mutable state (design section 8). zsp_boost.o
+#    is not checked: Boost.Math keeps function-local statics that are
+#    constant in effect (the `function` name pointers for its messages, and
+#    constants such as get_min_shift_value computed once under a C++11
+#    thread-safe guard), which this test cannot tell from real state.
 set -eu
 
 dir=${1:-src}

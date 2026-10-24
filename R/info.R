@@ -22,6 +22,7 @@ zsp_functions <- local({
       "erfcx,xsf,TRUE",
       "erfi,xsf,TRUE",
       "erfcinv,xsf,FALSE",
+      "erfinv,boost,FALSE",
       "dawsn,xsf,TRUE",
       "wofz,xsf,TRUE",
       "voigt_profile,xsf,FALSE",
@@ -32,7 +33,11 @@ zsp_functions <- local({
       "log_ndtr,xsf,TRUE",
       "ndtri,xsf,FALSE",
       "ndtri_exp,xsf,FALSE",
-      "owens_t,xsf,FALSE"
+      "owens_t,xsf,FALSE",
+      "betainc,boost,FALSE",
+      "betaincc,boost,FALSE",
+      "betaincinv,boost,FALSE",
+      "betainccinv,boost,FALSE"
     ),
     ",",
     fixed = TRUE
@@ -52,11 +57,12 @@ zsp_functions <- cbind(
 #'
 #' Reports what this build of zuspecial evaluates with: the vendored xsf
 #' commit, the SciPy release whose `subprojects/xsf` pin it is, the xsref
-#' commit whose mpmath reference tables the tests use, the compiler, and the
-#' table of exported functions.
+#' commit whose mpmath reference tables the tests use, the Boost.Math version
+#' (from the BH package) used for the functions SciPy evaluates with Boost,
+#' the compiler, and the table of exported functions.
 #'
 #' @returns A list with `xsf_commit`, `scipy_version`, `xsref_commit`,
-#'   `compiler` and `functions`, a data frame with one row per exported function: `r_name`,
+#'   `boost_version`, `compiler` and `functions`, a data frame with one row per exported function: `r_name`,
 #'   `scipy_name`, `backend` (the library that evaluates it) and `complex`
 #'   (whether it takes complex arguments).
 #' @examples
@@ -70,6 +76,10 @@ zuspecial_info <- function() {
     xsf_commit = native[[1]],
     scipy_version = sub("^v", "", native[[2]]),
     xsref_commit = native[[4]],
+    boost_version = local({
+      v <- .Call(zsp_boost_version_r)
+      sprintf("%d.%d.%d", v %/% 100000L, v %/% 100L %% 1000L, v %% 100L)
+    }),
     compiler = native[[3]],
     functions = zsp_functions
   )

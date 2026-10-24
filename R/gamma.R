@@ -16,6 +16,15 @@
 #'   [digamma()].
 #' - `sc_beta()`, `sc_betaln()`: \eqn{B(a, b)} and \eqn{\log|B(a, b)|}. Base
 #'   R: [beta()], [lbeta()].
+#' - `sc_betainc()`, `sc_betaincc()`: the regularised incomplete beta
+#'   function \eqn{I_x(a, b)} and its complement. Base R: `pbeta(x, a, b)`
+#'   and `pbeta(x, a, b, lower.tail = FALSE)`. At the limits `a` or `b` equal
+#'   to 0 or `Inf`, SciPy's pointwise limits in `x` are returned.
+#' - `sc_betaincinv()`, `sc_betainccinv()`: their inverses in `x`. Base R:
+#'   `qbeta(y, a, b)` and `qbeta(y, a, b, lower.tail = FALSE)`.
+#'
+#' The incomplete beta functions and their inverses are evaluated, as in
+#' SciPy, with Boost.Math (from the BH package) rather than xsf.
 #' - `sc_binom()`: the binomial coefficient for real `x` and `y`. Base R:
 #'   [choose()].
 #' - `sc_poch()`: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
@@ -108,3 +117,27 @@ sc_gammaincinv <- function(a, y) zsp_eval("gammaincinv", list(a = a, y = y))
 #' @rdname gamma-functions
 #' @export
 sc_gammainccinv <- function(a, y) zsp_eval("gammainccinv", list(a = a, y = y))
+
+#' @rdname gamma-functions
+#' @export
+sc_betainc <- function(a, b, x) {
+  zsp_eval("betainc", list(a = a, b = b, x = x))
+}
+
+#' @rdname gamma-functions
+#' @export
+sc_betaincc <- function(a, b, x) {
+  zsp_eval("betaincc", list(a = a, b = b, x = x))
+}
+
+#' @rdname gamma-functions
+#' @export
+sc_betaincinv <- function(a, b, y) {
+  zsp_eval("betaincinv", list(a = a, b = b, y = y))
+}
+
+#' @rdname gamma-functions
+#' @export
+sc_betainccinv <- function(a, b, y) {
+  zsp_eval("betainccinv", list(a = a, b = b, y = y))
+}

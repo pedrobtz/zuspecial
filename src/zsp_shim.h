@@ -66,6 +66,14 @@ double zsp_ndtri_d(double p) ZSP_NOEXCEPT;
 double zsp_ndtri_exp_d(double y) ZSP_NOEXCEPT;
 double zsp_owens_t_dd(double h, double a) ZSP_NOEXCEPT;
 
+/* Boost.Math, as SciPy calls it: src/zsp_boost.cpp. */
+double zsp_betainc_ddd(double a, double b, double x) ZSP_NOEXCEPT;
+double zsp_betaincc_ddd(double a, double b, double x) ZSP_NOEXCEPT;
+double zsp_betaincinv_ddd(double a, double b, double y) ZSP_NOEXCEPT;
+double zsp_betainccinv_ddd(double a, double b, double y) ZSP_NOEXCEPT;
+double zsp_erfinv_d(double y) ZSP_NOEXCEPT;
+int zsp_boost_version(void) ZSP_NOEXCEPT;
+
 #ifdef __cplusplus
 }
 #endif
