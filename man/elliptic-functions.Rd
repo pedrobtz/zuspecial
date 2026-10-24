@@ -54,6 +54,14 @@ Arguments are recycled, \code{NA} gives \code{NA}, and results take their
 dimensions, or else their names, from the arguments as base R arithmetic
 does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
+\section{Windows}{
+
+R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+computes \code{sin()} and \code{cos()} with x87 argument reduction. Near a zero of
+the cosine it loses relative accuracy, and \code{sc_ellipj(u, 0)}, which is
+\code{cos(u)} exactly, inherits that for \code{u} near \code{pi / 2} on Windows only.
+}
+
 \examples{
 sc_ellipk(c(0, 0.5, 0.9))
 sc_ellipkinc(pi / 4, 0.5)

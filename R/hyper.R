@@ -70,6 +70,11 @@ sc_hyperu <- function(a, b, x) {
 #' @param u Numeric vector.
 #' @returns A double vector; for `sc_ellipj()`, a list with `sn`, `cn`, `dn`
 #'   and `ph`.
+#' @section Windows:
+#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+#' computes `sin()` and `cos()` with x87 argument reduction. Near a zero of
+#' the cosine it loses relative accuracy, and `sc_ellipj(u, 0)`, which is
+#' `cos(u)` exactly, inherits that for `u` near `pi / 2` on Windows only.
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#elliptic-functions-and-integrals>
 #' @examples
 #' sc_ellipk(c(0, 0.5, 0.9))
