@@ -412,6 +412,21 @@ typedef struct {
 } zuspecial_api;
 ```
 
+**As built (2026-10-24, Stage 8).** `inst/include/zuspecial.h` and
+`src/zsp_api.c`. As in zuxml, the registered callable `zuspecial_api_v1`
+is a function returning a pointer to the `const` table, and the header
+provides `ZUSPECIAL_API_HAS()` and a `zuspecial_api_get()` emitted under
+`ZUSPECIAL_DEFINE_API_GET`. Version 1 has 32 members: `gamma`, `gammaln`,
+`gammasgn`, `rgamma`, `psi`, `beta`, `betaln`, `binom`, the incomplete gamma
+and beta functions and their inverses, `erf`, `erfc`, `erfcx`, `erfinv`,
+`erfcinv`, `ndtr`, `log_ndtr`, `ndtri`, `ndtri_exp`, `owens_t`, real `jv`,
+`yv`, `iv`, `kv`, Riemann `zeta`, and complex `jv_c`. `code` receives the
+lowest-numbered sf_error code raised rather than the first: the thread-local
+accumulator is a bitmask, which keeps no order. A fixture package,
+`tests/testthat/fixtures/zsconsumer`, is built and installed by the tests and
+calls a real member, `jv_c` and the code; the header compiles on its own
+under `-std=c99 -pedantic`.
+
 The table follows `zuxml`'s versioning rules: `struct_size` is the only
 discriminator, members are appended and never reordered or removed, and
 any layout change in another public type (here `zuspecial_complex`)

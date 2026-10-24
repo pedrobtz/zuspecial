@@ -1,0 +1,8 @@
+Package: zsconsumer
+Title: Test Fixture Consuming the zuspecial C API
+Version: 0.0.1
+Description: Calls zuspecial's registered C table, as a downstream package
+    would. Built and installed by zuspecial's tests; never released.
+License: MIT
+Imports: zuspecial
+LinkingTo: zuspecial
