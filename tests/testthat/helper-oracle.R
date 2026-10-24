@@ -294,16 +294,40 @@ scipy_tol <- 64 * .Machine$double.eps
 # 4.9e-9 relative, with zuspecial and SciPy agreeing on each platform.
 scipy_smoke_tol <- 1e-6
 
+# Under valgrind, as R CMD check --use-valgrind and CRAN's valgrind machine
+# run it. Valgrind emulates x87 80-bit long double with only 64-bit double
+# precision and range. The Boost-backed functions evaluate in long double,
+# as SciPy's do under Boost's default policy, so results that need its
+# range underflow there: betaincc(361.99, 313.41, 0.9735) is 2.5e-298 in
+# SciPy and on every real CPU, 0 under valgrind. On Linux a process under
+# valgrind maps valgrind's preload libraries.
+on_valgrind <- local({
+  maps <- "/proc/self/maps"
+  file.exists(maps) && any(grepl("vgpreload", readLines(maps, warn = FALSE)))
+})
+
+# Rows whose SciPy value is below this are not compared under valgrind for
+# the Boost-backed functions (above): long double's extra range is needed.
+valgrind_tiny <- 1e-280
+boost_functions <- local({
+  f <- zuspecial_info()$functions
+  f$r_name[f$backend == "boost"]
+})
+
 scipy_row_tol <- function(entry, same_platform) {
   windows <- .Platform$OS.type == "windows"
   if (same_platform && !windows) {
     return(rep_len(scipy_tol, length(entry$out)))
   }
   if (isTRUE(entry$no_xsref)) {
-    return(rep_len(
+    tol <- rep_len(
       if (same_platform) Inf else scipy_smoke_tol,
       length(entry$out)
-    ))
+    )
+    if (on_valgrind && entry$r_name %in% boost_functions) {
+      tol[abs(entry$out) < valgrind_tiny] <- Inf
+    }
+    return(tol)
   }
   mine <- entry$err[["other"]]
   theirs <- entry$err[[if (same_platform) "msvc-windows-x86_64" else "other"]]
