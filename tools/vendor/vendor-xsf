@@ -6,6 +6,7 @@
 # Copies include/xsf/** from the xsf commit that SciPy's subprojects/xsf
 # gitlink names at <scipy-tag>, without numpy.h (it includes Python.h) and
 # third_party/ (mdspan, reached only from numpy.h), into src/vendor/xsf/,
+# applies tools/patches/*.patch in order,
 # then rewrites tools/vendor/manifest.tsv, tools/vendor/checksums.sha256 and
 # src/zsp_xsf_version.h.
 # Run from the package root. Needs git, gh and shasum.
@@ -37,6 +38,12 @@ cp -R "$tmp/include/xsf" "$dest/include/"
 rm -f "$dest/include/xsf/numpy.h"
 rm -rf "$dest/include/xsf/third_party"
 cp "$tmp/LICENSE" "$tmp/LICENSES_bundled.txt" "$dest/"
+
+# Local patches, each listed in src/vendor/PROVENANCE with its reason.
+for p in tools/patches/*.patch; do
+  [ -e "$p" ] || continue
+  patch -s -p1 -d "$dest" < "$p"
+done
 
 if grep -rnE '#[[:space:]]*include[[:space:]]*[<"].*(numpy\.h|Python\.h|third_party)' "$dest"; then
   echo "a vendored header includes an excluded file" >&2

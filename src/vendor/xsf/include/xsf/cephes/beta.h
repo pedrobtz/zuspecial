@@ -84,7 +84,7 @@ namespace cephes {
 
         XSF_HOST_DEVICE inline double beta_negint(int a, double b) {
             int sgn;
-            if (b == static_cast<int>(b) && 1 - a - b > 0) {
+            if (std::fabs(b) < 2147483648.0 && b == static_cast<int>(b) && 1 - a - b > 0) {
                 sgn = (static_cast<int>(b) % 2 == 0) ? 1 : -1;
                 return sgn * xsf::cephes::beta(1 - a - b, b);
             } else {
@@ -95,7 +95,7 @@ namespace cephes {
 
         XSF_HOST_DEVICE inline double lbeta_negint(int a, double b) {
             double r;
-            if (b == static_cast<int>(b) && 1 - a - b > 0) {
+            if (std::fabs(b) < 2147483648.0 && b == static_cast<int>(b) && 1 - a - b > 0) {
                 r = xsf::cephes::lbeta(1 - a - b, b);
                 return r;
             } else {
@@ -111,7 +111,7 @@ namespace cephes {
 
         if (a <= 0.0) {
             if (a == std::floor(a)) {
-                if (a == static_cast<int>(a)) {
+                if (a >= -2147483648.0 && a == static_cast<int>(a)) {
                     return detail::beta_negint(static_cast<int>(a), b);
                 } else {
                     goto overflow;
@@ -121,7 +121,7 @@ namespace cephes {
 
         if (b <= 0.0) {
             if (b == std::floor(b)) {
-                if (b == static_cast<int>(b)) {
+                if (b >= -2147483648.0 && b == static_cast<int>(b)) {
                     return detail::beta_negint(static_cast<int>(b), a);
                 } else {
                     goto overflow;
@@ -188,7 +188,7 @@ namespace cephes {
 
         if (a <= 0.0) {
             if (a == std::floor(a)) {
-                if (a == static_cast<int>(a)) {
+                if (a >= -2147483648.0 && a == static_cast<int>(a)) {
                     return detail::lbeta_negint(static_cast<int>(a), b);
                 } else {
                     goto over;
@@ -198,7 +198,7 @@ namespace cephes {
 
         if (b <= 0.0) {
             if (b == std::floor(b)) {
-                if (b == static_cast<int>(b)) {
+                if (b >= -2147483648.0 && b == static_cast<int>(b)) {
                     return detail::lbeta_negint(static_cast<int>(b), a);
                 } else {
                     goto over;

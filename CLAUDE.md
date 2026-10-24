@@ -296,9 +296,11 @@ releases, not xsf tags (design D12), so this one exception to "pin a stable
 upstream release" is deliberate: the release pinned is SciPy's.
 `tools/vendor/manifest.tsv` and `tools/vendor/checksums.sha256` record it,
 `src/vendor/PROVENANCE` gives the update procedure, and
-`vendor-upstream.yml` opens an issue when SciPy releases. No patches; the
-build defines `NDEBUG` instead, because of a bare `assert` in
-`specfun/specfun.h`.
+`vendor-upstream.yml` opens an issue when SciPy releases. Local patches live
+in `tools/patches/`, which `tools/vendor/vendor-xsf` applies in order; each
+is listed in `src/vendor/PROVENANCE` with its reason. There is one: `0001`
+guards float-to-int conversions UBSan flags (2026-10-24). The build also
+defines `NDEBUG`, because of a bare `assert` in `specfun/specfun.h`.
 
 - Pin a stable upstream release, never `master` or a release candidate.
 - Record the tag, the commit and the checksums, and write down the update

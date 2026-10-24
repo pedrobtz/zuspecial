@@ -460,7 +460,13 @@ below is the RFC as drafted.
   `__muldc3`/`__divdc3` for complex arithmetic. A grep found no mutable
   static state outside `numpy.h`. Stage 0 repeats both checks on every
   CI leg.
-- Patches: none expected.
+- Patches: none expected. **As built (2026-10-24, Stage 3):** one,
+  `tools/patches/0001-float-to-int-conversion.patch`. The xsref inputs
+  reach five float-to-int conversions of `NaN` or out-of-range doubles in
+  `cephes/beta.h` and `faddeeva.h`, undefined behaviour that clang's UBSan
+  reports and CRAN's UBSan check would. The patch guards them without
+  changing results; it is reported upstream and listed in
+  `src/vendor/PROVENANCE`.
 - Re-vendoring follows SciPy releases rather than xsf commits, after the
   full suite including the SciPy-parity tables (§10).
 

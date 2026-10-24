@@ -1,0 +1,94 @@
+Define the float-to-int conversions UBSan flags in xsf.
+
+Converting a double that is NaN or outside int's range to int is undefined
+behaviour in C++; clang's UBSan reports it, and so does CRAN's UBSan check.
+These guards keep what the code did by accident on x86 (the conversion gave
+INT_MIN, which failed the comparison or matched no case):
+
+- cephes/beta.h: test the range before `x == static_cast<int>(x)`, so a
+  whole number too large for int fails the negative-integer test as it
+  did. Reached by beta(-1, 1e10), lbeta(-1, 1e200), beta(0.5, -8.98e307).
+- faddeeva.h: a NaN y100 switches on -1, falling through to the code after
+  the switch as the comment there intends. Reached by erfcx(NaN),
+  dawsn(NaN), erfi(NaN), wofz(NaN + 0i).
+
+Upstream: https://github.com/scipy/xsf (issue linked from src/vendor/PROVENANCE)
+
+diff -ru a/include/xsf/cephes/beta.h b/include/xsf/cephes/beta.h
+--- a/include/xsf/cephes/beta.h	2026-10-24 08:09:40
++++ b/include/xsf/cephes/beta.h	2026-10-24 08:09:40
+@@ -84,7 +84,7 @@
+ 
+         XSF_HOST_DEVICE inline double beta_negint(int a, double b) {
+             int sgn;
+-            if (b == static_cast<int>(b) && 1 - a - b > 0) {
++            if (std::fabs(b) < 2147483648.0 && b == static_cast<int>(b) && 1 - a - b > 0) {
+                 sgn = (static_cast<int>(b) % 2 == 0) ? 1 : -1;
+                 return sgn * xsf::cephes::beta(1 - a - b, b);
+             } else {
+@@ -95,7 +95,7 @@
+ 
+         XSF_HOST_DEVICE inline double lbeta_negint(int a, double b) {
+             double r;
+-            if (b == static_cast<int>(b) && 1 - a - b > 0) {
++            if (std::fabs(b) < 2147483648.0 && b == static_cast<int>(b) && 1 - a - b > 0) {
+                 r = xsf::cephes::lbeta(1 - a - b, b);
+                 return r;
+             } else {
+@@ -111,7 +111,7 @@
+ 
+         if (a <= 0.0) {
+             if (a == std::floor(a)) {
+-                if (a == static_cast<int>(a)) {
++                if (a >= -2147483648.0 && a == static_cast<int>(a)) {
+                     return detail::beta_negint(static_cast<int>(a), b);
+                 } else {
+                     goto overflow;
+@@ -121,7 +121,7 @@
+ 
+         if (b <= 0.0) {
+             if (b == std::floor(b)) {
+-                if (b == static_cast<int>(b)) {
++                if (b >= -2147483648.0 && b == static_cast<int>(b)) {
+                     return detail::beta_negint(static_cast<int>(b), a);
+                 } else {
+                     goto overflow;
+@@ -188,7 +188,7 @@
+ 
+         if (a <= 0.0) {
+             if (a == std::floor(a)) {
+-                if (a == static_cast<int>(a)) {
++                if (a >= -2147483648.0 && a == static_cast<int>(a)) {
+                     return detail::lbeta_negint(static_cast<int>(a), b);
+                 } else {
+                     goto over;
+@@ -198,7 +198,7 @@
+ 
+         if (b <= 0.0) {
+             if (b == std::floor(b)) {
+-                if (b == static_cast<int>(b)) {
++                if (b >= -2147483648.0 && b == static_cast<int>(b)) {
+                     return detail::lbeta_negint(static_cast<int>(b), a);
+                 } else {
+                     goto over;
+diff -ru a/include/xsf/faddeeva.h b/include/xsf/faddeeva.h
+--- a/include/xsf/faddeeva.h	2026-10-24 08:09:40
++++ b/include/xsf/faddeeva.h	2026-10-24 08:09:40
+@@ -798,7 +798,7 @@
+    the Chebyshev polynomials to be of significantly lower degree (about 1/4)
+    compared to fitting the whole [0,1] interval with a single polynomial. */
+ XSF_HOST_DEVICE inline double erfcx_y100(double y100) {
+-    switch ((int)y100) {
++    switch (std::isnan(y100) ? -1 : (int)y100) {
+     case 0: {
+         double t = 2 * y100 - 1;
+         return 0.70878032454106438663e-3 +
+@@ -1940,7 +1940,7 @@
+    the Chebyshev polynomials to be of significantly lower degree (about 1/30)
+    compared to fitting the whole [0,1] interval with a single polynomial. */
+ XSF_HOST_DEVICE double w_im_y100(double y100, double x) {
+-    switch ((int)y100) {
++    switch (std::isnan(y100) ? -1 : (int)y100) {
+     case 0: {
+         double t = 2 * y100 - 1;
+         return 0.28351593328822191546e-2 +
