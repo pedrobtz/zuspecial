@@ -1,0 +1,67 @@
+Define three more float-to-int conversions UBSan flags in xsf.
+
+The Bessel xsref inputs reach three conversions of out-of-range doubles to
+int (undefined behaviour; clang's UBSan and CRAN's UBSan check report them):
+
+- bessel.h, cyl_bessel_j: `v != static_cast<int>(v)` for |v| >= 2^31 now
+  counts v as not a whole number, as x86's INT_MIN result did.
+- cephes/yv.h, yv: `n = v; if (n == v)` likewise takes the non-integer
+  path for |v| >= 2^31, as on x86.
+- amos/amos.h, the `inu = (int)fnu` that unk2 reaches (line 5897 upstream):
+  inu is used there only for the fractional part and inu % 4, so for
+  fnu >= 2^31 both are computed from floor(fnu).
+
+Unchanged below 2^31. Reached by jv(3.16e50, x), yv(5.62e25, x) and the
+AMOS path at order 3.16e10. amos.h has nine more `inu = (int)fnu` sites,
+each using inu differently; no test reaches them, so they are left as they
+are rather than changed blind.
+
+Upstream: https://github.com/scipy/xsf/issues/338
+
+diff -ru a/include/xsf/amos/amos.h b/include/xsf/amos/amos.h
+--- a/include/xsf/amos/amos.h	2026-10-24 11:13:46
++++ b/include/xsf/amos/amos.h	2026-10-24 11:13:46
+@@ -5894,8 +5894,15 @@
+         yy = std::imag(zr);
+         zn = -zr * std::complex<double>(0, 1);
+         zb = zr;
+-        inu = (int)fnu;
+-        fnf = fnu - inu;
++        // Patched (zuspecial 0002): (int)fnu is undefined for fnu >= 2^31.
++        // inu is used only for the fractional part and inu % 4.
++        if (fnu < 2147483648.0) {
++            inu = (int)fnu;
++            fnf = fnu - inu;
++        } else {
++            inu = (int)std::fmod(std::floor(fnu), 4.0);
++            fnf = fnu - std::floor(fnu);
++        }
+         ang = -hpi * fnf;
+         car = std::cos(ang);
+         sar = std::sin(ang);
+diff -ru a/include/xsf/bessel.h b/include/xsf/bessel.h
+--- a/include/xsf/bessel.h	2026-10-24 11:13:46
++++ b/include/xsf/bessel.h	2026-10-24 11:13:46
+@@ -909,7 +909,7 @@
+ 
+ template <typename T>
+ T cyl_bessel_j(T v, T x) {
+-    if (v != static_cast<int>(v) && x < 0) {
++    if ((std::fabs(v) >= 2147483648.0 || v != static_cast<int>(v)) && x < 0) {
+         set_error("jv", SF_ERROR_DOMAIN, NULL);
+         return std::numeric_limits<T>::quiet_NaN();
+     }
+diff -ru a/include/xsf/cephes/yv.h b/include/xsf/cephes/yv.h
+--- a/include/xsf/cephes/yv.h	2026-10-24 11:13:46
++++ b/include/xsf/cephes/yv.h	2026-10-24 11:13:46
+@@ -25,8 +25,8 @@
+         double y, t;
+         int n;
+ 
+-        n = v;
+-        if (n == v) {
++        n = std::fabs(v) < 2147483648.0 ? static_cast<int>(v) : 0;
++        if (std::fabs(v) < 2147483648.0 && n == v) {
+             y = yn(n, x);
+             return (y);
+         } else if (v == std::floor(v)) {

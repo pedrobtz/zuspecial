@@ -291,9 +291,14 @@ scipy_row_tol <- function(entry, same_platform) {
       length(entry$out)
     ))
   }
-  mine <- entry$err[[xsf_platform()]] %||% entry$err[["other"]]
+  mine <- entry$err[["other"]]
   theirs <- entry$err[[if (same_platform) "msvc-windows-x86_64" else "other"]]
   bound <- xsf_tol(mine) + xsf_tol(theirs)
   bound[is.na(bound)] <- if (same_platform) Inf else 0
+  # Where the bound reaches 1, xsref allows either result to be wrong by
+  # 100% or more: near the zeros of airy at large negative x, say, where
+  # SciPy's MSVC build returns 0, zuspecial 1e-17 and mpmath 4e-15. Such a row
+  # has no correct digits to compare, so it is not compared.
+  bound[bound >= 1] <- Inf
   pmax(scipy_tol, bound)
 }

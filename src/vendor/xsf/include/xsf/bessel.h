@@ -909,7 +909,7 @@ inline std::complex<float> cyl_bessel_j(float v, std::complex<float> x) {
 
 template <typename T>
 T cyl_bessel_j(T v, T x) {
-    if (v != static_cast<int>(v) && x < 0) {
+    if ((std::fabs(v) >= 2147483648.0 || v != static_cast<int>(v)) && x < 0) {
         set_error("jv", SF_ERROR_DOMAIN, NULL);
         return std::numeric_limits<T>::quiet_NaN();
     }

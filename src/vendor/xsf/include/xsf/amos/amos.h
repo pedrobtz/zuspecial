@@ -5894,8 +5894,15 @@ namespace amos {
         yy = std::imag(zr);
         zn = -zr * std::complex<double>(0, 1);
         zb = zr;
-        inu = (int)fnu;
-        fnf = fnu - inu;
+        // Patched (zuspecial 0002): (int)fnu is undefined for fnu >= 2^31.
+        // inu is used only for the fractional part and inu % 4.
+        if (fnu < 2147483648.0) {
+            inu = (int)fnu;
+            fnf = fnu - inu;
+        } else {
+            inu = (int)std::fmod(std::floor(fnu), 4.0);
+            fnf = fnu - std::floor(fnu);
+        }
         ang = -hpi * fnf;
         car = std::cos(ang);
         sar = std::sin(ang);
