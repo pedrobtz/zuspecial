@@ -48,6 +48,13 @@ that large, and real ones where the kernel takes a sine of such a value,
 are correspondingly inaccurate on Windows only.
 }
 
+\section{Other packages}{
+
+In \code{gsl}, for real arguments: \code{expint_E1()}, \code{expint_Ei()} and
+\code{expint_En(n, x)}. In \code{expint}: \code{expint_E1()}, \code{expint_Ei()} and
+\code{expint_En()}.
+}
+
 \examples{
 sc_exp1(c(0.5, 1, 2))
 sc_expi(-1 + 0i)

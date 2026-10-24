@@ -40,6 +40,10 @@
 #' that large, and real ones where the kernel takes a sine of such a value,
 #' are correspondingly inaccurate on Windows only.
 #'
+#' @section Other packages:
+#' In `gsl`, for real arguments only: `erf()`, `erfc()`, `log_erfc()` and
+#' `dawson()`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#error-function-and-fresnel-integrals>
 #' @examples
 #' sc_erf(c(-1, 0, 1))

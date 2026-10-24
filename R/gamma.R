@@ -22,9 +22,6 @@
 #'   to 0 or `Inf`, SciPy's pointwise limits in `x` are returned.
 #' - `sc_betaincinv()`, `sc_betainccinv()`: their inverses in `x`. Base R:
 #'   `qbeta(y, a, b)` and `qbeta(y, a, b, lower.tail = FALSE)`.
-#'
-#' The incomplete beta functions and their inverses are evaluated, as in
-#' SciPy, with Boost.Math (from the BH package) rather than xsf.
 #' - `sc_binom()`: the binomial coefficient for real `x` and `y`. Base R:
 #'   [choose()].
 #' - `sc_poch()`: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
@@ -34,6 +31,9 @@
 #'   argument order.
 #' - `sc_gammaincinv()`, `sc_gammainccinv()`: their inverses in `x`. Base R:
 #'   `qgamma(y, a)` and `qgamma(y, a, lower.tail = FALSE)`.
+#'
+#' The incomplete beta functions and their inverses are evaluated, as in
+#' SciPy, with Boost.Math (from the BH package) rather than xsf.
 #'
 #' Arguments are recycled: each must have length one or the common length.
 #' `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
@@ -51,6 +51,11 @@
 #' `1e5`, as base R's own `sin()` shows there. Complex arguments with a part
 #' that large, and real ones where the kernel takes a sine of such a value,
 #' are correspondingly inaccurate on Windows only.
+#'
+#' @section Other packages:
+#' In `gsl`: `lngamma()`, `lngamma_complex()` (the complex
+#' `sc_loggamma()`), `psi()`, `lnbeta()`, `poch()`, `gamma_inc_P(a, x)` and
+#' `gamma_inc_Q(a, x)` in SciPy's argument order, and `beta_inc(a, b, x)`.
 #'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#gamma-and-related-functions>
 #' @examples

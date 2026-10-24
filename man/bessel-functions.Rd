@@ -125,6 +125,24 @@ evaluates \code{sin()} and \code{cos()} inaccurately for arguments beyond about
 correspondingly inaccurate on Windows only.
 }
 
+\section{Branch cuts}{
+
+For complex \code{z}, as in SciPy: \eqn{J_v} and \eqn{I_v} are entire in \code{z}
+for a whole order \code{v}, and otherwise have a branch cut on the negative
+real axis; \eqn{Y_v}, \eqn{K_v} and the Hankel functions have that cut
+for every order.
+}
+
+\section{Other packages}{
+
+In \code{gsl}, for real arguments, in SciPy's order: \code{bessel_Jnu(nu, x)},
+\code{bessel_Ynu()}, \code{bessel_Inu()}, \code{bessel_Knu()}, the scaled
+\code{bessel_Inu_scaled()} and \code{bessel_Knu_scaled()}, and \code{bessel_J0()} to
+\code{bessel_K1_scaled()}. In \code{Bessel}, for complex arguments, in base R's
+order: \code{BesselJ(z, nu)}, \code{BesselY()}, \code{BesselI()}, \code{BesselK()} and
+\code{BesselH(m, z, nu)}.
+}
+
 \examples{
 sc_jv(c(0, 1, 2.5), 3)
 sc_jv(0.5, -1)

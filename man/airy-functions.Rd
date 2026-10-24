@@ -32,6 +32,13 @@ tuple.
 \eqn{Bi'(z) e^{-|\Re \zeta|}}, with \eqn{\zeta = \frac23 z^{3/2}}.
 }
 }
+\section{Other packages}{
+
+In \code{gsl}, for real arguments: \code{airy_Ai()}, \code{airy_Bi()},
+\code{airy_Ai_deriv()}, \code{airy_Bi_deriv()} and their \verb{_scaled} forms. In
+\code{Bessel}, for complex arguments: \code{AiryA(z, deriv)} and \code{AiryB()}.
+}
+
 \examples{
 sc_airy(c(-1, 0, 1))
 sc_airye(10)$ai

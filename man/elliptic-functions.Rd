@@ -62,6 +62,14 @@ the cosine it loses relative accuracy, and \code{sc_ellipj(u, 0)}, which is
 \code{cos(u)} exactly, inherits that for \code{u} near \code{pi / 2} on Windows only.
 }
 
+\section{Other packages}{
+
+In \code{gsl}: \code{ellint_Kcomp()}, \code{ellint_Ecomp()}, \code{ellint_F()} and
+\code{ellint_E()}, which take the modulus \eqn{k} where SciPy takes the
+parameter \eqn{m = k^2}: \code{sc_ellipk(m)} is \code{ellint_Kcomp(sqrt(m))}. Its
+\code{elljac(u, m)} takes \eqn{m}, as \code{sc_ellipj()} does.
+}
+
 \examples{
 sc_ellipk(c(0, 0.5, 0.9))
 sc_ellipkinc(pi / 4, 0.5)

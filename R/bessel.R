@@ -36,6 +36,20 @@
 #' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
 #' `1e5`, as base R's own `sin()` shows there. Arguments that large are
 #' correspondingly inaccurate on Windows only.
+#' @section Branch cuts:
+#' For complex `z`, as in SciPy: \eqn{J_v} and \eqn{I_v} are entire in `z`
+#' for a whole order `v`, and otherwise have a branch cut on the negative
+#' real axis; \eqn{Y_v}, \eqn{K_v} and the Hankel functions have that cut
+#' for every order.
+#'
+#' @section Other packages:
+#' In `gsl`, for real arguments, in SciPy's order: `bessel_Jnu(nu, x)`,
+#' `bessel_Ynu()`, `bessel_Inu()`, `bessel_Knu()`, the scaled
+#' `bessel_Inu_scaled()` and `bessel_Knu_scaled()`, and `bessel_J0()` to
+#' `bessel_K1_scaled()`. In `Bessel`, for complex arguments, in base R's
+#' order: `BesselJ(z, nu)`, `BesselY()`, `BesselI()`, `BesselK()` and
+#' `BesselH(m, z, nu)`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#bessel-functions>
 #' @examples
 #' sc_jv(c(0, 1, 2.5), 3)
@@ -170,6 +184,12 @@ sc_k1e <- function(x) zsp_eval("k1e", list(x = x))
 #' @param derivative `TRUE` for the derivative with respect to `z`, `FALSE`
 #'   (the default) for the function itself.
 #' @returns A double vector, or a complex vector for complex `z`.
+#' @section Other packages:
+#' In `gsl`, for real `x`: `bessel_jl(l, x)` and `bessel_yl()`, and the
+#' scaled `bessel_il_scaled()` and `bessel_kl_scaled()`, which are
+#' `sc_spherical_in(n, x) * exp(-abs(x))` and
+#' `sc_spherical_kn(n, x) * exp(x)`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.spherical_jn.html>
 #' @examples
 #' sc_spherical_jn(0:3, 1.5)
@@ -246,6 +266,11 @@ sc_spherical_kn <- function(n, z, derivative = FALSE) {
 #' @returns A list with elements `ai`, `aip`, `bi` and `bip`, each a double
 #'   vector, or a complex vector for complex `z`, with `z`'s dimensions or
 #'   names. `NA` in `z` gives `NA` in every element.
+#' @section Other packages:
+#' In `gsl`, for real arguments: `airy_Ai()`, `airy_Bi()`,
+#' `airy_Ai_deriv()`, `airy_Bi_deriv()` and their `_scaled` forms. In
+#' `Bessel`, for complex arguments: `AiryA(z, deriv)` and `AiryB()`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.airy.html>
 #' @examples
 #' sc_airy(c(-1, 0, 1))

@@ -83,6 +83,12 @@ that large, and real ones where the kernel takes a sine of such a value,
 are correspondingly inaccurate on Windows only.
 }
 
+\section{Other packages}{
+
+In \code{gsl}, for real arguments only: \code{erf()}, \code{erfc()}, \code{log_erfc()} and
+\code{dawson()}.
+}
+
 \examples{
 sc_erf(c(-1, 0, 1))
 sc_erf(1 + 1i)

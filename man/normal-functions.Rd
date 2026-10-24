@@ -54,6 +54,11 @@ Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
 does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
+\section{Other packages}{
+
+In \code{gsl}: \code{erf_Q(x)}, the upper tail, which is \code{sc_ndtr(-x)}.
+}
+
 \examples{
 sc_ndtr(c(-1, 0, 1))
 sc_log_ndtr(-40)

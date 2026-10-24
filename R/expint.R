@@ -23,6 +23,11 @@
 #' that large, and real ones where the kernel takes a sine of such a value,
 #' are correspondingly inaccurate on Windows only.
 #'
+#' @section Other packages:
+#' In `gsl`, for real arguments: `expint_E1()`, `expint_Ei()` and
+#' `expint_En(n, x)`. In `expint`: `expint_E1()`, `expint_Ei()` and
+#' `expint_En()`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions>
 #' @examples
 #' sc_exp1(c(0.5, 1, 2))

@@ -16,6 +16,15 @@
 #' @param v,a,b,c Numeric vectors of parameters.
 #' @param z,x Numeric vector; complex too, except for `sc_hyperu()`.
 #' @returns A double vector, or a complex vector for complex input.
+#' @section Branch cuts:
+#' `sc_hyp2f1()` has a branch cut on the real axis from 1 to infinity, as in
+#' SciPy. `sc_hyp0f1()` and `sc_hyp1f1()` are entire in `z`.
+#'
+#' @section Other packages:
+#' In `gsl`, for real arguments: `hyperg_0F1()`, `hyperg_1F1()`,
+#' `hyperg_2F1()` and `hyperg_U()`. In `hypergeo`: `hypergeo(A, B, C, z)`,
+#' the Gauss function for complex `z`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#hypergeometric-functions>
 #' @examples
 #' sc_hyp0f1(0.5, 1)
@@ -75,6 +84,12 @@ sc_hyperu <- function(a, b, x) {
 #' computes `sin()` and `cos()` with x87 argument reduction. Near a zero of
 #' the cosine it loses relative accuracy, and `sc_ellipj(u, 0)`, which is
 #' `cos(u)` exactly, inherits that for `u` near `pi / 2` on Windows only.
+#' @section Other packages:
+#' In `gsl`: `ellint_Kcomp()`, `ellint_Ecomp()`, `ellint_F()` and
+#' `ellint_E()`, which take the modulus \eqn{k} where SciPy takes the
+#' parameter \eqn{m = k^2}: `sc_ellipk(m)` is `ellint_Kcomp(sqrt(m))`. Its
+#' `elljac(u, m)` takes \eqn{m}, as `sc_ellipj()` does.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#elliptic-functions-and-integrals>
 #' @examples
 #' sc_ellipk(c(0, 0.5, 0.9))
@@ -137,6 +152,18 @@ sc_ellipj <- function(u, m) {
 #' @param v Numeric vector of orders.
 #' @returns A double vector, or a complex vector for complex input (always
 #'   for `sc_lambertw()`).
+#' @section Branch cuts:
+#' As in SciPy: the principal branch of `sc_lambertw()` (`k = 0`) has a
+#' branch cut on the real axis from \eqn{-\infty} to \eqn{-1/e}, and every
+#' other branch one from \eqn{-\infty} to 0; `sc_spence()` has a branch cut
+#' on the negative real axis.
+#'
+#' @section Other packages:
+#' In `gsl`, for real arguments: `zeta()`, `hzeta(s, q)`, `zetam1()` (the
+#' `sc_zetac()` of SciPy), `lambert_W0()` and `lambert_Wm1()` (branches 0
+#' and -1), and `dilog(x)`, which is `sc_spence(1 - x)`. In `lamW`:
+#' `lambertW0()` and `lambertWm1()`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions>
 #' @examples
 #' sc_zeta(c(2, 4))

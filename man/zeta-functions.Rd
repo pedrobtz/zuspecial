@@ -64,6 +64,22 @@ Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
 does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
+\section{Branch cuts}{
+
+As in SciPy: the principal branch of \code{sc_lambertw()} (\code{k = 0}) has a
+branch cut on the real axis from \eqn{-\infty} to \eqn{-1/e}, and every
+other branch one from \eqn{-\infty} to 0; \code{sc_spence()} has a branch cut
+on the negative real axis.
+}
+
+\section{Other packages}{
+
+In \code{gsl}, for real arguments: \code{zeta()}, \code{hzeta(s, q)}, \code{zetam1()} (the
+\code{sc_zetac()} of SciPy), \code{lambert_W0()} and \code{lambert_Wm1()} (branches 0
+and -1), and \code{dilog(x)}, which is \code{sc_spence(1 - x)}. In \code{lamW}:
+\code{lambertW0()} and \code{lambertWm1()}.
+}
+
 \examples{
 sc_zeta(c(2, 4))
 sc_zeta(2, 2)
