@@ -47,6 +47,39 @@
   The incomplete beta functions use Boost.Math, from the BH package, as
   SciPy does.
 
+- Bessel functions:
+  [`sc_jv()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_yv()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_iv()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_kv()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md)
+  and their exponentially scaled forms
+  [`sc_jve()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_yve()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_ive()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_kve()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  for real or complex arguments; the Hankel functions
+  [`sc_hankel1()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_hankel2()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_hankel1e()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md),
+  [`sc_hankel2e()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md);
+  and the fixed-order
+  [`sc_j0()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md)
+  to
+  [`sc_k1e()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md).
+
+- Spherical Bessel functions
+  [`sc_spherical_jn()`](https://pedrobtz.github.io/zuspecial/reference/spherical-bessel.md),
+  [`sc_spherical_yn()`](https://pedrobtz.github.io/zuspecial/reference/spherical-bessel.md),
+  [`sc_spherical_in()`](https://pedrobtz.github.io/zuspecial/reference/spherical-bessel.md),
+  [`sc_spherical_kn()`](https://pedrobtz.github.io/zuspecial/reference/spherical-bessel.md),
+  with `derivative`.
+
+- Airy functions
+  [`sc_airy()`](https://pedrobtz.github.io/zuspecial/reference/airy-functions.md)
+  and
+  [`sc_airye()`](https://pedrobtz.github.io/zuspecial/reference/airy-functions.md),
+  returning `ai`, `aip`, `bi` and `bip` as a named list.
+
 - Normal distribution functions:
   [`sc_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
   [`sc_log_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),

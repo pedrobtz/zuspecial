@@ -31,7 +31,8 @@ Scaffolded 2026-10-23 with `create-pkg.sh`; package identity and CI set
 up in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue,
 the error state, and 21 gamma, error and exponential-integral functions;
 Stage 3 the xsref and SciPy oracles; Stage 4 the incomplete gamma and
-beta, normal and Boost-backed functions (35 in all). The roadmap in
+beta, normal and Boost-backed functions; Stage 5 the Bessel, Hankel,
+spherical Bessel and Airy functions (65 in all). The roadmap in
 `.agents/roadmap.md` takes it to v0.1.0, tracked in
 [\#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
@@ -125,8 +126,11 @@ one line over
     choice, and the template whose attributes the result takes.
 2.  [src/zsp_glue.c](https://pedrobtz.github.io/zuspecial/src/zsp_glue.c):
     one `.Call` loop per signature (`zsp_call_d`, `_c`, `_dd`, `_ddd`,
-    `_id`), which looks the kernel up by SciPy name, sets `NA` without
-    calling it, and attaches the error report as attribute `zsp_err`.
+    `_id`, `_dc`, `_ic`, and `_d4`, `_c4` for four outputs), which looks
+    the kernel up by SciPy name, sets `NA` without calling it, and
+    attaches the error report as attribute `zsp_err`. `zsp_eval()` names
+    the signature from the argument types (`i` whole, `c` complex, `d`
+    double) and the output count.
 3.  [R/conditions.R](https://pedrobtz.github.io/zuspecial/R/conditions.R)
     `zsp_signal_report()`: one condition per raised code, under the
     action

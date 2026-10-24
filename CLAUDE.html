@@ -43,7 +43,7 @@
 </div>
 <div class="section level2">
 <h2 id="current-state">Current state<a class="anchor" aria-label="anchor" href="#current-state"></a></h2>
-<p>Scaffolded 2026-10-23 with <code>create-pkg.sh</code>; package identity and CI set up in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue, the error state, and 21 gamma, error and exponential-integral functions; Stage 3 the xsref and SciPy oracles; Stage 4 the incomplete gamma and beta, normal and Boost-backed functions (35 in all). The roadmap in <code>.agents/roadmap.md</code> takes it to v0.1.0, tracked in <a href="https://github.com/pedrobtz/zuspecial/issues/1" class="external-link">#1</a>.</p>
+<p>Scaffolded 2026-10-23 with <code>create-pkg.sh</code>; package identity and CI set up in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue, the error state, and 21 gamma, error and exponential-integral functions; Stage 3 the xsref and SciPy oracles; Stage 4 the incomplete gamma and beta, normal and Boost-backed functions; Stage 5 the Bessel, Hankel, spherical Bessel and Airy functions (65 in all). The roadmap in <code>.agents/roadmap.md</code> takes it to v0.1.0, tracked in <a href="https://github.com/pedrobtz/zuspecial/issues/1" class="external-link">#1</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="stage-tracking">Stage tracking<a class="anchor" aria-label="anchor" href="#stage-tracking"></a></h2>
@@ -96,7 +96,7 @@
 <ol style="list-style-type: decimal"><li>
 <a href="R/args.R">R/args.R</a> <code>zsp_prep()</code>: type checks, recycling, coercion, real-or-complex choice, and the template whose attributes the result takes.</li>
 <li>
-<a href="src/zsp_glue.c">src/zsp_glue.c</a>: one <code>.Call</code> loop per signature (<code>zsp_call_d</code>, <code>_c</code>, <code>_dd</code>, <code>_ddd</code>, <code>_id</code>), which looks the kernel up by SciPy name, sets <code>NA</code> without calling it, and attaches the error report as attribute <code>zsp_err</code>.</li>
+<a href="src/zsp_glue.c">src/zsp_glue.c</a>: one <code>.Call</code> loop per signature (<code>zsp_call_d</code>, <code>_c</code>, <code>_dd</code>, <code>_ddd</code>, <code>_id</code>, <code>_dc</code>, <code>_ic</code>, and <code>_d4</code>, <code>_c4</code> for four outputs), which looks the kernel up by SciPy name, sets <code>NA</code> without calling it, and attaches the error report as attribute <code>zsp_err</code>. <code>zsp_eval()</code> names the signature from the argument types (<code>i</code> whole, <code>c</code> complex, <code>d</code> double) and the output count.</li>
 <li>
 <a href="R/conditions.R">R/conditions.R</a> <code>zsp_signal_report()</code>: one condition per raised code, under the action <a href="R/errstate.R">R/errstate.R</a> keeps in the <code>zuspecial.errstate</code> option.</li>
 </ol><p>The C++ side:</p>
