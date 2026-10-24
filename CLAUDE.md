@@ -234,13 +234,17 @@ code.
   script refuses any failing row without an argument of at least 1e5.
   xsref has no tables for the Boost-backed functions (Stage 4), which
   only the SciPy tables cover.
+- **Independent oracles are Suggests**: `gsl`, `Bessel`, `hypergeo`,
+  `lamW`, `expint` (`test-oracle-packages.R`) and `Rmpfr`
+  (`test-mpfr.R`), each behind `skip_if_not_installed()`. A disagreement
+  is explained in the test, never silenced by a looser tolerance.
 - **Helpers live in `tests/testthat/helper-*.R`.**
   [helper-oracle.R](https://pedrobtz.github.io/zuspecial/tests/testthat/helper-oracle.R)
   ports xsf’s `extended_relative_error` (`xsf_rel_err()`), its tolerance
   (`xsf_tol()`) and its platform choice (`xsf_platform()`). Change them
   only to follow xsf.
-- **Keep the suite inside the CRAN time budget.** About 1.5 s locally
-  (2026-10-24); the design’s limit is 15 s.
+- **Keep the suite inside the CRAN time budget.** About 5 s locally with
+  every Suggests installed (2026-10-24); the design’s limit is 15 s.
 
 ## Definition of done
 

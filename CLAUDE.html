@@ -147,9 +147,11 @@
 <li>
 <strong>Borrow a conformance suite before writing one.</strong> Mainstream implementations in Python, Java, Go or Node usually ship a test corpus. Use it as an oracle rather than inventing cases by hand. zuspecial’s is xsref: mpmath reference values, checked under xsf’s <code>4 * max(eps, recorded)</code> rule against the <code>Err_</code> table for this platform. A second oracle is SciPy 1.18.1 itself: the shipped tables (xsref inputs, made on macOS x86_64) allow the sum of both platforms’ xsref tolerances, and CI runs SciPy on each OS and requires 64 ulps on xsref and seeded random inputs. Both live as <code>.rds</code> samples in <code>tests/testthat/xsref/</code> and <code>tests/testthat/scipy/</code>, listed in <code>tools/xsref/functions.tsv</code>; the full xsref set runs in <code>xsref.yaml</code>. On Windows only, rows in <code>tests/testthat/known-windows.tsv.gz</code> are excused: Rtools’ mingw-w64 v11 <code>sin</code>/<code>cos</code> are wrong for large arguments (design §10). Regenerate it with <code>tools/known-windows</code> from the workflow’s Windows <code>oracle-report</code> artifact, never by hand; the script refuses any failing row without an argument of at least 1e5. xsref has no tables for the Boost-backed functions (Stage 4), which only the SciPy tables cover.</li>
 <li>
+<strong>Independent oracles are Suggests</strong>: <code>gsl</code>, <code>Bessel</code>, <code>hypergeo</code>, <code>lamW</code>, <code>expint</code> (<code>test-oracle-packages.R</code>) and <code>Rmpfr</code> (<code>test-mpfr.R</code>), each behind <code>skip_if_not_installed()</code>. A disagreement is explained in the test, never silenced by a looser tolerance.</li>
+<li>
 <strong>Helpers live in <code>tests/testthat/helper-*.R</code>.</strong> <a href="tests/testthat/helper-oracle.R">helper-oracle.R</a> ports xsf’s <code>extended_relative_error</code> (<code>xsf_rel_err()</code>), its tolerance (<code>xsf_tol()</code>) and its platform choice (<code>xsf_platform()</code>). Change them only to follow xsf.</li>
 <li>
-<strong>Keep the suite inside the CRAN time budget.</strong> About 1.5 s locally (2026-10-24); the design’s limit is 15 s.</li>
+<strong>Keep the suite inside the CRAN time budget.</strong> About 5 s locally with every Suggests installed (2026-10-24); the design’s limit is 15 s.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="definition-of-done">Definition of done<a class="anchor" aria-label="anchor" href="#definition-of-done"></a></h2>
