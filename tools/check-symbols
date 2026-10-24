@@ -37,13 +37,27 @@ done
 for obj in "$dir"/zsp_shim*.o; do
   [ -e "$obj" ] || continue
   # u, V and v: GNU unique and weak objects, which GCC uses for statics in
-  # inline functions and for inline variables.
-  syms=$($NM "$obj")
-  # Not state: section symbols (.bss, .data), which mingw's nm lists even
-  # when empty, and GCC's DW.ref.__gxx_personality_v0, the exception
+  # inline functions and for inline variables. The sysv format adds each
+  # symbol's section where the object format has one (ELF), so tables that
+  # are read-only once relocated (.data.rel.ro, as GCC places constexpr
+  # arrays of pointers under -fPIC) and .rodata are not counted as state.
+  syms=$($NM --format=sysv "$obj" 2>/dev/null) || syms=
+  if [ -n "$syms" ]; then
+    state=$(printf '%s\n' "$syms" | awk -F'|' 'NF >= 7 {
+      name = $1; class = $3; section = $7
+      gsub(/ /, "", name); gsub(/ /, "", class); gsub(/ /, "", section)
+      if (class ~ /^[BbDduVv]$/ && section !~ /^\.(data\.rel\.ro|rodata)/)
+        print name
+    }')
+  else
+    syms=$($NM "$obj")
+    state=$(printf '%s\n' "$syms" | awk '$2 ~ /^[BbDduVv]$/ {print $3}')
+  fi
+  # Not state either: section symbols (.bss, .data), which mingw's nm lists
+  # even when empty, and GCC's DW.ref.__gxx_personality_v0, the exception
   # personality pointer every C++ object with unwind tables carries.
-  state=$(printf '%s\n' "$syms" | awk '$2 ~ /^[BbDduVv]$/ {print $3}' |
-    grep -Ev '^(\.|DW\.ref\.__gxx_personality_v0$)' || true)
+  state=$(printf '%s\n' "$state" |
+    grep -Ev '^(\.|DW\.ref\.__gxx_personality_v0$)' | grep -v '^$' || true)
   if [ -n "$state" ]; then
     echo "$obj defines mutable data:" $state >&2
     status=1
