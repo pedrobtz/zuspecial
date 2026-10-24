@@ -55,6 +55,12 @@ Depends:
 LinkingTo: 
     BH
 Suggests: 
+    Bessel,
+    expint,
+    gsl,
+    hypergeo,
+    lamW,
+    Rmpfr,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
