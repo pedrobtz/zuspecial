@@ -64,3 +64,23 @@ sc_spherical_in	-	p_d-d,p_cd-cd	int pos,int complex
 sc_spherical_kn	-	p_d-d,p_cd-cd	int pos,int complex
 sc_airy	airy	d-d_d_d_d,cd-cd_cd_cd_cd	real,complex
 sc_airye	airye	d-d_d_d_d,cd-cd_cd_cd_cd	real,complex
+sc_hyp0f1	-	d_d-d,d_cd-cd	real real,real complex
+sc_hyp1f1	hyp1f1	d_d_cd-cd	real real complex
+sc_hyp1f1	-	d_d_d-d	real real real
+sc_hyp2f1	hyp2f1	d_d_d_d-d,d_d_d_cd-cd	real real real real,real real real complex
+sc_hyperu	hyperu	d_d_d-d	real real pos
+sc_ellipk	ellipk	d-d	real
+sc_ellipkm1	ellipkm1	d-d	unit
+sc_ellipkinc	ellipkinc	d_d-d	real unit
+sc_ellipe	ellipe	d-d	real
+sc_ellipeinc	ellipeinc	d_d-d	real unit
+sc_ellipj	ellipj	d_d-d_d_d_d	real unit
+sc_zeta	riemann_zeta	d-d,cd-cd	real,complex
+sc_zeta	zeta	d_d-d	real pos
+sc_zetac	zetac	d-d	real
+sc_lambertw	lambertw	cd_p_d-cd	complex int pos
+sc_wrightomega	-	d-d,cd-cd	real,complex
+sc_spence	spence	d-d	real
+sc_spence	-	cd-cd	complex
+sc_struve	struve_h	d_d-d	real real
+sc_modstruve	struve_l	d_d-d	real real

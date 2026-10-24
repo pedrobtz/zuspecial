@@ -148,6 +148,11 @@ zsp_complex zsp_spence_c(zsp_complex z) ZSP_NOEXCEPT;
 double zsp_struve_dd(double v, double x) ZSP_NOEXCEPT;
 double zsp_modstruve_dd(double v, double x) ZSP_NOEXCEPT;
 
+/* NumPy's complex sqrt and power, for code ported from SciPy's Cython:
+   src/zsp_ccomplex.c. */
+zsp_complex zsp_csqrt(zsp_complex z) ZSP_NOEXCEPT;
+zsp_complex zsp_cpow(zsp_complex a, zsp_complex b) ZSP_NOEXCEPT;
+
 /* Boost.Math, as SciPy calls it: src/zsp_boost.cpp. */
 double zsp_betainc_ddd(double a, double b, double x) ZSP_NOEXCEPT;
 double zsp_betaincc_ddd(double a, double b, double x) ZSP_NOEXCEPT;

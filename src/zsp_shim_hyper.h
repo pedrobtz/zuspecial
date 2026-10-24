@@ -93,6 +93,15 @@ double hyp0f1_real(double v, double z) {
          xsf::cephes::jv(v - 1, 2 * arg);
 }
 
+// SciPy's zsqrt and zpow are NumPy's npy_csqrt and npy_cpow: see
+// src/zsp_ccomplex.c.
+std::complex<double> zsqrt(std::complex<double> z) {
+  return zsp_to_std(zsp_csqrt(zsp_from_std(z)));
+}
+std::complex<double> zpow(std::complex<double> a, double b) {
+  return zsp_to_std(zsp_cpow(zsp_from_std(a), zsp_from_std(b)));
+}
+
 // _hyp0f1.pxd: _hyp0f1_cmplx.
 std::complex<double> hyp0f1_cmplx(double v, std::complex<double> z) {
   if (v <= 0.0 && v == std::floor(v)) {
@@ -109,13 +118,13 @@ std::complex<double> hyp0f1_cmplx(double v, std::complex<double> z) {
   }
   std::complex<double> arg, r;
   if (z.real() > 0) {
-    arg = std::sqrt(z);
+    arg = zsqrt(z);
     r = xsf::cyl_bessel_i(v - 1.0, 2.0 * arg);
   } else {
-    arg = std::sqrt(-z);
+    arg = zsqrt(-z);
     r = xsf::cyl_bessel_j(v - 1.0, 2.0 * arg);
   }
-  return r * xsf::gamma(v) * std::pow(arg, 1.0 - v);
+  return r * xsf::gamma(v) * zpow(arg, 1.0 - v);
 }
 
 // _hypergeometric.pxd: hyperu.

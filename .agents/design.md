@@ -515,6 +515,11 @@ carry the same fields.
   `gcc-linux-x86_64` table's 6.5e-15, while agreeing with SciPy's Linux
   build within 64 ulps; on no row is a platform table above `other`.
   Precision is held by the same-platform SciPy check.
+- **Fallback rows (2026-10-24, Stage 6).** xsref's `fallback` rows store
+  an earlier SciPy's value where mpmath gave none; the xsref check skips
+  them (the report still counts them), since agreement with SciPy 1.18.1 is
+  the SciPy check's job. `hyp2f1(-1, 1, -10, -10)` is `NaN` in its fallback
+  row but 0 in SciPy 1.18.1, the terminating polynomial's value.
 - **Windows (2026-10-24).** Rtools45 uses mingw-w64 v11, whose `sin` and
   `cos` lose accuracy from |x| ~ 1e5 (about 18 ulps at 1e5, 400 at 1e8)
   and are wrong in value and sign beyond ~1e15, as base R's `sin()` is on
