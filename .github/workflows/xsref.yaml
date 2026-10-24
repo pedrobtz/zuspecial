@@ -18,7 +18,7 @@ concurrency:
 jobs:
   xsref:
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }}
+    name: xsref (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
