@@ -7,7 +7,9 @@ xsf_dmax <- .Machine$double.xmax
 xsf_tiny <- 4.9406564584124654e-324 # denorm_min
 xsf_ulp_max <- 2^-53 * xsf_dmax # ulp(max_float)
 
-xsf_copysign <- function(x, s) abs(x) * ifelse(s < 0 | (s == 0 & 1 / s < 0), -1, 1)
+xsf_copysign <- function(x, s) {
+  abs(x) * ifelse(s < 0 | (s == 0 & 1 / s < 0), -1, 1)
+}
 
 xsf_abs_err_real <- function(actual, desired) {
   n <- max(length(actual), length(desired))
@@ -78,8 +80,11 @@ xsf_platform <- function() {
   compiler <- zuspecial_info()$compiler
   os <- Sys.info()[["sysname"]]
   arch <- R.version$arch
-  if (startsWith(compiler, "clang") && os == "Darwin" &&
-      arch %in% c("aarch64", "arm64")) {
+  if (
+    startsWith(compiler, "clang") &&
+      os == "Darwin" &&
+      arch %in% c("aarch64", "arm64")
+  ) {
     "clang-darwin-aarch64"
   } else if (startsWith(compiler, "gcc") && os == "Linux" && arch == "x86_64") {
     "gcc-linux-x86_64"

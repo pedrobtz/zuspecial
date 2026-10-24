@@ -47,15 +47,32 @@ sc_geterr <- function() {
 
 #' @rdname errstate
 #' @export
-sc_seterr <- function(all = NULL, singular = NULL, underflow = NULL,
-                      overflow = NULL, slow = NULL, loss = NULL,
-                      no_result = NULL, domain = NULL, arg = NULL,
-                      other = NULL, memory = NULL) {
+sc_seterr <- function(
+  all = NULL,
+  singular = NULL,
+  underflow = NULL,
+  overflow = NULL,
+  slow = NULL,
+  loss = NULL,
+  no_result = NULL,
+  domain = NULL,
+  arg = NULL,
+  other = NULL,
+  memory = NULL
+) {
   zsp_seterr(
     list(
-      all = all, singular = singular, underflow = underflow,
-      overflow = overflow, slow = slow, loss = loss, no_result = no_result,
-      domain = domain, arg = arg, other = other, memory = memory
+      all = all,
+      singular = singular,
+      underflow = underflow,
+      overflow = overflow,
+      slow = slow,
+      loss = loss,
+      no_result = no_result,
+      domain = domain,
+      arg = arg,
+      other = other,
+      memory = memory
     ),
     sys.call()
   )
@@ -86,8 +103,12 @@ zsp_seterr <- function(actions, call) {
 sc_errstate <- function(expr, ...) {
   actions <- list(...)
   unknown <- setdiff(names(actions), c("all", zsp_codes))
-  if (length(actions) > 0L && (is.null(names(actions)) ||
-      any(!nzchar(names(actions))) || length(unknown) > 0L)) {
+  if (
+    length(actions) > 0L &&
+      (is.null(names(actions)) ||
+        any(!nzchar(names(actions))) ||
+        length(unknown) > 0L)
+  ) {
     zsp_abort(
       "zuspecial_invalid_argument",
       "Actions in `...` must be named `all` or an error code.",
@@ -101,12 +122,17 @@ sc_errstate <- function(expr, ...) {
 }
 
 zsp_check_action <- function(action, name, call) {
-  if (!is.character(action) || length(action) != 1L || is.na(action) ||
-      !action %in% zsp_actions) {
+  if (
+    !is.character(action) ||
+      length(action) != 1L ||
+      is.na(action) ||
+      !action %in% zsp_actions
+  ) {
     zsp_abort(
       "zuspecial_invalid_argument",
       sprintf(
-        "`%s` must be one of \"ignore\", \"warn\" or \"raise\".", name
+        "`%s` must be one of \"ignore\", \"warn\" or \"raise\".",
+        name
       ),
       argument = name,
       call = call

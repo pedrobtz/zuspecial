@@ -12,6 +12,10 @@
 \alias{sc_betaln}
 \alias{sc_binom}
 \alias{sc_poch}
+\alias{sc_gammainc}
+\alias{sc_gammaincc}
+\alias{sc_gammaincinv}
+\alias{sc_gammainccinv}
 \title{Gamma and beta functions}
 \usage{
 sc_gamma(z)
@@ -33,11 +37,20 @@ sc_betaln(a, b)
 sc_binom(x, y)
 
 sc_poch(z, m)
+
+sc_gammainc(a, x)
+
+sc_gammaincc(a, x)
+
+sc_gammaincinv(a, y)
+
+sc_gammainccinv(a, y)
 }
 \arguments{
 \item{z, x}{Numeric vector; for \code{z}, also complex.}
 
-\item{a, b, y, m}{Numeric vectors.}
+\item{a, b, y, m}{Numeric vectors; for the incomplete gamma functions \code{a} is
+the shape and \code{y} a probability.}
 }
 \value{
 A double vector, or a complex vector for complex input.
@@ -64,6 +77,12 @@ R: \code{\link[=beta]{beta()}}, \code{\link[=lbeta]{lbeta()}}.
 \item \code{sc_binom()}: the binomial coefficient for real \code{x} and \code{y}. Base R:
 \code{\link[=choose]{choose()}}.
 \item \code{sc_poch()}: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
+\item \code{sc_gammainc()}, \code{sc_gammaincc()}: the regularised lower and upper
+incomplete gamma functions \eqn{P(a, x)} and \eqn{Q(a, x)}. Base R:
+\code{pgamma(x, a)} and \code{pgamma(x, a, lower.tail = FALSE)}; note the
+argument order.
+\item \code{sc_gammaincinv()}, \code{sc_gammainccinv()}: their inverses in \code{x}. Base R:
+\code{qgamma(y, a)} and \code{qgamma(y, a, lower.tail = FALSE)}.
 }
 
 Arguments are recycled: each must have length one or the common length.

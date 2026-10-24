@@ -34,6 +34,10 @@ double zsp_beta_dd(double a, double b) ZSP_NOEXCEPT;
 double zsp_betaln_dd(double a, double b) ZSP_NOEXCEPT;
 double zsp_binom_dd(double x, double y) ZSP_NOEXCEPT;
 double zsp_poch_dd(double z, double m) ZSP_NOEXCEPT;
+double zsp_gammainc_dd(double a, double x) ZSP_NOEXCEPT;
+double zsp_gammaincc_dd(double a, double x) ZSP_NOEXCEPT;
+double zsp_gammaincinv_dd(double a, double y) ZSP_NOEXCEPT;
+double zsp_gammainccinv_dd(double a, double y) ZSP_NOEXCEPT;
 
 /* Error functions and exponential integrals: src/zsp_shim_error.cpp. */
 double zsp_erf_d(double x) ZSP_NOEXCEPT;
@@ -54,6 +58,13 @@ zsp_complex zsp_exp1_c(zsp_complex z) ZSP_NOEXCEPT;
 zsp_complex zsp_expi_c(zsp_complex z) ZSP_NOEXCEPT;
 double zsp_voigt_profile_ddd(double x, double sigma, double gamma) ZSP_NOEXCEPT;
 double zsp_expn_id(int n, double x) ZSP_NOEXCEPT;
+double zsp_ndtr_d(double x) ZSP_NOEXCEPT;
+double zsp_log_ndtr_d(double x) ZSP_NOEXCEPT;
+zsp_complex zsp_ndtr_c(zsp_complex z) ZSP_NOEXCEPT;
+zsp_complex zsp_log_ndtr_c(zsp_complex z) ZSP_NOEXCEPT;
+double zsp_ndtri_d(double p) ZSP_NOEXCEPT;
+double zsp_ndtri_exp_d(double y) ZSP_NOEXCEPT;
+double zsp_owens_t_dd(double h, double a) ZSP_NOEXCEPT;
 
 #ifdef __cplusplus
 }

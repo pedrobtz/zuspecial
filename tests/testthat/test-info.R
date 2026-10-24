@@ -17,10 +17,25 @@ test_that("the function table lists every exported kernel function", {
   expect_true(all(fns$backend == "xsf"))
   expect_identical(
     sort(fns$r_name[fns$complex]),
-    sort(paste0("sc_", c(
-      "gamma", "loggamma", "rgamma", "psi", "erf", "erfc", "erfcx", "erfi",
-      "dawsn", "wofz", "exp1", "expi"
-    )))
+    sort(paste0(
+      "sc_",
+      c(
+        "gamma",
+        "loggamma",
+        "rgamma",
+        "psi",
+        "erf",
+        "erfc",
+        "erfcx",
+        "erfi",
+        "dawsn",
+        "wofz",
+        "exp1",
+        "expi",
+        "ndtr",
+        "log_ndtr"
+      )
+    ))
   )
 })
 

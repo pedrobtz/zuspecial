@@ -1,7 +1,15 @@
 # The sf_error_t codes, in the order xsf numbers them (1 to 10).
 zsp_codes <- c(
-  "singular", "underflow", "overflow", "slow", "loss", "no_result",
-  "domain", "arg", "other", "memory"
+  "singular",
+  "underflow",
+  "overflow",
+  "slow",
+  "loss",
+  "no_result",
+  "domain",
+  "arg",
+  "other",
+  "memory"
 )
 
 zsp_condition <- function(class, message, call, fields) {
@@ -41,18 +49,31 @@ zsp_signal_report <- function(report, fn, call = NULL) {
     first <- report[[10L + k]]
     message <- sprintf(
       "%s: %s in %s element%s, first at index %s.",
-      fn, code, format(count, scientific = FALSE),
-      if (count == 1) "" else "s", format(first, scientific = FALSE)
+      fn,
+      code,
+      format(count, scientific = FALSE),
+      if (count == 1) "" else "s",
+      format(first, scientific = FALSE)
     )
     switch(
       actions[[code]],
       warn = zsp_warn(
-        paste0("zuspecial_", code), message,
-        fn = fn, code = code, count = count, first_index = first, call = call
+        paste0("zuspecial_", code),
+        message,
+        fn = fn,
+        code = code,
+        count = count,
+        first_index = first,
+        call = call
       ),
       raise = zsp_abort(
-        paste0("zuspecial_", code, "_error"), message,
-        fn = fn, code = code, count = count, first_index = first, call = call
+        paste0("zuspecial_", code, "_error"),
+        message,
+        fn = fn,
+        code = code,
+        count = count,
+        first_index = first,
+        call = call
       )
     )
   }

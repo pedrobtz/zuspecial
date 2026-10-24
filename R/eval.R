@@ -5,8 +5,13 @@
 # `name` is the kernel's SciPy name. `whole` names integer-order arguments,
 # which go to the C loop as integers. `complex_only` is for functions SciPy
 # registers only for complex input (wofz): real input is promoted.
-zsp_eval <- function(name, args, complex_ok = character(), whole = character(),
-                     complex_only = FALSE) {
+zsp_eval <- function(
+  name,
+  args,
+  complex_ok = character(),
+  whole = character(),
+  complex_only = FALSE
+) {
   call <- sys.call(-1)
   prep <- zsp_prep(args, complex_ok, call)
   if (complex_only && !prep$complex) {

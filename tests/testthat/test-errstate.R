@@ -3,9 +3,16 @@ test_that("defaults are SciPy's", {
   expect_identical(
     sc_geterr(),
     c(
-      singular = "ignore", underflow = "ignore", overflow = "ignore",
-      slow = "ignore", loss = "ignore", no_result = "ignore",
-      domain = "ignore", arg = "ignore", other = "ignore", memory = "raise"
+      singular = "ignore",
+      underflow = "ignore",
+      overflow = "ignore",
+      slow = "ignore",
+      loss = "ignore",
+      no_result = "ignore",
+      domain = "ignore",
+      arg = "ignore",
+      other = "ignore",
+      memory = "raise"
     )
   )
 })
@@ -28,7 +35,10 @@ test_that("seterr with no arguments changes nothing", {
 
 test_that("memory can be set like the other codes", {
   withr::local_options(zuspecial.errstate = NULL)
-  expect_identical(sc_errstate(sc_geterr()[["memory"]], memory = "ignore"), "ignore")
+  expect_identical(
+    sc_errstate(sc_geterr()[["memory"]], memory = "ignore"),
+    "ignore"
+  )
 })
 
 test_that("an invalid action names the user-facing call", {

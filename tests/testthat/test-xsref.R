@@ -38,18 +38,24 @@ known_windows <- utils::read.delim(
 
 oracle_known <- function(entry, ids) {
   known <- known_windows[
-    known_windows$r_name == entry$r_name & known_windows$sig == entry$sig &
+    known_windows$r_name == entry$r_name &
+      known_windows$sig == entry$sig &
       known_windows$kind == entry$kind,
   ]
   listed <- paste(ids$xsref_row, ids$random_id) %in%
     paste(known$xsref_row, known$random_id)
   if (any(listed)) {
-    mag <- function(x) if (is.complex(x)) pmax(abs(Re(x)), abs(Im(x))) else abs(x)
+    mag <- function(x) {
+      if (is.complex(x)) pmax(abs(Re(x)), abs(Im(x))) else abs(x)
+    }
     biggest <- do.call(pmax, lapply(entry$inputs, function(x) mag(x)[listed]))
     expect(
       all(biggest >= 1e5),
-      sprintf("%s %s: known-windows.tsv.gz lists rows with no argument >= 1e5",
-        entry$r_name, entry$sig)
+      sprintf(
+        "%s %s: known-windows.tsv.gz lists rows with no argument >= 1e5",
+        entry$r_name,
+        entry$sig
+      )
     )
   }
   if (.Platform$OS.type == "windows") listed else logical(nrow(ids))
@@ -64,25 +70,39 @@ oracle_check <- function(entry, got, tol) {
   report <- Sys.getenv("ZUSPECIAL_ORACLE_REPORT")
   if (nzchar(report) && any(outside)) {
     rows <- data.frame(
-      r_name = entry$r_name, sig = entry$sig, kind = entry$kind,
-      ids[outside, ], err = err[outside], tol = tol[outside],
+      r_name = entry$r_name,
+      sig = entry$sig,
+      kind = entry$kind,
+      ids[outside, ],
+      err = err[outside],
+      tol = tol[outside],
       known = known[outside]
     )
     utils::write.table(
-      rows, report, sep = "\t", quote = FALSE, row.names = FALSE,
-      append = file.exists(report), col.names = !file.exists(report)
+      rows,
+      report,
+      sep = "\t",
+      quote = FALSE,
+      row.names = FALSE,
+      append = file.exists(report),
+      col.names = !file.exists(report)
     )
   }
 
   ok <- all(!outside | known)
-  expect(ok, if (ok) "" else oracle_report(entry, got, err, tol, outside & !known))
+  expect(
+    ok,
+    if (ok) "" else oracle_report(entry, got, err, tol, outside & !known)
+  )
   if (any(known) && identical(Sys.getenv("ZUSPECIAL_KNOWN_STRICT"), "true")) {
     stale <- known & !outside
     expect(
       !any(stale),
       sprintf(
         "%s %s: %d rows listed in known-windows.tsv now pass; remove them.",
-        entry$r_name, entry$sig, sum(stale)
+        entry$r_name,
+        entry$sig,
+        sum(stale)
       )
     )
   }
@@ -91,20 +111,33 @@ oracle_check <- function(entry, got, tol) {
 oracle_report <- function(entry, got, err, tol, bad, n = 5) {
   bad <- which(bad)
   shown <- utils::head(bad, n)
-  rows <- vapply(shown, function(i) {
-    ins <- vapply(entry$inputs, function(x) format(x[[i]], digits = 17), "")
-    sprintf(
-      "  row %d: in = (%s) got = %s want = %s err = %.3g tol = %.3g%s",
-      i, paste(ins, collapse = ", "),
-      format(got[[i]], digits = 17), format(entry$out[[i]], digits = 17),
-      err[[i]], tol[[i]], if (entry$fallback[[i]]) " [fallback]" else ""
-    )
-  }, "")
+  rows <- vapply(
+    shown,
+    function(i) {
+      ins <- vapply(entry$inputs, function(x) format(x[[i]], digits = 17), "")
+      sprintf(
+        "  row %d: in = (%s) got = %s want = %s err = %.3g tol = %.3g%s",
+        i,
+        paste(ins, collapse = ", "),
+        format(got[[i]], digits = 17),
+        format(entry$out[[i]], digits = 17),
+        err[[i]],
+        tol[[i]],
+        if (entry$fallback[[i]]) " [fallback]" else ""
+      )
+    },
+    ""
+  )
   random <- if (is.null(entry$random_id)) 0L else sum(entry$random_id[bad] > 0)
   sprintf(
     "%s %s: %d of %d rows outside tolerance (%d random; %d fallback rows in table)\n%s",
-    entry$r_name, entry$sig, length(bad), length(err), random,
-    sum(entry$fallback), paste(rows, collapse = "\n")
+    entry$r_name,
+    entry$sig,
+    length(bad),
+    length(err),
+    random,
+    sum(entry$fallback),
+    paste(rows, collapse = "\n")
   )
 }
 
