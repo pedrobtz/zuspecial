@@ -8,11 +8,16 @@
 # R arithmetic, the first full-length argument with a dim, else the first
 # with names, else the first of full length.
 zsp_prep <- function(args, complex_ok = character(), call = NULL) {
-  for (name in names(args)) {
-    zsp_check_type(args[[name]], name, name %in% complex_ok, call)
+  # Every sc_ function goes through here, so it is written for speed: plain
+  # loops rather than vapply(), which cost most of the per-call overhead.
+  arg_names <- names(args)
+  can_complex <- arg_names %in% complex_ok
+  for (j in seq_along(args)) {
+    zsp_check_type(args[[j]], arg_names[[j]], can_complex[[j]], call)
   }
 
-  lengths <- vapply(args, length, numeric(1))
+  lengths <- as.double(lengths(args))
+  names(lengths) <- arg_names
   n <- if (any(lengths == 0)) 0 else max(lengths)
   bad <- n > 0 & lengths != 1 & lengths != n
   if (any(bad)) {
@@ -27,22 +32,39 @@ zsp_prep <- function(args, complex_ok = character(), call = NULL) {
     )
   }
 
-  complex <- any(vapply(args[complex_ok], is.complex, logical(1)))
-  full <- args[lengths == n]
-  has_dim <- vapply(full, function(x) !is.null(dim(x)), logical(1))
-  has_names <- vapply(full, function(x) !is.null(names(x)), logical(1))
-  template <- if (any(has_dim)) {
-    full[[which(has_dim)[[1]]]]
-  } else if (any(has_names)) {
-    full[[which(has_names)[[1]]]]
-  } else if (length(full) > 0L) {
-    full[[1]]
+  complex <- FALSE
+  for (j in which(can_complex)) {
+    if (is.complex(args[[j]])) {
+      complex <- TRUE
+      break
+    }
   }
 
-  for (name in names(args)) {
-    x <- args[[name]]
-    x <- if (complex && name %in% complex_ok) as.complex(x) else as.double(x)
-    args[[name]] <- rep_len(x, n)
+  # The template: the first full-length argument with a dim, else the first
+  # with names, else the first of full length.
+  template <- NULL
+  first_full <- NULL
+  first_named <- NULL
+  for (j in which(lengths == n)) {
+    x <- args[[j]]
+    if (!is.null(dim(x))) {
+      template <- x
+      break
+    }
+    if (is.null(first_named) && !is.null(names(x))) {
+      first_named <- x
+    }
+    if (is.null(first_full)) first_full <- x
+  }
+  if (is.null(template)) {
+    template <- first_named %||% first_full
+  }
+
+  for (j in seq_along(args)) {
+    x <- args[[j]]
+    x <- if (complex && can_complex[[j]]) as.complex(x) else as.double(x)
+    # rep_len() copies even at full length; skip it there.
+    args[[j]] <- if (length(x) == n) x else rep_len(x, n)
   }
 
   list(args = args, n = n, complex = complex, template = template)
@@ -123,3 +145,6 @@ zsp_check_flag <- function(x, name, call = NULL) {
     )
   }
 }
+
+# Base R has %||% only from 4.4; the package supports 4.1.
+`%||%` <- function(x, y) if (is.null(x)) y else x

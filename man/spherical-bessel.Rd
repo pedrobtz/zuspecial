@@ -43,6 +43,14 @@ Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
 does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
+\section{Other packages}{
+
+In \code{gsl}, for real \code{x}: \code{bessel_jl(l, x)} and \code{bessel_yl()}, and the
+scaled \code{bessel_il_scaled()} and \code{bessel_kl_scaled()}, which are
+\code{sc_spherical_in(n, x) * exp(-abs(x))} and
+\code{sc_spherical_kn(n, x) * exp(x)}.
+}
+
 \examples{
 sc_spherical_jn(0:3, 1.5)
 sc_spherical_jn(1, 1.5, derivative = TRUE)

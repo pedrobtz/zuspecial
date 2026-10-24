@@ -2,3 +2,39 @@ url: https://pedrobtz.github.io/zuspecial/
 template:
   bootstrap: 5
 
+reference:
+  - title: Gamma, beta and related functions
+    contents:
+      - gamma-functions
+  - title: Error functions and the normal distribution
+    contents:
+      - error-functions
+      - normal-functions
+  - title: Exponential integrals
+    contents:
+      - exponential-integrals
+  - title: Bessel and Airy functions
+    contents:
+      - bessel-functions
+      - spherical-bessel
+      - airy-functions
+  - title: Hypergeometric and elliptic functions
+    contents:
+      - hypergeometric-functions
+      - elliptic-functions
+  - title: Zeta, Lambert W, Wright omega, Spence and Struve
+    contents:
+      - zeta-functions
+  - title: Error handling
+    contents:
+      - errstate
+  - title: Package information
+    contents:
+      - zuspecial_info
+      - zuspecial-package
+
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - articles/scipy

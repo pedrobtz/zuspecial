@@ -24,6 +24,9 @@
 #' @param y Numeric vector of log probabilities (at most 0).
 #' @param h,a Numeric vectors.
 #' @returns A double vector, or a complex vector for complex input.
+#' @section Other packages:
+#' In `gsl`: `erf_Q(x)`, the upper tail, which is `sc_ndtr(-x)`.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#gaussian-normal-distribution>
 #' @examples
 #' sc_ndtr(c(-1, 0, 1))

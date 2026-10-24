@@ -92,11 +92,6 @@ and \code{pbeta(x, a, b, lower.tail = FALSE)}. At the limits \code{a} or \code{b
 to 0 or \code{Inf}, SciPy's pointwise limits in \code{x} are returned.
 \item \code{sc_betaincinv()}, \code{sc_betainccinv()}: their inverses in \code{x}. Base R:
 \code{qbeta(y, a, b)} and \code{qbeta(y, a, b, lower.tail = FALSE)}.
-}
-
-The incomplete beta functions and their inverses are evaluated, as in
-SciPy, with Boost.Math (from the BH package) rather than xsf.
-\itemize{
 \item \code{sc_binom()}: the binomial coefficient for real \code{x} and \code{y}. Base R:
 \code{\link[=choose]{choose()}}.
 \item \code{sc_poch()}: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
@@ -107,6 +102,9 @@ argument order.
 \item \code{sc_gammaincinv()}, \code{sc_gammainccinv()}: their inverses in \code{x}. Base R:
 \code{qgamma(y, a)} and \code{qgamma(y, a, lower.tail = FALSE)}.
 }
+
+The incomplete beta functions and their inverses are evaluated, as in
+SciPy, with Boost.Math (from the BH package) rather than xsf.
 
 Arguments are recycled: each must have length one or the common length.
 \code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
@@ -121,6 +119,13 @@ evaluates \code{sin()} and \code{cos()} inaccurately for arguments beyond about
 \code{1e5}, as base R's own \code{sin()} shows there. Complex arguments with a part
 that large, and real ones where the kernel takes a sine of such a value,
 are correspondingly inaccurate on Windows only.
+}
+
+\section{Other packages}{
+
+In \code{gsl}: \code{lngamma()}, \code{lngamma_complex()} (the complex
+\code{sc_loggamma()}), \code{psi()}, \code{lnbeta()}, \code{poch()}, \code{gamma_inc_P(a, x)} and
+\code{gamma_inc_Q(a, x)} in SciPy's argument order, and \code{beta_inc(a, b, x)}.
 }
 
 \examples{

@@ -41,6 +41,19 @@ are recycled, \code{NA} gives \code{NA}, and the result takes its dimensions, or
 its names, from the arguments as base R arithmetic does; see
 \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
+\section{Branch cuts}{
+
+\code{sc_hyp2f1()} has a branch cut on the real axis from 1 to infinity, as in
+SciPy. \code{sc_hyp0f1()} and \code{sc_hyp1f1()} are entire in \code{z}.
+}
+
+\section{Other packages}{
+
+In \code{gsl}, for real arguments: \code{hyperg_0F1()}, \code{hyperg_1F1()},
+\code{hyperg_2F1()} and \code{hyperg_U()}. In \code{hypergeo}: \code{hypergeo(A, B, C, z)},
+the Gauss function for complex \code{z}.
+}
+
 \examples{
 sc_hyp0f1(0.5, 1)
 sc_hyp1f1(1, 2, c(0.5, 1 + 1i))

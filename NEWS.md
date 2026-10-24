@@ -48,3 +48,9 @@
 
 * `zuspecial_info()` reports the vendored xsf commit, the SciPy release it
   matches, the compiler and the function table.
+
+* Each help page names the counterparts in base R and in `gsl`, `Bessel`,
+  `hypergeo`, `lamW` and `expint`, and the branch cuts SciPy documents. A
+  new article, "Translating from scipy.special", covers names, argument
+  types, error handling, multi-output functions, the C interface and where
+  zuspecial differs from SciPy.

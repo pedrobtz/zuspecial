@@ -21,7 +21,7 @@ zsp_eval <- function(
     prep$args[complex_ok] <- lapply(prep$args[complex_ok], as.complex)
     prep$complex <- TRUE
   }
-  nan_order <- logical(prep$n)
+  nan_order <- if (length(whole) > 0L) logical(prep$n)
   for (arg in whole) {
     nan_order <- nan_order | is.nan(prep$args[[arg]])
     prep$args[[arg]] <- zsp_whole(prep$args[[arg]], arg, call)
@@ -29,45 +29,47 @@ zsp_eval <- function(
 
   # The loop for this signature: one letter per argument (i whole, c
   # complex, d double), then the number of outputs if more than one.
-  types <- vapply(
-    names(prep$args),
-    function(arg) {
-      if (arg %in% whole) {
-        "i"
-      } else if (is.complex(prep$args[[arg]])) {
-        "c"
-      } else {
-        "d"
-      }
-    },
-    ""
-  )
+  a <- prep$args
+  types <- character(length(a))
+  for (j in seq_along(a)) {
+    types[[j]] <- if (names(a)[[j]] %in% whole) {
+      "i"
+    } else if (is.complex(a[[j]])) {
+      "c"
+    } else {
+      "d"
+    }
+  }
   signature <- paste0(paste(types, collapse = ""), length(outputs) %|0|% "")
-  routine <- switch(
+  # A direct .Call with the routine named literally, as R CMD check wants;
+  # the signature fixes the argument count. do.call() costs more than the
+  # loop for short vectors.
+  value <- switch(
     signature,
-    d = zsp_call_d,
-    c = zsp_call_c,
-    dd = zsp_call_dd,
-    ddd = zsp_call_ddd,
-    id = zsp_call_id,
-    dc = zsp_call_dc,
-    ic = zsp_call_ic,
-    d4 = zsp_call_d4,
-    c4 = zsp_call_c4,
-    dd4 = zsp_call_dd4,
-    dddd = zsp_call_dddd,
-    dddc = zsp_call_dddc,
-    ddc = zsp_call_ddc,
-    cd = zsp_call_cd,
-    cid = zsp_call_cid,
+    d = .Call(zsp_call_d, name, a[[1]]),
+    c = .Call(zsp_call_c, name, a[[1]]),
+    d4 = .Call(zsp_call_d4, name, a[[1]]),
+    c4 = .Call(zsp_call_c4, name, a[[1]]),
+    dd = .Call(zsp_call_dd, name, a[[1]], a[[2]]),
+    id = .Call(zsp_call_id, name, a[[1]], a[[2]]),
+    dc = .Call(zsp_call_dc, name, a[[1]], a[[2]]),
+    ic = .Call(zsp_call_ic, name, a[[1]], a[[2]]),
+    cd = .Call(zsp_call_cd, name, a[[1]], a[[2]]),
+    dd4 = .Call(zsp_call_dd4, name, a[[1]], a[[2]]),
+    ddd = .Call(zsp_call_ddd, name, a[[1]], a[[2]], a[[3]]),
+    ddc = .Call(zsp_call_ddc, name, a[[1]], a[[2]], a[[3]]),
+    cid = .Call(zsp_call_cid, name, a[[1]], a[[2]], a[[3]]),
+    dddd = .Call(zsp_call_dddd, name, a[[1]], a[[2]], a[[3]], a[[4]]),
+    dddc = .Call(zsp_call_dddc, name, a[[1]], a[[2]], a[[3]], a[[4]]),
     stop("internal: no loop for signature ", signature)
   )
-  value <- do.call(.Call, c(list(routine, name), unname(prep$args)))
 
   report <- attr(value, "zsp_err")
   attr(value, "zsp_err") <- NULL
   if (is.null(outputs)) {
-    value[nan_order] <- NaN
+    if (!is.null(nan_order)) {
+      value[nan_order] <- NaN
+    }
     value <- zsp_finish(value, prep$template)
   } else {
     value <- lapply(value, zsp_finish, template = prep$template)

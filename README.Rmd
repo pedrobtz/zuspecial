@@ -1,0 +1,126 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+# zuspecial
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/pedrobtz/zuspecial/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pedrobtz/zuspecial/actions/workflows/R-CMD-check.yaml)
+[![coverage](https://raw.githubusercontent.com/pedrobtz/zuspecial/gh-pages/badges/coverage.svg)](https://github.com/pedrobtz/zuspecial/actions/workflows/coverage.yaml)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+## Overview
+
+R's special functions are scattered. Base R has the gamma function and
+Bessel functions of real argument; complex Bessel functions,
+hypergeometric functions, elliptic integrals and the Lambert W function
+each live in their own package, or in `gsl`, which needs the GNU Scientific
+Library installed. And when a model is written in Python and checked in R,
+or the other way round, two libraries that disagree in the last digits are
+a needless source of doubt.
+
+zuspecial gives R the special functions of
+[`scipy.special`](https://docs.scipy.org/doc/scipy/reference/special.html),
+computed by the same C++ kernels:
+[xsf](https://github.com/scipy/xsf), the library SciPy's special functions
+are built from, at the commit SciPy 1.18.1 uses.
+
+* **SciPy's values.** Each function is tested against
+  [xsref](https://github.com/scipy/xsref)'s mpmath reference tables, under
+  xsf's own tolerances, and against SciPy 1.18.1 itself, on Linux, macOS
+  and Windows.
+* **Real and complex arguments.** Bessel, Hankel, Airy, gamma, error,
+  exponential-integral, hypergeometric and zeta functions take complex
+  arguments where SciPy does.
+* **SciPy's names and argument order.** `sc_jv(v, z)` is
+  `scipy.special.jv(v, z)`, so code translates line by line.
+* **Ordinary R functions.** Vectorised and recycled, `NA`-aware, keeping
+  names and dimensions; floating-point conditions follow SciPy's
+  `seterr()`, as warnings or errors when asked for.
+* **A C interface.** Other packages can call the functions from compiled
+  code through `LinkingTo: zuspecial`.
+
+Nothing is needed at run time; Boost.Math headers, from the BH package,
+are needed to build it.
+
+## Installation
+
+zuspecial is not on CRAN yet. Install the development version from GitHub
+with:
+
+``` r
+# install.packages("pak")
+pak::pak("pedrobtz/zuspecial")
+```
+
+## Usage
+
+```{r, message = FALSE}
+library(zuspecial)
+```
+
+Functions are vectorised, and take complex arguments where SciPy does:
+
+```{r}
+sc_gamma(c(0.5, 5))
+sc_gamma(1 + 1i)
+```
+
+Arguments come in SciPy's order, the order first for the Bessel functions,
+where base R's `besselJ()` puts it second:
+
+```{r}
+sc_jv(2.5, 3)
+besselJ(3, 2.5)
+```
+
+As in SciPy, the type of the argument picks the result: the Bessel
+function of order 0.5 at -1 is `NaN` for a real `-1`, and a complex number
+for `-1+0i`:
+
+```{r}
+sc_jv(0.5, -1)
+sc_jv(0.5, -1 + 0i)
+```
+
+Poles, overflow and loss of precision are silent by default, as in SciPy,
+and can be turned into warnings or errors:
+
+```{r}
+sc_gamma(-1)
+sc_errstate(sc_gamma(-1), singular = "warn")
+```
+
+Functions that return several values in SciPy return a named list:
+
+```{r}
+str(sc_airy(1))
+```
+
+Every function is `sc_` followed by its name in `scipy.special`, the
+alias SciPy's own documentation uses (`import scipy.special as sc`).
+
+## Learn more
+
+* [Translating from
+  scipy.special](https://pedrobtz.github.io/zuspecial/articles/scipy.html):
+  names, argument types, error handling, multi-output functions, the C
+  interface, and the few places zuspecial differs.
+* The [reference index](https://pedrobtz.github.io/zuspecial/reference/),
+  by family.
+* `zuspecial_info()` for the versions and the table of functions.
+
+## Acknowledgements
+
+The kernels are SciPy's [xsf](https://github.com/scipy/xsf), with its
+bundled Cephes, AMOS, specfun, Faddeeva and qd code, and Boost.Math for
+the functions SciPy evaluates with it. The reference values come from
+[xsref](https://github.com/scipy/xsref). zuspecial is also checked against
+the `gsl`, `Bessel`, `hypergeo`, `lamW`, `expint` and `Rmpfr` packages.
