@@ -1,0 +1,120 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+name: xsref
+
+permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+# The full xsref set, every row of every table, at the commit
+# tools/vendor/manifest.tsv pins. The package ships only a sample (design
+# section 10). macos-latest is arm64, so it reads xsref's
+# clang-darwin-aarch64 tolerances; ubuntu gcc-linux-x86_64; Windows other.
+jobs:
+  xsref:
+    runs-on: ${{ matrix.os }}
+    name: xsref (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          dependencies: '"hard"'
+          extra-packages: any::arrow, any::testthat, any::withr
+
+      - name: Fetch xsref at the pin
+        shell: bash
+        run: |
+          commit=$(awk -F'\t' '$1 == "xsref" { print $3 }' tools/vendor/manifest.tsv)
+          # No leading slash: Git Bash on Windows would rewrite /tables/...
+          # into a Windows path.
+          tables=$(tail -n +2 tools/xsref/functions.tsv | cut -f2 |
+            sed 's|.*|tables/scipy_special_tests/&/|')
+          git init -q "$RUNNER_TEMP/xsref"
+          cd "$RUNNER_TEMP/xsref"
+          git remote add origin https://github.com/scipy/xsref
+          git sparse-checkout set --no-cone $tables
+          git fetch -q --depth 1 --filter=blob:none origin "$commit"
+          git checkout -q FETCH_HEAD
+          echo "XSREF_COMMIT=$commit" >> "$GITHUB_ENV"
+
+      - name: Extract every row
+        shell: bash
+        run: |
+          Rscript tools/xsref-extract --source "$RUNNER_TEMP/xsref/tables/scipy_special_tests" \
+            --kind xsref --commit "$XSREF_COMMIT" --cap 0 --out "$RUNNER_TEMP/tables"
+          echo "ZUSPECIAL_XSREF_DIR=$RUNNER_TEMP/tables" >> "$GITHUB_ENV"
+
+      - uses: astral-sh/setup-uv@v6
+
+      # SciPy's values on this platform, every xsref row plus seeded random
+      # inputs, so parity is checked against the same libm (design 10).
+      - name: SciPy values on this platform
+        shell: bash
+        run: |
+          tag=$(awk -F'\t' '$1 == "xsf" { print $4 }' tools/vendor/manifest.tsv)
+          uv run --no-project --python 3.12 --with "scipy==${tag#v}" --with pyarrow \
+            python tools/scipy-values.py \
+            --xsref "$RUNNER_TEMP/xsref/tables/scipy_special_tests" \
+            --functions tools/xsref/functions.tsv --cap 0 --random 200 \
+            --out "$RUNNER_TEMP/scipy-parquet"
+          Rscript tools/xsref-extract --source "$RUNNER_TEMP/scipy-parquet" \
+            --kind scipy --cap 0 --out "$RUNNER_TEMP/scipy"
+          echo "ZUSPECIAL_SCIPY_DIR=$RUNNER_TEMP/scipy" >> "$GITHUB_ENV"
+
+      - name: Install
+        shell: bash
+        run: R CMD INSTALL --no-multiarch .
+
+      - name: Test
+        shell: Rscript {0}
+        env:
+          ZUSPECIAL_ORACLE_REPORT: ${{ runner.temp }}/oracle-report.tsv
+          # Fail when a row in known-windows.tsv starts passing, so the list
+          # is pruned when Rtools' math library improves. CI only: CRAN never
+          # sets it.
+          ZUSPECIAL_KNOWN_STRICT: "true"
+        run: |
+          res <- testthat::test_dir(
+            "tests/testthat", filter = "xsref", package = "zuspecial",
+            load_package = "installed", stop_on_failure = TRUE
+          )
+          df <- as.data.frame(res)
+          cat(
+            sprintf("xsref %s, %s on %s: %d checks, %d failed\n",
+              Sys.getenv("XSREF_COMMIT"), zuspecial::zuspecial_info()$compiler,
+              R.version$arch, sum(df$nb), sum(df$failed)),
+            file = Sys.getenv("GITHUB_STEP_SUMMARY"), append = TRUE
+          )
+
+      # The shipped sample too, as CRAN's checks run it on this platform.
+      - name: Test the shipped tables
+        shell: Rscript {0}
+        run: |
+          Sys.unsetenv(c("ZUSPECIAL_XSREF_DIR", "ZUSPECIAL_SCIPY_DIR"))
+          testthat::test_dir(
+            "tests/testthat", filter = "xsref", package = "zuspecial",
+            load_package = "installed", stop_on_failure = TRUE
+          )
+
+      - name: Upload the rows outside tolerance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oracle-report-${{ matrix.os }}
+          path: ${{ runner.temp }}/oracle-report.tsv
+          if-no-files-found: ignore

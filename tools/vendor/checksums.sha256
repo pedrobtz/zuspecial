@@ -11,7 +11,7 @@ ea46e4e915f3c9b26cb9a07b0350322ce201f6e6b4eb6a575e3aa291e4c7a4a1  src/vendor/xsf
 79331f16b5204e30849f497c222b8ac01483147779ad932b713b6d34ad00922b  src/vendor/xsf/include/xsf/cephes/airy.h
 da3093aab75ade6c348bc2bf8ec9606a63c4c16077bc5dfd539de29530f56136  src/vendor/xsf/include/xsf/cephes/bdtr.h
 f0c741eed6a6b1279b5bdae91d2d1389596afd87642533f5bc34eb531fa2ea2a  src/vendor/xsf/include/xsf/cephes/besselpoly.h
-fd3f56e9a9b115da48381e0e314a9aa883b589189f21cc60498dc5217e39b76c  src/vendor/xsf/include/xsf/cephes/beta.h
+935b7c6f8206347870d353c7eb1fb63bb87650f27eb61c5acfbeb5041f89d479  src/vendor/xsf/include/xsf/cephes/beta.h
 f56aa972cc370eb7613c4991eccfdb161989d08ca34dcc9bc4238bdfda4d907c  src/vendor/xsf/include/xsf/cephes/cbrt.h
 1ba1c984555b84a9175c137f6556e8ad15860463ba3cd000439fb3a4e6285c10  src/vendor/xsf/include/xsf/cephes/chbevl.h
 3f244664f93260fe18f8d11512bb5968309288535cfc0c398813558a19f30505  src/vendor/xsf/include/xsf/cephes/chdtr.h
@@ -81,7 +81,7 @@ ea328c05f46429fde44cdcb1acfa41715532552de7bf7a69272347d86ab22c41  src/vendor/xsf
 242cfa28c340e230ca7a721f8b46762a156954e6f56f3cc196d133ee84ce5e5c  src/vendor/xsf/include/xsf/evalpoly.h
 ed3f711327d611f8209c803bdec270ceab7e0b54cf9c06763efb0f86e3156bc5  src/vendor/xsf/include/xsf/exp.h
 2ef659c2d5687af5d7b5873b865da8c5dbb9c29b922cf5147b5d700317d0c698  src/vendor/xsf/include/xsf/expint.h
-52e4b225cc0137cb1ea70cc3cdb084d5c9e1a6006b7903054cb4e2d75a48c9e9  src/vendor/xsf/include/xsf/faddeeva.h
+b4131a8638b95ccc3943194fea834012081060ab0609223c35dcd641e353e918  src/vendor/xsf/include/xsf/faddeeva.h
 80ec9c8ec18f967596ebd615d6c8659ed0af411f377f7c888f0b0af6dab42af6  src/vendor/xsf/include/xsf/fp_error_metrics.h
 d9fedf8d7cffe2390257d64e41e6be3d13e0b116594215a14a8dccecae559b8d  src/vendor/xsf/include/xsf/fresnel.h
 f43e2f197c2c554da1054ec1199fa64be6104c1f39bf1a091d9245424f534a20  src/vendor/xsf/include/xsf/gamma.h

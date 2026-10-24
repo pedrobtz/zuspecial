@@ -798,7 +798,7 @@ finish:
    the Chebyshev polynomials to be of significantly lower degree (about 1/4)
    compared to fitting the whole [0,1] interval with a single polynomial. */
 XSF_HOST_DEVICE inline double erfcx_y100(double y100) {
-    switch ((int)y100) {
+    switch (std::isnan(y100) ? -1 : (int)y100) {
     case 0: {
         double t = 2 * y100 - 1;
         return 0.70878032454106438663e-3 +
@@ -1940,7 +1940,7 @@ XSF_HOST_DEVICE double erfcx(double x) {
    the Chebyshev polynomials to be of significantly lower degree (about 1/30)
    compared to fitting the whole [0,1] interval with a single polynomial. */
 XSF_HOST_DEVICE double w_im_y100(double y100, double x) {
-    switch ((int)y100) {
+    switch (std::isnan(y100) ? -1 : (int)y100) {
     case 0: {
         double t = 2 * y100 - 1;
         return 0.28351593328822191546e-2 +

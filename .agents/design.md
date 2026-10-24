@@ -460,7 +460,13 @@ below is the RFC as drafted.
   `__muldc3`/`__divdc3` for complex arithmetic. A grep found no mutable
   static state outside `numpy.h`. Stage 0 repeats both checks on every
   CI leg.
-- Patches: none expected.
+- Patches: none expected. **As built (2026-10-24, Stage 3):** one,
+  `tools/patches/0001-float-to-int-conversion.patch`. The xsref inputs
+  reach five float-to-int conversions of `NaN` or out-of-range doubles in
+  `cephes/beta.h` and `faddeeva.h`, undefined behaviour that clang's UBSan
+  reports and CRAN's UBSan check would. The patch guards them without
+  changing results; it is reported upstream and listed in
+  `src/vendor/PROVENANCE`.
 - Re-vendoring follows SciPy releases rather than xsf commits, after the
   full suite including the SciPy-parity tables (§10).
 
@@ -475,6 +481,47 @@ and so on, with `fn`, `count` and `first_index`),
 carry the same fields.
 
 ## 10. Testing
+
+**As built (2026-10-24, Stage 3).**
+
+- The xsref pin is the commit xsf's own `pixi.toml` clones at the vendored
+  xsf commit: `4e9b234` for `f7b85f5`, not `b511621`, which goes with
+  SciPy `main`'s xsf. `tools/vendor/vendor-xsf` records it, and
+  `zuspecial_info()` reports it.
+- `tools/xsref-extract` reads Parquet with `arrow`, as a tool only, and
+  writes one `.rds` per function and signature. No value passes through
+  text: R's parser loses subnormals in hex floats. The shipped sample is
+  250 evenly spaced rows per table: 208 KB of xsref and 284 KB of SciPy
+  values for the 21 Stage 2 functions.
+- Agreement with SciPy is checked two ways, because it is not bit for bit
+  across platforms. On macOS arm64, with FMA contraction, ill-conditioned
+  inputs such as `beta(0.76, 897)` differ from SciPy's macOS x86_64 values
+  by up to 3e-11, while both are within xsref's tolerance of mpmath.
+  - Shipped tables, generated once on macOS x86_64 from xsref inputs only:
+    a row may differ by the sum of the two platforms' xsref tolerances,
+    since each result is within its own of mpmath.
+  - CI (`xsref.yaml`): SciPy 1.18.1 runs on each OS over every xsref row
+    and 200 seeded random inputs, and zuspecial must agree with it within
+    64 ulps on the same platform.
+  A table's worst recorded error is no use as a tolerance: it is `Inf` for
+  12 of the 32 tables. On macOS x86_64 agreement is bit for bit.
+- **Windows (2026-10-24).** Rtools45 uses mingw-w64 v11, whose `sin` and
+  `cos` lose accuracy from |x| ~ 1e5 (about 18 ulps at 1e5, 400 at 1e8)
+  and are wrong in value and sign beyond ~1e15, as base R's `sin()` is on
+  Windows. Complex `exp`, `sin` and `cos`, and GCC's fused sin/cos (lowered
+  to `cexp`), inherit it. 14 085 xsref and SciPy rows with an argument of at
+  least 1e5 fail on Windows only; `tests/testthat/known-windows.tsv.gz` lists
+  them, and the tests apply it on Windows only, check that every listed row
+  has such an argument, and in CI fail when a listed row starts passing.
+  R core's post on mingw-w64 v12 (2025-04-24) explains why Rtools stayed on
+  v11; v12 takes `sin` and `cos` from UCRT, which reduces large arguments
+  accurately, so the list is re-checked when Rtools moves. Shipping an own
+  trig on Windows was considered and declined (2026-10-24). SciPy's Windows
+  wheels use UCRT, so on Windows the SciPy comparison is not same-platform:
+  xsref rows take the summed rule with SciPy's `msvc-windows-x86_64` table,
+  and random rows are compared on Linux and macOS only.
+- `sc_expn` is tested on xsref's integer-`n` table only; its float-`n`
+  table holds non-whole orders, which zuspecial refuses (§6.2).
 
 - **xsref**, the primary oracle: mpmath reference values for the cases
   that were in `scipy.special`'s own tests, stored as Parquet under

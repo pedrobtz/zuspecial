@@ -128,3 +128,16 @@ test_that("lengths are measured as doubles, so long vectors are accepted", {
   prep <- zsp_prep(list(a = 1, b = 1:3))
   expect_type(prep$n, "double")
 })
+
+test_that("inputs that reached undefined behaviour in xsf give SciPy's values", {
+  # tools/patches/0001-float-to-int-conversion.patch; UBSan in CI checks the
+  # conversions themselves.
+  expect_identical(sc_beta(-1, 1e10), Inf)
+  expect_identical(sc_betaln(-1, 1e200), Inf)
+  expect_identical(sc_beta(0.5, -8.98847e307), Inf)
+  expect_true(is.nan(sc_erfcx(NaN)))
+  expect_true(is.nan(sc_dawsn(NaN)))
+  expect_true(is.nan(sc_erfi(NaN)))
+  expect_true(all(is.nan(c(Re(sc_wofz(complex(real = NaN, imaginary = 0))),
+    Im(sc_wofz(complex(real = NaN, imaginary = 0)))))))
+})

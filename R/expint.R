@@ -16,6 +16,13 @@
 #'   and zuspecial refuses it so that a fractional order cannot slip
 #'   through.
 #' @returns A double vector, or a complex vector for complex input.
+#' @section Windows:
+#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+#' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
+#' `1e5`, as base R's own `sin()` shows there. Complex arguments with a part
+#' that large, and real ones where the kernel takes a sine of such a value,
+#' are correspondingly inaccurate on Windows only.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions>
 #' @examples
 #' sc_exp1(c(0.5, 1, 2))

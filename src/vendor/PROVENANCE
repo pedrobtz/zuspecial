@@ -13,12 +13,23 @@ Vendored:   include/xsf/** as xsf/include/xsf/, plus LICENSE and
 Excluded:   include/xsf/numpy.h (includes Python.h and NumPy headers)
             include/xsf/third_party/ (mdspan, reached only from numpy.h)
 
-Patches:    none. Files are byte-identical to upstream; the checksums are in
-            tools/vendor/checksums.sha256 and tools/vendor/verify checks them.
+Patches:    tools/patches/*.patch, applied in order by tools/vendor/vendor-xsf.
+            Every other file is byte-identical to upstream. The checksums of
+            the patched tree are in tools/vendor/checksums.sha256, and
+            tools/vendor/verify checks them.
+
+  0001-float-to-int-conversion.patch (2026-10-24)
+            cephes/beta.h, faddeeva.h: guard float-to-int conversions of
+            NaN and out-of-range doubles, undefined behaviour that clang's
+            UBSan (and CRAN's UBSan check) reports; behaviour is otherwise
+            unchanged. Reported upstream as scipy/xsf#338
+            (https://github.com/scipy/xsf/issues/338). Drop it when a SciPy
+            release's xsf includes a fix.
 
 Update procedure
 ----------------
-1. tools/vendor/vendor-xsf <scipy-tag>   (a SciPy release tag, e.g. v1.19.0)
+1. tools/vendor/vendor-xsf <scipy-tag>   (a SciPy release tag, e.g. v1.19.0);
+   if a patch no longer applies, check whether upstream fixed it and drop it
 2. tools/vendor/verify
 3. Update this file's commit lines, then run the full test suite, including
    the xsref and SciPy-value tables, before merging.

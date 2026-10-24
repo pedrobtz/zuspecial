@@ -72,6 +72,15 @@ dimensions, or else its names, from the arguments as base R arithmetic
 does. Conditions the kernels raise, such as a pole, are handled as
 \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
+\section{Windows}{
+
+R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+evaluates \code{sin()} and \code{cos()} inaccurately for arguments beyond about
+\code{1e5}, as base R's own \code{sin()} shows there. Complex arguments with a part
+that large, and real ones where the kernel takes a sine of such a value,
+are correspondingly inaccurate on Windows only.
+}
+
 \examples{
 sc_gamma(c(0.5, 5))
 sc_gamma(1 + 1i)

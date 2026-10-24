@@ -23,3 +23,14 @@ test_that("the function table lists every exported kernel function", {
     )))
   )
 })
+
+test_that("info reports the xsref commit the shipped tables come from", {
+  commit <- zuspecial_info()$xsref_commit
+  expect_identical(commit, "4e9b2343813136e355f0262754a3929d98bc5bff")
+  for (file in list.files(test_path("xsref"), "\\.rds$", full.names = TRUE)) {
+    expect_identical(readRDS(file)$commit, commit)
+  }
+  for (file in list.files(test_path("scipy"), "\\.rds$", full.names = TRUE)) {
+    expect_identical(readRDS(file)$commit, zuspecial_info()$scipy_version)
+  }
+})

@@ -6,6 +6,7 @@
 # Copies include/xsf/** from the xsf commit that SciPy's subprojects/xsf
 # gitlink names at <scipy-tag>, without numpy.h (it includes Python.h) and
 # third_party/ (mdspan, reached only from numpy.h), into src/vendor/xsf/,
+# applies tools/patches/*.patch in order,
 # then rewrites tools/vendor/manifest.tsv, tools/vendor/checksums.sha256 and
 # src/zsp_xsf_version.h.
 # Run from the package root. Needs git, gh and shasum.
@@ -24,12 +25,25 @@ git -C "$tmp" init -q
 git -C "$tmp" fetch -q --depth 1 https://github.com/scipy/xsf "$xsf_commit"
 git -C "$tmp" checkout -q FETCH_HEAD
 
+# The xsref commit xsf's own tests use at this xsf commit: the reference
+# tables zuspecial's tests are extracted from (tools/xsref-extract).
+xsref_commit=$(sed -n 's/.*git -C xsref checkout \([0-9a-f]\{40\}\).*/\1/p' "$tmp/pixi.toml" | sort -u)
+case "$xsref_commit" in
+  *[!0-9a-f]* | "") echo "expected one xsref commit in xsf's pixi.toml" >&2; exit 1 ;;
+esac
+
 rm -rf "$dest"
 mkdir -p "$dest/include"
 cp -R "$tmp/include/xsf" "$dest/include/"
 rm -f "$dest/include/xsf/numpy.h"
 rm -rf "$dest/include/xsf/third_party"
 cp "$tmp/LICENSE" "$tmp/LICENSES_bundled.txt" "$dest/"
+
+# Local patches, each listed in src/vendor/PROVENANCE with its reason.
+for p in tools/patches/*.patch; do
+  [ -e "$p" ] || continue
+  patch -s -p1 -d "$dest" < "$p"
+done
 
 if grep -rnE '#[[:space:]]*include[[:space:]]*[<"].*(numpy\.h|Python\.h|third_party)' "$dest"; then
   echo "a vendored header includes an excluded file" >&2
@@ -39,6 +53,8 @@ fi
 printf 'name\tupstream\tcommit\tscipy_tag\tscipy_commit\n' > tools/vendor/manifest.tsv
 printf 'xsf\thttps://github.com/scipy/xsf\t%s\t%s\t%s\n' \
   "$xsf_commit" "$tag" "$scipy_commit" >> tools/vendor/manifest.tsv
+printf 'xsref\thttps://github.com/scipy/xsref\t%s\t%s\t%s\n' \
+  "$xsref_commit" "$tag" "$scipy_commit" >> tools/vendor/manifest.tsv
 
 find "$dest" -type f | LC_ALL=C sort | xargs shasum -a 256 > tools/vendor/checksums.sha256
 
@@ -48,6 +64,7 @@ cat > src/zsp_xsf_version.h <<EOH
 /* Written by tools/vendor/vendor-xsf; do not edit. */
 #define ZSP_XSF_COMMIT "$xsf_commit"
 #define ZSP_SCIPY_TAG "$tag"
+#define ZSP_XSREF_COMMIT "$xsref_commit"
 EOH
 
 echo "xsf $xsf_commit (SciPy $tag) vendored: $(find "$dest" -type f | wc -l | tr -d ' ') files"

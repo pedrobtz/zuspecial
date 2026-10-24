@@ -1,0 +1,60 @@
+#!/usr/bin/env Rscript
+# Rebuild tests/testthat/known-windows.tsv.gz from the Windows leg of the
+# xsref workflow (design section 10).
+#
+# Usage: tools/known-windows <oracle-report.tsv> <xsref-tables> <scipy-tables>
+#
+# <oracle-report.tsv> is the windows-latest oracle-report artifact: every row
+# outside tolerance. <xsref-tables> and <scipy-tables> are the full .rds
+# tables that run tested (tools/xsref-extract --cap 0, and tools/scipy-values.py
+# --cap 0 --random 200 then tools/xsref-extract), from which each row's inputs
+# are read. Only rows with an argument of at least 1e5 are listed: smaller
+# ones are not this defect, and must be fixed rather than excused.
+
+args <- commandArgs(trailingOnly = TRUE)
+stopifnot(length(args) == 3L)
+report <- utils::read.delim(args[[1]])
+report <- report[report$random_id == 0L, ]
+dirs <- c(xsref = args[[2]], scipy = args[[3]])
+
+mag <- function(x) if (is.complex(x)) pmax(abs(Re(x)), abs(Im(x))) else abs(x)
+
+keys <- unique(report[c("r_name", "sig", "kind")])
+out <- list()
+small <- 0L
+for (i in seq_len(nrow(keys))) {
+  k <- keys[i, ]
+  rows <- report[report$r_name == k$r_name & report$sig == k$sig & report$kind == k$kind, ]
+  entry <- readRDS(file.path(dirs[[k$kind]], paste0(k$r_name, "__", k$sig, ".rds")))
+  ids <- if (k$kind == "xsref") entry$rows else entry$xsref_row
+  at <- match(rows$xsref_row, ids)
+  stopifnot(!anyNA(at))
+  biggest <- do.call(pmax, lapply(entry$inputs, function(x) mag(x)[at]))
+  small <- small + sum(biggest < 1e5)
+  keep <- biggest >= 1e5
+  if (any(keep)) {
+    out[[i]] <- data.frame(
+      r_name = k$r_name, sig = k$sig, kind = k$kind,
+      xsref_row = rows$xsref_row[keep], random_id = 0L
+    )
+  }
+}
+if (small > 0L) {
+  stop(small, " rows outside tolerance have no argument >= 1e5: not this defect")
+}
+
+known <- do.call(rbind, out)
+known <- known[order(known$r_name, known$sig, known$kind, known$xsref_row), ]
+con <- gzfile("tests/testthat/known-windows.tsv.gz", "w")
+writeLines(c(
+  "# Oracle rows that fail on Windows only: Rtools uses mingw-w64 v11, whose sin and",
+  "# cos lose accuracy from |x| ~ 1e5 and are wrong beyond ~1e15, and these rows",
+  "# have an argument of at least 1e5 (test-xsref.R checks that). Applied on",
+  "# Windows only; elsewhere they are checked like every row. Re-check when Rtools",
+  "# moves to mingw-w64 v12 (sin and cos from UCRT): CI fails when a row passes.",
+  "# Written by tools/known-windows from the xsref workflow's report; do not edit."
+), con)
+utils::write.table(known, con, sep = "\t", quote = FALSE, row.names = FALSE)
+close(con)
+cat(nrow(known), "rows written\n")
+print(table(paste(known$r_name, known$sig, known$kind)))
