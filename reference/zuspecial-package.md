@@ -66,3 +66,5 @@ Other contributors:
 
 - Eric W. Moore (elliptic integral code in the bundled xsf library)
   \[copyright holder\]
+
+- Albert Steppi (ndtri_exp, ported from SciPy) \[copyright holder\]

@@ -59,7 +59,9 @@ uses (the MIT Faddeeva package for complex arguments). Functions marked
 <span></span>
 <span><span class="fu">sc_wofz</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sc_voigt_profile</span><span class="op">(</span><span class="va">x</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sc_voigt_profile</span><span class="op">(</span><span class="va">x</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_erfinv</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -72,7 +74,8 @@ uses (the MIT Faddeeva package for complex arguments). Functions marked
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>Numeric vector in \([0, 2]\).</p></dd>
+<dd><p>Numeric vector: in \([0, 2]\) for <code>sc_erfcinv()</code>, in
+\([-1, 1]\) for <code>sc_erfinv()</code>.</p></dd>
 
 
 <dt id="arg-sigma-gamma">sigma, gamma<a class="anchor" aria-label="anchor" href="#arg-sigma-gamma"></a></dt>
@@ -95,6 +98,8 @@ complex for <code>sc_wofz()</code>).</p>
 <li><p><code>sc_erfi()</code>: the imaginary error function \(-i\,\mathrm{erf}(iz)\),
 complex.</p></li>
 <li><p><code>sc_erfcinv()</code>: the inverse of <code>sc_erfc()</code> on \((0, 2)\).</p></li>
+<li><p><code>sc_erfinv()</code>: the inverse of <code>sc_erf()</code> on \([-1, 1]\), evaluated
+with Boost.Math (from the BH package), as SciPy does.</p></li>
 <li><p><code>sc_dawsn()</code>: Dawson's integral, complex.</p></li>
 <li><p><code>sc_wofz()</code>: the Faddeeva function \(w(z) = e^{-z^2}
   \mathrm{erfc}(-iz)\). SciPy defines it for complex input only, so real

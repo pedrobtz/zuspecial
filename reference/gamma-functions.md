@@ -27,6 +27,22 @@ sc_betaln(a, b)
 sc_binom(x, y)
 
 sc_poch(z, m)
+
+sc_gammainc(a, x)
+
+sc_gammaincc(a, x)
+
+sc_gammaincinv(a, y)
+
+sc_gammainccinv(a, y)
+
+sc_betainc(a, b, x)
+
+sc_betaincc(a, b, x)
+
+sc_betaincinv(a, b, y)
+
+sc_betainccinv(a, b, y)
 ```
 
 ## Arguments
@@ -37,7 +53,8 @@ sc_poch(z, m)
 
 - a, b, y, m:
 
-  Numeric vectors.
+  Numeric vectors; for the incomplete gamma functions `a` is the shape
+  and `y` a probability.
 
 ## Value
 
@@ -66,10 +83,29 @@ A double vector, or a complex vector for complex input.
   R: [`beta()`](https://rdrr.io/r/base/Special.html),
   [`lbeta()`](https://rdrr.io/r/base/Special.html).
 
+- `sc_betainc()`, `sc_betaincc()`: the regularised incomplete beta
+  function \\I_x(a, b)\\ and its complement. Base R: `pbeta(x, a, b)`
+  and `pbeta(x, a, b, lower.tail = FALSE)`. At the limits `a` or `b`
+  equal to 0 or `Inf`, SciPy's pointwise limits in `x` are returned.
+
+- `sc_betaincinv()`, `sc_betainccinv()`: their inverses in `x`. Base R:
+  `qbeta(y, a, b)` and `qbeta(y, a, b, lower.tail = FALSE)`.
+
+The incomplete beta functions and their inverses are evaluated, as in
+SciPy, with Boost.Math (from the BH package) rather than xsf.
+
 - `sc_binom()`: the binomial coefficient for real `x` and `y`. Base R:
   [`choose()`](https://rdrr.io/r/base/Special.html).
 
 - `sc_poch()`: the Pochhammer symbol \\\Gamma(z + m) / \Gamma(z)\\.
+
+- `sc_gammainc()`, `sc_gammaincc()`: the regularised lower and upper
+  incomplete gamma functions \\P(a, x)\\ and \\Q(a, x)\\. Base R:
+  `pgamma(x, a)` and `pgamma(x, a, lower.tail = FALSE)`; note the
+  argument order.
+
+- `sc_gammaincinv()`, `sc_gammainccinv()`: their inverses in `x`. Base
+  R: `qgamma(y, a)` and `qgamma(y, a, lower.tail = FALSE)`.
 
 Arguments are recycled: each must have length one or the common length.
 `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its

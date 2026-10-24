@@ -34,6 +34,28 @@
   and
   [`sc_expn()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md).
 
+- Incomplete gamma and beta functions and their inverses:
+  [`sc_gammainc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_gammaincc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_gammaincinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_gammainccinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_betainc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_betaincc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_betaincinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  and
+  [`sc_betainccinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md).
+  The incomplete beta functions use Boost.Math, from the BH package, as
+  SciPy does.
+
+- Normal distribution functions:
+  [`sc_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
+  [`sc_log_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
+  [`sc_ndtri()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
+  [`sc_ndtri_exp()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
+  [`sc_owens_t()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
+  and
+  [`sc_erfinv()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md).
+
 - [`sc_geterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md),
   [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
   and

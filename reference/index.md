@@ -10,6 +10,7 @@
   [`sc_dawsn()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
   [`sc_wofz()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
   [`sc_voigt_profile()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_erfinv()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
   : Error functions and the Faddeeva function
 - [`sc_geterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
   [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
@@ -29,6 +30,20 @@
   [`sc_betaln()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
   [`sc_binom()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
   [`sc_poch()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_gammainc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_gammaincc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_gammaincinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_gammainccinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_betainc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_betaincc()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_betaincinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_betainccinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
   : Gamma and beta functions
+- [`sc_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
+  [`sc_log_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
+  [`sc_ndtri()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
+  [`sc_ndtri_exp()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
+  [`sc_owens_t()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
+  : Normal distribution functions
 - [`zuspecial_info()`](https://pedrobtz.github.io/zuspecial/reference/zuspecial_info.md)
   : Versions and functions

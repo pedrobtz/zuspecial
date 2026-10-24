@@ -66,7 +66,23 @@ complex; real input always stays real (<code>sc_gamma(-1)</code> is <code>NaN</c
 <span></span>
 <span><span class="fu">sc_binom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sc_poch</span><span class="op">(</span><span class="va">z</span>, <span class="va">m</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sc_poch</span><span class="op">(</span><span class="va">z</span>, <span class="va">m</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_gammainc</span><span class="op">(</span><span class="va">a</span>, <span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_gammaincc</span><span class="op">(</span><span class="va">a</span>, <span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_gammaincinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_gammainccinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betainc</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betaincc</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betaincinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betainccinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,7 +94,8 @@ complex; real input always stays real (<code>sc_gamma(-1)</code> is <code>NaN</c
 
 
 <dt id="arg-a-b-y-m">a, b, y, m<a class="anchor" aria-label="anchor" href="#arg-a-b-y-m"></a></dt>
-<dd><p>Numeric vectors.</p></dd>
+<dd><p>Numeric vectors; for the incomplete gamma functions <code>a</code> is
+the shape and <code>y</code> a probability.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -99,9 +116,22 @@ with a branch cut on the negative real axis. For real <code>z &lt; 0</code> it i
 <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma()</a></code>.</p></li>
 <li><p><code>sc_beta()</code>, <code>sc_betaln()</code>: \(B(a, b)\) and \(\log|B(a, b)|\). Base
 R: <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">beta()</a></code>, <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">lbeta()</a></code>.</p></li>
-<li><p><code>sc_binom()</code>: the binomial coefficient for real <code>x</code> and <code>y</code>. Base R:
+<li><p><code>sc_betainc()</code>, <code>sc_betaincc()</code>: the regularised incomplete beta
+function \(I_x(a, b)\) and its complement. Base R: <code>pbeta(x, a, b)</code>
+and <code>pbeta(x, a, b, lower.tail = FALSE)</code>. At the limits <code>a</code> or <code>b</code> equal
+to 0 or <code>Inf</code>, SciPy's pointwise limits in <code>x</code> are returned.</p></li>
+<li><p><code>sc_betaincinv()</code>, <code>sc_betainccinv()</code>: their inverses in <code>x</code>. Base R:
+<code>qbeta(y, a, b)</code> and <code>qbeta(y, a, b, lower.tail = FALSE)</code>.</p></li>
+</ul><p>The incomplete beta functions and their inverses are evaluated, as in
+SciPy, with Boost.Math (from the BH package) rather than xsf.</p><ul><li><p><code>sc_binom()</code>: the binomial coefficient for real <code>x</code> and <code>y</code>. Base R:
 <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">choose()</a></code>.</p></li>
 <li><p><code>sc_poch()</code>: the Pochhammer symbol \(\Gamma(z + m) / \Gamma(z)\).</p></li>
+<li><p><code>sc_gammainc()</code>, <code>sc_gammaincc()</code>: the regularised lower and upper
+incomplete gamma functions \(P(a, x)\) and \(Q(a, x)\). Base R:
+<code>pgamma(x, a)</code> and <code>pgamma(x, a, lower.tail = FALSE)</code>; note the
+argument order.</p></li>
+<li><p><code>sc_gammaincinv()</code>, <code>sc_gammainccinv()</code>: their inverses in <code>x</code>. Base R:
+<code>qgamma(y, a)</code> and <code>qgamma(y, a, lower.tail = FALSE)</code>.</p></li>
 </ul><p>Arguments are recycled: each must have length one or the common length.
 <code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic

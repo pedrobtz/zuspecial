@@ -2,8 +2,9 @@
 
 Reports what this build of zuspecial evaluates with: the vendored xsf
 commit, the SciPy release whose `subprojects/xsf` pin it is, the xsref
-commit whose mpmath reference tables the tests use, the compiler, and
-the table of exported functions.
+commit whose mpmath reference tables the tests use, the Boost.Math
+version (from the BH package) used for the functions SciPy evaluates
+with Boost, the compiler, and the table of exported functions.
 
 ## Usage
 
@@ -13,10 +14,10 @@ zuspecial_info()
 
 ## Value
 
-A list with `xsf_commit`, `scipy_version`, `xsref_commit`, `compiler`
-and `functions`, a data frame with one row per exported function:
-`r_name`, `scipy_name`, `backend` (the library that evaluates it) and
-`complex` (whether it takes complex arguments).
+A list with `xsf_commit`, `scipy_version`, `xsref_commit`,
+`boost_version`, `compiler` and `functions`, a data frame with one row
+per exported function: `r_name`, `scipy_name`, `backend` (the library
+that evaluates it) and `complex` (whether it takes complex arguments).
 
 ## Examples
 

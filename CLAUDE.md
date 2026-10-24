@@ -29,8 +29,10 @@ open questions (§16) and the Stage 0 decisions on the Boost backend
 
 Scaffolded 2026-10-23 with `create-pkg.sh`; package identity and CI set
 up in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue,
-the error state, and 21 gamma, error and exponential-integral functions.
-The roadmap in `.agents/roadmap.md` takes it to v0.1.0, tracked in
+the error state, and 21 gamma, error and exponential-integral functions;
+Stage 3 the xsref and SciPy oracles; Stage 4 the incomplete gamma and
+beta, normal and Boost-backed functions (35 in all). The roadmap in
+`.agents/roadmap.md` takes it to v0.1.0, tracked in
 [\#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
 ## Stage tracking
@@ -140,6 +142,10 @@ The C++ side:
   the only translation unit that includes xsf kernels. It includes one
   `src/zsp_shim_<family>.h` per family, which must never be included
   anywhere else.
+- [src/zsp_boost.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_boost.cpp):
+  the five functions SciPy evaluates with Boost.Math (`LinkingTo: BH`),
+  ported from SciPy’s `boost_special_functions.h`. A unit of its own: it
+  includes no xsf kernels, only `xsf/error.h`.
 - [src/zsp_error.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_error.cpp):
   defines `xsf::set_error` (declared because the build sets
   `SP_SPECFUN_ERROR`) and `zsp_err_take()`. It holds the only mutable

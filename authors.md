@@ -43,6 +43,9 @@
 - **Eric W. Moore**. Copyright holder.  
   elliptic integral code in the bundled xsf library
 
+- **Albert Steppi**. Copyright holder.  
+  ndtri_exp, ported from SciPy
+
 ## Citation
 
 Source:

@@ -22,6 +22,8 @@ sc_dawsn(x)
 sc_wofz(z)
 
 sc_voigt_profile(x, sigma, gamma)
+
+sc_erfinv(y)
 ```
 
 ## Arguments
@@ -33,7 +35,8 @@ sc_voigt_profile(x, sigma, gamma)
 
 - y:
 
-  Numeric vector in \\\[0, 2\]\\.
+  Numeric vector: in \\\[0, 2\]\\ for `sc_erfcinv()`, in \\\[-1, 1\]\\
+  for `sc_erfinv()`.
 
 - sigma, gamma:
 
@@ -57,6 +60,9 @@ for `sc_wofz()`).
   complex.
 
 - `sc_erfcinv()`: the inverse of `sc_erfc()` on \\(0, 2)\\.
+
+- `sc_erfinv()`: the inverse of `sc_erf()` on \\\[-1, 1\]\\, evaluated
+  with Boost.Math (from the BH package), as SciPy does.
 
 - `sc_dawsn()`: Dawson's integral, complex.
 
