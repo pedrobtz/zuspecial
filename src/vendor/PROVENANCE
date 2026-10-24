@@ -22,7 +22,8 @@ Patches:    tools/patches/*.patch, applied in order by tools/vendor/vendor-xsf.
             cephes/beta.h, faddeeva.h: guard float-to-int conversions of
             NaN and out-of-range doubles, undefined behaviour that clang's
             UBSan (and CRAN's UBSan check) reports; behaviour is otherwise
-            unchanged. Reported upstream: see below. Drop it when a SciPy
+            unchanged. Reported upstream as scipy/xsf#338
+            (https://github.com/scipy/xsf/issues/338). Drop it when a SciPy
             release's xsf includes a fix.
 
 Update procedure
