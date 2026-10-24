@@ -13,7 +13,7 @@ sc_ndtr(x)
 
 sc_log_ndtr(x)
 
-sc_ndtri(p)
+sc_ndtri(y)
 
 sc_ndtri_exp(y)
 
@@ -22,9 +22,8 @@ sc_owens_t(h, a)
 \arguments{
 \item{x}{Numeric or complex vector.}
 
-\item{p}{Numeric vector of probabilities.}
-
-\item{y}{Numeric vector of log probabilities (at most 0).}
+\item{y}{Numeric vector: probabilities for \code{sc_ndtri()}, log
+probabilities (at most 0) for \code{sc_ndtri_exp()}.}
 
 \item{h, a}{Numeric vectors.}
 }

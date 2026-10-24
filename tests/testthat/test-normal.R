@@ -5,6 +5,8 @@ test_that("normal functions match base R's normal distribution", {
   p <- c(1e-300, 1e-10, 0.025, 0.5, 0.975, 1 - 1e-10)
   expect_equal(sc_ndtri(p), qnorm(p), tolerance = 1e-13)
   expect_identical(sc_ndtri(c(0, 1)), c(-Inf, Inf))
+  # SciPy's argument name, so keyword calls translate.
+  expect_identical(sc_ndtri(y = 0.3), sc_ndtri(0.3))
 })
 
 test_that("ndtri_exp inverts log_ndtr across its three branches", {

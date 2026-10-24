@@ -36,7 +36,8 @@
   whose xsf has them.
 
 * Normal distribution functions: `sc_ndtr()`, `sc_log_ndtr()`, `sc_ndtri()`,
-  `sc_ndtri_exp()`, `sc_owens_t()`, and `sc_erfinv()`.
+  `sc_ndtri_exp()`, `sc_owens_t()`, and `sc_erfinv()`. `sc_ndtri()`'s argument is `y`,
+  as in SciPy's `ndtri(y)`.
 
 * `sc_geterr()`, `sc_seterr()` and `sc_errstate()` choose whether each kind
   of floating-point condition is ignored, warns or raises, after
