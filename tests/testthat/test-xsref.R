@@ -30,7 +30,9 @@ test_that("every function agrees with SciPy 1.18.1", {
     }
     for (part in oracle_outputs(whole, oracle_eval(whole))) {
       oracle_check(
-        part$entry, part$got, scipy_row_tol(part$entry, same_platform)
+        part$entry,
+        part$got,
+        scipy_row_tol(part$entry, same_platform)
       )
     }
   }

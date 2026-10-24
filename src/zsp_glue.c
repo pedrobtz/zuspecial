@@ -110,6 +110,13 @@ static const struct {
   {"k0e", zsp_k0e_d},
   {"k1", zsp_k1_d},
   {"k1e", zsp_k1e_d},
+  {"ellipk", zsp_ellipk_d},
+  {"ellipkm1", zsp_ellipkm1_d},
+  {"ellipe", zsp_ellipe_d},
+  {"zeta", zsp_zeta_d},
+  {"zetac", zsp_zetac_d},
+  {"wrightomega", zsp_wrightomega_d},
+  {"spence", zsp_spence_d},
 };
 
 static const struct {
@@ -123,6 +130,9 @@ static const struct {
   {"dawsn", zsp_dawsn_c}, {"wofz", zsp_wofz_c},
   {"exp1", zsp_exp1_c},   {"expi", zsp_expi_c},
   {"ndtr", zsp_ndtr_c},   {"log_ndtr", zsp_log_ndtr_c},
+  {"zeta", zsp_zeta_c},
+  {"wrightomega", zsp_wrightomega_c},
+  {"spence", zsp_spence_c},
 };
 
 static const struct {
@@ -146,6 +156,12 @@ static const struct {
   {"yve", zsp_yve_dd},
   {"ive", zsp_ive_dd},
   {"kve", zsp_kve_dd},
+  {"hyp0f1", zsp_hyp0f1_dd},
+  {"ellipkinc", zsp_ellipkinc_dd},
+  {"ellipeinc", zsp_ellipeinc_dd},
+  {"zeta_q", zsp_zeta_q_dd},
+  {"struve", zsp_struve_dd},
+  {"modstruve", zsp_modstruve_dd},
 };
 
 static const struct {
@@ -157,6 +173,8 @@ static const struct {
   {"betaincc", zsp_betaincc_ddd},
   {"betaincinv", zsp_betaincinv_ddd},
   {"betainccinv", zsp_betainccinv_ddd},
+  {"hyp1f1", zsp_hyp1f1_ddd},
+  {"hyperu", zsp_hyperu_ddd},
 };
 
 static const struct {
@@ -196,6 +214,7 @@ static const struct {
   {"hankel2", zsp_hankel2_dc},
   {"hankel1e", zsp_hankel1e_dc},
   {"hankel2e", zsp_hankel2e_dc},
+  {"hyp0f1", zsp_hyp0f1_dc},
 };
 
 static const struct {
@@ -226,6 +245,60 @@ static const struct {
 } zsp_table_c4[] = {
   {"airy", zsp_airy_c4},
   {"airye", zsp_airye_c4},
+};
+
+typedef double (*zsp_fn_dddd)(double, double, double, double);
+
+static const struct {
+  const char *name;
+  zsp_fn_dddd fn;
+} zsp_table_dddd[] = {
+  {"hyp2f1", zsp_hyp2f1_dddd},
+};
+
+typedef zsp_complex (*zsp_fn_dddc)(double, double, double, zsp_complex);
+
+static const struct {
+  const char *name;
+  zsp_fn_dddc fn;
+} zsp_table_dddc[] = {
+  {"hyp2f1", zsp_hyp2f1_dddc},
+};
+
+typedef zsp_complex (*zsp_fn_ddc)(double, double, zsp_complex);
+
+static const struct {
+  const char *name;
+  zsp_fn_ddc fn;
+} zsp_table_ddc[] = {
+  {"hyp1f1", zsp_hyp1f1_ddc},
+};
+
+typedef zsp_complex (*zsp_fn_cd)(zsp_complex, double);
+
+static const struct {
+  const char *name;
+  zsp_fn_cd fn;
+} zsp_table_cd[] = {
+  {"zeta_q", zsp_zeta_q_cd},
+};
+
+typedef zsp_complex (*zsp_fn_cid)(zsp_complex, int, double);
+
+static const struct {
+  const char *name;
+  zsp_fn_cid fn;
+} zsp_table_cid[] = {
+  {"lambertw", zsp_lambertw_cid},
+};
+
+typedef void (*zsp_fn_dd4)(double, double, double *);
+
+static const struct {
+  const char *name;
+  zsp_fn_dd4 fn;
+} zsp_table_dd4[] = {
+  {"ellipj", zsp_ellipj_dd4},
 };
 
 SEXP zsp_call_d(SEXP name, SEXP x) {
@@ -505,6 +578,219 @@ SEXP zsp_call_c4(SEXP name, SEXP z) {
     for (int j = 0; j < 4; j++) {
       po[j][i].r = res[j].re;
       po[j][i].i = res[j].im;
+    }
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_dddd(SEXP name, SEXP a0, SEXP a1, SEXP a2, SEXP a3) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_dddd, zsp_fn_dddd, nm);
+  R_xlen_t n = XLENGTH(a0);
+  zsp_check(a0, REALSXP, n);
+  zsp_check(a1, REALSXP, n);
+  zsp_check(a2, REALSXP, n);
+  zsp_check(a3, REALSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(REALSXP, n));
+  const double *pa0 = REAL(a0);
+  const double *pa1 = REAL(a1);
+  const double *pa2 = REAL(a2);
+  const double *pa3 = REAL(a3);
+  double *po = REAL(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pa0[i]) || R_IsNA(pa1[i]) || R_IsNA(pa2[i]) || R_IsNA(pa3[i])) {
+      po[i] = NA_REAL;
+      continue;
+    }
+    po[i] = fn(pa0[i], pa1[i], pa2[i], pa3[i]);
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_dddc(SEXP name, SEXP a0, SEXP a1, SEXP a2, SEXP a3) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_dddc, zsp_fn_dddc, nm);
+  R_xlen_t n = XLENGTH(a0);
+  zsp_check(a0, REALSXP, n);
+  zsp_check(a1, REALSXP, n);
+  zsp_check(a2, REALSXP, n);
+  zsp_check(a3, CPLXSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(CPLXSXP, n));
+  const double *pa0 = REAL(a0);
+  const double *pa1 = REAL(a1);
+  const double *pa2 = REAL(a2);
+  const Rcomplex *pa3 = COMPLEX(a3);
+  Rcomplex *po = COMPLEX(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pa0[i]) || R_IsNA(pa1[i]) || R_IsNA(pa2[i]) || R_IsNA(pa3[i].r) || R_IsNA(pa3[i].i)) {
+      po[i].r = NA_REAL;
+      po[i].i = NA_REAL;
+      continue;
+    }
+    zsp_complex ca3;
+    ca3.re = pa3[i].r;
+    ca3.im = pa3[i].i;
+    zsp_complex res = fn(pa0[i], pa1[i], pa2[i], ca3);
+    po[i].r = res.re;
+    po[i].i = res.im;
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_ddc(SEXP name, SEXP a0, SEXP a1, SEXP a2) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_ddc, zsp_fn_ddc, nm);
+  R_xlen_t n = XLENGTH(a0);
+  zsp_check(a0, REALSXP, n);
+  zsp_check(a1, REALSXP, n);
+  zsp_check(a2, CPLXSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(CPLXSXP, n));
+  const double *pa0 = REAL(a0);
+  const double *pa1 = REAL(a1);
+  const Rcomplex *pa2 = COMPLEX(a2);
+  Rcomplex *po = COMPLEX(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pa0[i]) || R_IsNA(pa1[i]) || R_IsNA(pa2[i].r) || R_IsNA(pa2[i].i)) {
+      po[i].r = NA_REAL;
+      po[i].i = NA_REAL;
+      continue;
+    }
+    zsp_complex ca2;
+    ca2.re = pa2[i].r;
+    ca2.im = pa2[i].i;
+    zsp_complex res = fn(pa0[i], pa1[i], ca2);
+    po[i].r = res.re;
+    po[i].i = res.im;
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_cd(SEXP name, SEXP a0, SEXP a1) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_cd, zsp_fn_cd, nm);
+  R_xlen_t n = XLENGTH(a0);
+  zsp_check(a0, CPLXSXP, n);
+  zsp_check(a1, REALSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(CPLXSXP, n));
+  const Rcomplex *pa0 = COMPLEX(a0);
+  const double *pa1 = REAL(a1);
+  Rcomplex *po = COMPLEX(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pa0[i].r) || R_IsNA(pa0[i].i) || R_IsNA(pa1[i])) {
+      po[i].r = NA_REAL;
+      po[i].i = NA_REAL;
+      continue;
+    }
+    zsp_complex ca0;
+    ca0.re = pa0[i].r;
+    ca0.im = pa0[i].i;
+    zsp_complex res = fn(ca0, pa1[i]);
+    po[i].r = res.re;
+    po[i].i = res.im;
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_cid(SEXP name, SEXP a0, SEXP a1, SEXP a2) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_cid, zsp_fn_cid, nm);
+  R_xlen_t n = XLENGTH(a0);
+  zsp_check(a0, CPLXSXP, n);
+  zsp_check(a1, INTSXP, n);
+  zsp_check(a2, REALSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(CPLXSXP, n));
+  const Rcomplex *pa0 = COMPLEX(a0);
+  const int *pa1 = INTEGER(a1);
+  const double *pa2 = REAL(a2);
+  Rcomplex *po = COMPLEX(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pa0[i].r) || R_IsNA(pa0[i].i) || pa1[i] == NA_INTEGER || R_IsNA(pa2[i])) {
+      po[i].r = NA_REAL;
+      po[i].i = NA_REAL;
+      continue;
+    }
+    zsp_complex ca0;
+    ca0.re = pa0[i].r;
+    ca0.im = pa0[i].i;
+    zsp_complex res = fn(ca0, pa1[i], pa2[i]);
+    po[i].r = res.re;
+    po[i].i = res.im;
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_dd4(SEXP name, SEXP u, SEXP m) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_dd4, zsp_fn_dd4, nm);
+  R_xlen_t n = XLENGTH(u);
+  zsp_check(u, REALSXP, n);
+  zsp_check(m, REALSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, 4));
+  double *po[4];
+  for (int j = 0; j < 4; j++) {
+    SET_VECTOR_ELT(out, j, Rf_allocVector(REALSXP, n));
+    po[j] = REAL(VECTOR_ELT(out, j));
+  }
+  const double *pu = REAL(u), *pm = REAL(m);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pu[i]) || R_IsNA(pm[i])) {
+      for (int j = 0; j < 4; j++) {
+        po[j][i] = NA_REAL;
+      }
+      continue;
+    }
+    double res[4];
+    fn(pu[i], pm[i], res);
+    for (int j = 0; j < 4; j++) {
+      po[j][i] = res[j];
     }
     unsigned int bits = zsp_err_take();
     if (bits) {
