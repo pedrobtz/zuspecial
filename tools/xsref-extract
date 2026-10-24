@@ -1,0 +1,100 @@
+#!/usr/bin/env Rscript
+# Packs reference tables in xsref's layout into one .rds per function and
+# signature, for tests/testthat/test-xsref.R.
+#
+# Usage:
+#   tools/xsref-extract --source <dir> --kind xsref|scipy --out <dir>
+#                       [--commit <id>] [--cap N] [--functions <tsv>]
+#
+# <dir> holds <table>/In_<sig>.parquet and Out_<sig>.parquet, and for xsref
+# Err_<sig>_<platform>.parquet: xsref's tables/scipy_special_tests, or the
+# output of tools/scipy-values.py. --cap (default 250) keeps that many evenly
+# spaced rows, first and last included; 0 keeps every row. Needs the arrow
+# package; it is a tool, not a dependency of zuspecial. Values stay binary
+# throughout: no number passes through text.
+
+args <- commandArgs(trailingOnly = TRUE)
+opt <- function(name, default = NULL) {
+  i <- match(paste0("--", name), args)
+  if (is.na(i)) default else args[[i + 1L]]
+}
+source_dir <- opt("source")
+kind <- opt("kind")
+out_dir <- opt("out")
+cap <- as.integer(opt("cap", "250"))
+functions <- opt("functions", "tools/xsref/functions.tsv")
+commit <- opt("commit", NA_character_)
+stopifnot(!is.null(source_dir), kind %in% c("xsref", "scipy"), !is.null(out_dir))
+
+read_table <- function(path) {
+  as.data.frame(arrow::read_parquet(path))
+}
+
+# Columns in0, in1, ... or in0_real/in0_imag pairs, in order.
+columns <- function(df, prefix) {
+  names <- grep(paste0("^", prefix, "[0-9]+(_real|_imag)?$"), names(df), value = TRUE)
+  index <- unique(sub(paste0("^", prefix, "([0-9]+).*$"), "\\1", names))
+  lapply(index[order(as.integer(index))], function(k) {
+    plain <- paste0(prefix, k)
+    if (plain %in% names(df)) {
+      as.double(df[[plain]])
+    } else {
+      complex(
+        real = df[[paste0(plain, "_real")]],
+        imaginary = df[[paste0(plain, "_imag")]]
+      )
+    }
+  })
+}
+
+sample_rows <- function(n) {
+  if (cap == 0L || n <= cap) seq_len(n) else unique(round(seq(1, n, length.out = cap)))
+}
+
+fns <- utils::read.delim(functions, colClasses = "character")
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+written <- 0L
+for (i in seq_len(nrow(fns))) {
+  table <- fns$table[[i]]
+  for (sig in strsplit(fns$sigs[[i]], ",")[[1]]) {
+    base <- file.path(source_dir, table)
+    inp <- read_table(file.path(base, paste0("In_", sig, ".parquet")))
+    out_path <- file.path(base, paste0("Out_", sig, ".parquet"))
+    out <- read_table(out_path)
+    stopifnot(nrow(inp) == nrow(out))
+    rows <- sample_rows(nrow(inp))
+
+    entry <- list(
+      r_name = fns$r_name[[i]],
+      sig = sig,
+      kind = kind,
+      commit = commit,
+      n_total = nrow(inp),
+      rows = rows,
+      inputs = lapply(columns(inp, "in"), `[`, rows),
+      out = columns(out, "out")[[1]][rows],
+      fallback = if ("fallback" %in% names(out)) out$fallback[rows] else logical(length(rows))
+    )
+    if (kind == "scipy") {
+      meta <- arrow::read_parquet(out_path, as_data_frame = FALSE)$metadata
+      entry$commit <- meta$scipy_version
+    }
+    if (kind == "xsref") {
+      errs <- Sys.glob(file.path(base, paste0("Err_", sig, "_*.parquet")))
+      platforms <- sub(paste0("^Err_", sig, "_(.*)\\.parquet$"), "\\1", basename(errs))
+      entry$err <- stats::setNames(
+        lapply(errs, function(p) read_table(p)$err0[rows]),
+        platforms
+      )
+      stopifnot("other" %in% platforms)
+    }
+    saveRDS(
+      entry,
+      file.path(out_dir, paste0(fns$r_name[[i]], "__", sig, ".rds")),
+      compress = "xz",
+      version = 3
+    )
+    written <- written + 1L
+  }
+}
+cat(sprintf("%d tables written to %s\n", written, out_dir))
