@@ -91,9 +91,6 @@ A double vector, or a complex vector for complex input.
 - `sc_betaincinv()`, `sc_betainccinv()`: their inverses in `x`. Base R:
   `qbeta(y, a, b)` and `qbeta(y, a, b, lower.tail = FALSE)`.
 
-The incomplete beta functions and their inverses are evaluated, as in
-SciPy, with Boost.Math (from the BH package) rather than xsf.
-
 - `sc_binom()`: the binomial coefficient for real `x` and `y`. Base R:
   [`choose()`](https://rdrr.io/r/base/Special.html).
 
@@ -106,6 +103,9 @@ SciPy, with Boost.Math (from the BH package) rather than xsf.
 
 - `sc_gammaincinv()`, `sc_gammainccinv()`: their inverses in `x`. Base
   R: `qgamma(y, a)` and `qgamma(y, a, lower.tail = FALSE)`.
+
+The incomplete beta functions and their inverses are evaluated, as in
+SciPy, with Boost.Math (from the BH package) rather than xsf.
 
 Arguments are recycled: each must have length one or the common length.
 `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
@@ -123,6 +123,12 @@ beyond about `1e5`, as base R's own
 [`sin()`](https://rdrr.io/r/base/Trig.html) shows there. Complex
 arguments with a part that large, and real ones where the kernel takes a
 sine of such a value, are correspondingly inaccurate on Windows only.
+
+## Other packages
+
+In `gsl`: `lngamma()`, `lngamma_complex()` (the complex
+`sc_loggamma()`), `psi()`, `lnbeta()`, `poch()`, `gamma_inc_P(a, x)` and
+`gamma_inc_Q(a, x)` in SciPy's argument order, and `beta_inc(a, b, x)`.
 
 ## See also
 

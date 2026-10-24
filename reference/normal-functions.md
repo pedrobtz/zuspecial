@@ -65,6 +65,10 @@ does; see
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
 for the conditions the kernels raise.
 
+## Other packages
+
+In `gsl`: `erf_Q(x)`, the upper tail, which is `sc_ndtr(-x)`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#gaussian-normal-distribution>

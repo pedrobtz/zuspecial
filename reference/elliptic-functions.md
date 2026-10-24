@@ -70,6 +70,13 @@ Near a zero of the cosine it loses relative accuracy, and
 `sc_ellipj(u, 0)`, which is `cos(u)` exactly, inherits that for `u` near
 `pi / 2` on Windows only.
 
+## Other packages
+
+In `gsl`: `ellint_Kcomp()`, `ellint_Ecomp()`, `ellint_F()` and
+`ellint_E()`, which take the modulus \\k\\ where SciPy takes the
+parameter \\m = k^2\\: `sc_ellipk(m)` is `ellint_Kcomp(sqrt(m))`. Its
+`elljac(u, m)` takes \\m\\, as `sc_ellipj()` does.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#elliptic-functions-and-integrals>

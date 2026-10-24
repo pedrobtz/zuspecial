@@ -16,6 +16,10 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/scipy.html">Translating from scipy.special</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -32,7 +36,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="gamma-beta-and-related-functions">Gamma, beta and related functions<a class="anchor" aria-label="anchor" href="#gamma-beta-and-related-functions"></a></h2>
 
 
 
@@ -43,26 +47,21 @@
 
       <dl><dt>
 
-          <code><a href="airy-functions.html">sc_airy()</a></code> <code><a href="airy-functions.html">sc_airye()</a></code>
+          <code><a href="gamma-functions.html">sc_gamma()</a></code> <code><a href="gamma-functions.html">sc_gammaln()</a></code> <code><a href="gamma-functions.html">sc_loggamma()</a></code> <code><a href="gamma-functions.html">sc_rgamma()</a></code> <code><a href="gamma-functions.html">sc_gammasgn()</a></code> <code><a href="gamma-functions.html">sc_psi()</a></code> <code><a href="gamma-functions.html">sc_beta()</a></code> <code><a href="gamma-functions.html">sc_betaln()</a></code> <code><a href="gamma-functions.html">sc_binom()</a></code> <code><a href="gamma-functions.html">sc_poch()</a></code> <code><a href="gamma-functions.html">sc_gammainc()</a></code> <code><a href="gamma-functions.html">sc_gammaincc()</a></code> <code><a href="gamma-functions.html">sc_gammaincinv()</a></code> <code><a href="gamma-functions.html">sc_gammainccinv()</a></code> <code><a href="gamma-functions.html">sc_betainc()</a></code> <code><a href="gamma-functions.html">sc_betaincc()</a></code> <code><a href="gamma-functions.html">sc_betaincinv()</a></code> <code><a href="gamma-functions.html">sc_betainccinv()</a></code>
 
         </dt>
-        <dd>Airy functions</dd>
+        <dd>Gamma and beta functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="error-functions-and-the-normal-distribution">Error functions and the normal distribution<a class="anchor" aria-label="anchor" href="#error-functions-and-the-normal-distribution"></a></h2>
 
-        <dt>
 
-          <code><a href="bessel-functions.html">sc_jv()</a></code> <code><a href="bessel-functions.html">sc_yv()</a></code> <code><a href="bessel-functions.html">sc_iv()</a></code> <code><a href="bessel-functions.html">sc_kv()</a></code> <code><a href="bessel-functions.html">sc_jve()</a></code> <code><a href="bessel-functions.html">sc_yve()</a></code> <code><a href="bessel-functions.html">sc_ive()</a></code> <code><a href="bessel-functions.html">sc_kve()</a></code> <code><a href="bessel-functions.html">sc_hankel1()</a></code> <code><a href="bessel-functions.html">sc_hankel2()</a></code> <code><a href="bessel-functions.html">sc_hankel1e()</a></code> <code><a href="bessel-functions.html">sc_hankel2e()</a></code> <code><a href="bessel-functions.html">sc_j0()</a></code> <code><a href="bessel-functions.html">sc_j1()</a></code> <code><a href="bessel-functions.html">sc_y0()</a></code> <code><a href="bessel-functions.html">sc_y1()</a></code> <code><a href="bessel-functions.html">sc_i0()</a></code> <code><a href="bessel-functions.html">sc_i0e()</a></code> <code><a href="bessel-functions.html">sc_i1()</a></code> <code><a href="bessel-functions.html">sc_i1e()</a></code> <code><a href="bessel-functions.html">sc_k0()</a></code> <code><a href="bessel-functions.html">sc_k0e()</a></code> <code><a href="bessel-functions.html">sc_k1()</a></code> <code><a href="bessel-functions.html">sc_k1e()</a></code>
 
-        </dt>
-        <dd>Bessel and Hankel functions</dd>
+      <dl></dl></div><div class="section level2">
 
-        <dt>
 
-          <code><a href="elliptic-functions.html">sc_ellipk()</a></code> <code><a href="elliptic-functions.html">sc_ellipkm1()</a></code> <code><a href="elliptic-functions.html">sc_ellipkinc()</a></code> <code><a href="elliptic-functions.html">sc_ellipe()</a></code> <code><a href="elliptic-functions.html">sc_ellipeinc()</a></code> <code><a href="elliptic-functions.html">sc_ellipj()</a></code>
 
-        </dt>
-        <dd>Elliptic integrals and Jacobi elliptic functions</dd>
 
-        <dt>
+      <dl><dt>
 
           <code><a href="error-functions.html">sc_erf()</a></code> <code><a href="error-functions.html">sc_erfc()</a></code> <code><a href="error-functions.html">sc_erfcx()</a></code> <code><a href="error-functions.html">sc_erfi()</a></code> <code><a href="error-functions.html">sc_erfcinv()</a></code> <code><a href="error-functions.html">sc_dawsn()</a></code> <code><a href="error-functions.html">sc_wofz()</a></code> <code><a href="error-functions.html">sc_voigt_profile()</a></code> <code><a href="error-functions.html">sc_erfinv()</a></code>
 
@@ -71,38 +70,42 @@
 
         <dt>
 
-          <code><a href="errstate.html">sc_geterr()</a></code> <code><a href="errstate.html">sc_seterr()</a></code> <code><a href="errstate.html">sc_errstate()</a></code>
+          <code><a href="normal-functions.html">sc_ndtr()</a></code> <code><a href="normal-functions.html">sc_log_ndtr()</a></code> <code><a href="normal-functions.html">sc_ndtri()</a></code> <code><a href="normal-functions.html">sc_ndtri_exp()</a></code> <code><a href="normal-functions.html">sc_owens_t()</a></code>
 
         </dt>
-        <dd>Floating-point error handling</dd>
+        <dd>Normal distribution functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="exponential-integrals">Exponential integrals<a class="anchor" aria-label="anchor" href="#exponential-integrals"></a></h2>
 
-        <dt>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="exponential-integrals.html">sc_exp1()</a></code> <code><a href="exponential-integrals.html">sc_expi()</a></code> <code><a href="exponential-integrals.html">sc_expn()</a></code>
 
         </dt>
         <dd>Exponential integrals</dd>
+      </dl></div><div class="section level2">
+      <h2 id="bessel-and-airy-functions">Bessel and Airy functions<a class="anchor" aria-label="anchor" href="#bessel-and-airy-functions"></a></h2>
 
-        <dt>
 
-          <code><a href="gamma-functions.html">sc_gamma()</a></code> <code><a href="gamma-functions.html">sc_gammaln()</a></code> <code><a href="gamma-functions.html">sc_loggamma()</a></code> <code><a href="gamma-functions.html">sc_rgamma()</a></code> <code><a href="gamma-functions.html">sc_gammasgn()</a></code> <code><a href="gamma-functions.html">sc_psi()</a></code> <code><a href="gamma-functions.html">sc_beta()</a></code> <code><a href="gamma-functions.html">sc_betaln()</a></code> <code><a href="gamma-functions.html">sc_binom()</a></code> <code><a href="gamma-functions.html">sc_poch()</a></code> <code><a href="gamma-functions.html">sc_gammainc()</a></code> <code><a href="gamma-functions.html">sc_gammaincc()</a></code> <code><a href="gamma-functions.html">sc_gammaincinv()</a></code> <code><a href="gamma-functions.html">sc_gammainccinv()</a></code> <code><a href="gamma-functions.html">sc_betainc()</a></code> <code><a href="gamma-functions.html">sc_betaincc()</a></code> <code><a href="gamma-functions.html">sc_betaincinv()</a></code> <code><a href="gamma-functions.html">sc_betainccinv()</a></code>
 
-        </dt>
-        <dd>Gamma and beta functions</dd>
+      <dl></dl></div><div class="section level2">
 
-        <dt>
 
-          <code><a href="hypergeometric-functions.html">sc_hyp0f1()</a></code> <code><a href="hypergeometric-functions.html">sc_hyp1f1()</a></code> <code><a href="hypergeometric-functions.html">sc_hyp2f1()</a></code> <code><a href="hypergeometric-functions.html">sc_hyperu()</a></code>
 
-        </dt>
-        <dd>Hypergeometric functions</dd>
 
-        <dt>
+      <dl><dt>
 
-          <code><a href="normal-functions.html">sc_ndtr()</a></code> <code><a href="normal-functions.html">sc_log_ndtr()</a></code> <code><a href="normal-functions.html">sc_ndtri()</a></code> <code><a href="normal-functions.html">sc_ndtri_exp()</a></code> <code><a href="normal-functions.html">sc_owens_t()</a></code>
+          <code><a href="bessel-functions.html">sc_jv()</a></code> <code><a href="bessel-functions.html">sc_yv()</a></code> <code><a href="bessel-functions.html">sc_iv()</a></code> <code><a href="bessel-functions.html">sc_kv()</a></code> <code><a href="bessel-functions.html">sc_jve()</a></code> <code><a href="bessel-functions.html">sc_yve()</a></code> <code><a href="bessel-functions.html">sc_ive()</a></code> <code><a href="bessel-functions.html">sc_kve()</a></code> <code><a href="bessel-functions.html">sc_hankel1()</a></code> <code><a href="bessel-functions.html">sc_hankel2()</a></code> <code><a href="bessel-functions.html">sc_hankel1e()</a></code> <code><a href="bessel-functions.html">sc_hankel2e()</a></code> <code><a href="bessel-functions.html">sc_j0()</a></code> <code><a href="bessel-functions.html">sc_j1()</a></code> <code><a href="bessel-functions.html">sc_y0()</a></code> <code><a href="bessel-functions.html">sc_y1()</a></code> <code><a href="bessel-functions.html">sc_i0()</a></code> <code><a href="bessel-functions.html">sc_i0e()</a></code> <code><a href="bessel-functions.html">sc_i1()</a></code> <code><a href="bessel-functions.html">sc_i1e()</a></code> <code><a href="bessel-functions.html">sc_k0()</a></code> <code><a href="bessel-functions.html">sc_k0e()</a></code> <code><a href="bessel-functions.html">sc_k1()</a></code> <code><a href="bessel-functions.html">sc_k1e()</a></code>
 
         </dt>
-        <dd>Normal distribution functions</dd>
+        <dd>Bessel and Hankel functions</dd>
 
         <dt>
 
@@ -113,19 +116,91 @@
 
         <dt>
 
+          <code><a href="airy-functions.html">sc_airy()</a></code> <code><a href="airy-functions.html">sc_airye()</a></code>
+
+        </dt>
+        <dd>Airy functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="hypergeometric-and-elliptic-functions">Hypergeometric and elliptic functions<a class="anchor" aria-label="anchor" href="#hypergeometric-and-elliptic-functions"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="hypergeometric-functions.html">sc_hyp0f1()</a></code> <code><a href="hypergeometric-functions.html">sc_hyp1f1()</a></code> <code><a href="hypergeometric-functions.html">sc_hyp2f1()</a></code> <code><a href="hypergeometric-functions.html">sc_hyperu()</a></code>
+
+        </dt>
+        <dd>Hypergeometric functions</dd>
+
+        <dt>
+
+          <code><a href="elliptic-functions.html">sc_ellipk()</a></code> <code><a href="elliptic-functions.html">sc_ellipkm1()</a></code> <code><a href="elliptic-functions.html">sc_ellipkinc()</a></code> <code><a href="elliptic-functions.html">sc_ellipe()</a></code> <code><a href="elliptic-functions.html">sc_ellipeinc()</a></code> <code><a href="elliptic-functions.html">sc_ellipj()</a></code>
+
+        </dt>
+        <dd>Elliptic integrals and Jacobi elliptic functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="zeta-lambert-w-wright-omega-spence-and-struve">Zeta, Lambert W, Wright omega, Spence and Struve<a class="anchor" aria-label="anchor" href="#zeta-lambert-w-wright-omega-spence-and-struve"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="zeta-functions.html">sc_zeta()</a></code> <code><a href="zeta-functions.html">sc_zetac()</a></code> <code><a href="zeta-functions.html">sc_lambertw()</a></code> <code><a href="zeta-functions.html">sc_wrightomega()</a></code> <code><a href="zeta-functions.html">sc_spence()</a></code> <code><a href="zeta-functions.html">sc_struve()</a></code> <code><a href="zeta-functions.html">sc_modstruve()</a></code>
 
         </dt>
         <dd>Zeta, Lambert W, Wright omega, Spence and Struve functions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="error-handling">Error handling<a class="anchor" aria-label="anchor" href="#error-handling"></a></h2>
 
-        <dt>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="errstate.html">sc_geterr()</a></code> <code><a href="errstate.html">sc_seterr()</a></code> <code><a href="errstate.html">sc_errstate()</a></code>
+
+        </dt>
+        <dd>Floating-point error handling</dd>
+      </dl></div><div class="section level2">
+      <h2 id="package-information">Package information<a class="anchor" aria-label="anchor" href="#package-information"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="zuspecial_info.html">zuspecial_info()</a></code>
 
         </dt>
         <dd>Versions and functions</dd>
+
+        <dt>
+
+          <code><a href="zuspecial-package.html">zuspecial</a></code> <code><a href="zuspecial-package.html">zuspecial-package</a></code>
+
+        </dt>
+        <dd>zuspecial: Special Functions from 'SciPy' for Real and Complex Arguments</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

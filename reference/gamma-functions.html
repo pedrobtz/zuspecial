@@ -22,6 +22,10 @@ complex; real input always stays real (sc_gamma(-1) is NaN)."></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/scipy.html">Translating from scipy.special</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -122,8 +126,7 @@ and <code>pbeta(x, a, b, lower.tail = FALSE)</code>. At the limits <code>a</code
 to 0 or <code>Inf</code>, SciPy's pointwise limits in <code>x</code> are returned.</p></li>
 <li><p><code>sc_betaincinv()</code>, <code>sc_betainccinv()</code>: their inverses in <code>x</code>. Base R:
 <code>qbeta(y, a, b)</code> and <code>qbeta(y, a, b, lower.tail = FALSE)</code>.</p></li>
-</ul><p>The incomplete beta functions and their inverses are evaluated, as in
-SciPy, with Boost.Math (from the BH package) rather than xsf.</p><ul><li><p><code>sc_binom()</code>: the binomial coefficient for real <code>x</code> and <code>y</code>. Base R:
+<li><p><code>sc_binom()</code>: the binomial coefficient for real <code>x</code> and <code>y</code>. Base R:
 <code><a href="https://rdrr.io/r/base/Special.html" class="external-link">choose()</a></code>.</p></li>
 <li><p><code>sc_poch()</code>: the Pochhammer symbol \(\Gamma(z + m) / \Gamma(z)\).</p></li>
 <li><p><code>sc_gammainc()</code>, <code>sc_gammaincc()</code>: the regularised lower and upper
@@ -132,7 +135,9 @@ incomplete gamma functions \(P(a, x)\) and \(Q(a, x)\). Base R:
 argument order.</p></li>
 <li><p><code>sc_gammaincinv()</code>, <code>sc_gammainccinv()</code>: their inverses in <code>x</code>. Base R:
 <code>qgamma(y, a)</code> and <code>qgamma(y, a, lower.tail = FALSE)</code>.</p></li>
-</ul><p>Arguments are recycled: each must have length one or the common length.
+</ul><p>The incomplete beta functions and their inverses are evaluated, as in
+SciPy, with Boost.Math (from the BH package) rather than xsf.</p>
+<p>Arguments are recycled: each must have length one or the common length.
 <code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
 does. Conditions the kernels raise, such as a pole, are handled as
@@ -147,6 +152,14 @@ evaluates <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link"
 <code>1e5</code>, as base R's own <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> shows there. Complex arguments with a part
 that large, and real ones where the kernel takes a sine of such a value,
 are correspondingly inaccurate on Windows only.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="other-packages">Other packages<a class="anchor" aria-label="anchor" href="#other-packages"></a></h2>
+
+
+<p>In <code>gsl</code>: <code>lngamma()</code>, <code>lngamma_complex()</code> (the complex
+<code>sc_loggamma()</code>), <code>psi()</code>, <code>lnbeta()</code>, <code>poch()</code>, <code>gamma_inc_P(a, x)</code> and
+<code>gamma_inc_Q(a, x)</code> in SciPy's argument order, and <code>beta_inc(a, b, x)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

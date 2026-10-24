@@ -90,6 +90,11 @@ beyond about `1e5`, as base R's own
 arguments with a part that large, and real ones where the kernel takes a
 sine of such a value, are correspondingly inaccurate on Windows only.
 
+## Other packages
+
+In `gsl`, for real arguments only: `erf()`, `erfc()`, `log_erfc()` and
+`dawson()`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#error-function-and-fresnel-integrals>

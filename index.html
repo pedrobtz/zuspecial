@@ -32,6 +32,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/scipy.html">Translating from scipy.special</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -51,22 +57,88 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of zuspecial is to …</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>R’s special functions are scattered. Base R has the gamma function and Bessel functions of real argument; complex Bessel functions, hypergeometric functions, elliptic integrals and the Lambert W function each live in their own package, or in <code>gsl</code>, which needs the GNU Scientific Library installed. And when a model is written in Python and checked in R, or the other way round, two libraries that disagree in the last digits are a needless source of doubt.</p>
+<p>zuspecial gives R the special functions of <a href="https://docs.scipy.org/doc/scipy/reference/special.html" class="external-link"><code>scipy.special</code></a>, computed by the same C++ kernels: <a href="https://github.com/scipy/xsf" class="external-link">xsf</a>, the library SciPy’s special functions are built from, at the commit SciPy 1.18.1 uses.</p>
+<ul>
+<li>
+<strong>SciPy’s values.</strong> Each function is tested against <a href="https://github.com/scipy/xsref" class="external-link">xsref</a>’s mpmath reference tables, under xsf’s own tolerances, and against SciPy 1.18.1 itself, on Linux, macOS and Windows.</li>
+<li>
+<strong>Real and complex arguments.</strong> Bessel, Hankel, Airy, gamma, error, exponential-integral, hypergeometric and zeta functions take complex arguments where SciPy does.</li>
+<li>
+<strong>SciPy’s names and argument order.</strong> <code>sc_jv(v, z)</code> is <code>scipy.special.jv(v, z)</code>, so code translates line by line.</li>
+<li>
+<strong>Ordinary R functions.</strong> Vectorised and recycled, <code>NA</code>-aware, keeping names and dimensions; floating-point conditions follow SciPy’s <code>seterr()</code>, as warnings or errors when asked for.</li>
+<li>
+<strong>A C interface.</strong> Other packages can call the functions from compiled code through <code>LinkingTo: zuspecial</code>.</li>
+</ul>
+<p>Nothing is needed at run time; Boost.Math headers, from the BH package, are needed to build it.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of zuspecial from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>zuspecial is not on CRAN yet. Install the development version from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"pedrobtz/zuspecial"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pedrobtz/zuspecial" class="external-link">zuspecial</a></span><span class="op">)</span></span>
-<span><span class="co">## basic example code</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pedrobtz/zuspecial" class="external-link">zuspecial</a></span><span class="op">)</span></span></code></pre></div>
+<p>Functions are vectorised, and take complex arguments where SciPy does:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gamma-functions.html">sc_gamma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1]  1.772454 24.000000</span></span>
+<span><span class="fu"><a href="reference/gamma-functions.html">sc_gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1i</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.4980157-0.1549498i</span></span></code></pre></div>
+<p>Arguments come in SciPy’s order, the order first for the Bessel functions, where base R’s <code><a href="https://rdrr.io/r/base/Bessel.html" class="external-link">besselJ()</a></code> puts it second:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/bessel-functions.html">sc_jv</a></span><span class="op">(</span><span class="fl">2.5</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.41271</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Bessel.html" class="external-link">besselJ</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2.5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.41271</span></span></code></pre></div>
+<p>As in SciPy, the type of the argument picks the result: the Bessel function of order 0.5 at -1 is <code>NaN</code> for a real <code>-1</code>, and a complex number for <code>-1+0i</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/bessel-functions.html">sc_jv</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] NaN</span></span>
+<span><span class="fu"><a href="reference/bessel-functions.html">sc_jv</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">0i</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 5.551115e-17+0.6713967i</span></span></code></pre></div>
+<p>Poles, overflow and loss of precision are silent by default, as in SciPy, and can be turned into warnings or errors:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gamma-functions.html">sc_gamma</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] NaN</span></span>
+<span><span class="fu"><a href="reference/errstate.html">sc_errstate</a></span><span class="op">(</span><span class="fu"><a href="reference/gamma-functions.html">sc_gamma</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>, singular <span class="op">=</span> <span class="st">"warn"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in sc_gamma(-1): sc_gamma: singular in 1 element, first at index 1.</span></span>
+<span><span class="co">#&gt; [1] NaN</span></span></code></pre></div>
+<p>Functions that return several values in SciPy return a named list:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="reference/airy-functions.html">sc_airy</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 4</span></span>
+<span><span class="co">#&gt;  $ ai : num 0.135</span></span>
+<span><span class="co">#&gt;  $ aip: num -0.159</span></span>
+<span><span class="co">#&gt;  $ bi : num 1.21</span></span>
+<span><span class="co">#&gt;  $ bip: num 0.932</span></span></code></pre></div>
+<p>Every function is <code>sc_</code> followed by its name in <code>scipy.special</code>, the alias SciPy’s own documentation uses (<code>import scipy.special as sc</code>).</p>
+</div>
+<div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
+<ul>
+<li>
+<a href="https://pedrobtz.github.io/zuspecial/articles/scipy.html">Translating from scipy.special</a>: names, argument types, error handling, multi-output functions, the C interface, and the few places zuspecial differs.</li>
+<li>The <a href="https://pedrobtz.github.io/zuspecial/reference/">reference index</a>, by family.</li>
+<li>
+<code><a href="reference/zuspecial_info.html">zuspecial_info()</a></code> for the versions and the table of functions.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
+</h2>
+<p>The kernels are SciPy’s <a href="https://github.com/scipy/xsf" class="external-link">xsf</a>, with its bundled Cephes, AMOS, specfun, Faddeeva and qd code, and Boost.Math for the functions SciPy evaluates with it. The reference values come from <a href="https://github.com/scipy/xsref" class="external-link">xsref</a>. zuspecial is also checked against the <code>gsl</code>, <code>Bessel</code>, <code>hypergeo</code>, <code>lamW</code>, <code>expint</code> and <code>Rmpfr</code> packages.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -106,6 +178,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/pedrobtz/zuspecial/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/pedrobtz/zuspecial/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/pedrobtz/zuspecial/actions/workflows/coverage.yaml" class="external-link"><img src="https://raw.githubusercontent.com/pedrobtz/zuspecial/gh-pages/badges/coverage.svg" alt="coverage"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 </ul>
 </div>
 

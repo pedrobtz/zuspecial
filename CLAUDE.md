@@ -34,8 +34,12 @@ Stage 3 the xsref and SciPy oracles; Stage 4 the incomplete gamma and
 beta, normal and Boost-backed functions; Stage 5 the Bessel, Hankel,
 spherical Bessel and Airy functions; Stage 6 the hypergeometric,
 elliptic, zeta, Lambert W, Wright omega, Spence and Struve functions (82
-in all). The roadmap in `.agents/roadmap.md` takes it to v0.1.0, tracked
-in [\#1](https://github.com/pedrobtz/zuspecial/issues/1).
+in all); Stage 7 the independent package and `Rmpfr` oracles; Stage 8
+the C table `zuspecial_api_v1`; Stage 9 the benchmarks (design §11), the
+README, the pkgdown reference index and the article
+`vignettes/articles/scipy.Rmd` (a pkgdown article, not an installed
+vignette). The roadmap in `.agents/roadmap.md` takes it to v0.1.0,
+tracked in [\#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
 ## Stage tracking
 

@@ -76,6 +76,20 @@ does; see
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
 for the conditions the kernels raise.
 
+## Branch cuts
+
+As in SciPy: the principal branch of `sc_lambertw()` (`k = 0`) has a
+branch cut on the real axis from \\-\infty\\ to \\-1/e\\, and every
+other branch one from \\-\infty\\ to 0; `sc_spence()` has a branch cut
+on the negative real axis.
+
+## Other packages
+
+In `gsl`, for real arguments: `zeta()`, `hzeta(s, q)`, `zetam1()` (the
+`sc_zetac()` of SciPy), `lambert_W0()` and `lambert_Wm1()` (branches 0
+and -1), and `dilog(x)`, which is `sc_spence(1 - x)`. In `lamW`:
+`lambertW0()` and `lambertWm1()`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions>

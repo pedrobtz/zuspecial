@@ -55,6 +55,12 @@ beyond about `1e5`, as base R's own
 arguments with a part that large, and real ones where the kernel takes a
 sine of such a value, are correspondingly inaccurate on Windows only.
 
+## Other packages
+
+In `gsl`, for real arguments: `expint_E1()`, `expint_Ei()` and
+`expint_En(n, x)`. In `expint`: `expint_E1()`, `expint_Ei()` and
+`expint_En()`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions>

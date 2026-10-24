@@ -114,6 +114,22 @@ beyond about `1e5`, as base R's own
 [`sin()`](https://rdrr.io/r/base/Trig.html) shows there. Arguments that
 large are correspondingly inaccurate on Windows only.
 
+## Branch cuts
+
+For complex `z`, as in SciPy: \\J_v\\ and \\I_v\\ are entire in `z` for
+a whole order `v`, and otherwise have a branch cut on the negative real
+axis; \\Y_v\\, \\K_v\\ and the Hankel functions have that cut for every
+order.
+
+## Other packages
+
+In `gsl`, for real arguments, in SciPy's order: `bessel_Jnu(nu, x)`,
+`bessel_Ynu()`, `bessel_Inu()`, `bessel_Knu()`, the scaled
+`bessel_Inu_scaled()` and `bessel_Knu_scaled()`, and `bessel_J0()` to
+`bessel_K1_scaled()`. In `Bessel`, for complex arguments, in base R's
+order: `BesselJ(z, nu)`, `BesselY()`, `BesselI()`, `BesselK()` and
+`BesselH(m, z, nu)`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#bessel-functions>

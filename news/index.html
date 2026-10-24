@@ -16,6 +16,10 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/scipy.html">Translating from scipy.special</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -46,6 +50,7 @@
 <li><p><code><a href="../reference/errstate.html">sc_geterr()</a></code>, <code><a href="../reference/errstate.html">sc_seterr()</a></code> and <code><a href="../reference/errstate.html">sc_errstate()</a></code> choose whether each kind of floating-point condition is ignored, warns or raises, after <code>scipy.special</code>.</p></li>
 <li><p>A registered C interface, <code>zuspecial_api_v1</code> (<code>inst/include/zuspecial.h</code>), lets other packages call 32 of the functions from C through <code>LinkingTo:</code>, each returning its value and the error code it raised.</p></li>
 <li><p><code><a href="../reference/zuspecial_info.html">zuspecial_info()</a></code> reports the vendored xsf commit, the SciPy release it matches, the compiler and the function table.</p></li>
+<li><p>Each help page names the counterparts in base R and in <code>gsl</code>, <code>Bessel</code>, <code>hypergeo</code>, <code>lamW</code> and <code>expint</code>, and the branch cuts SciPy documents. A new article, “Translating from scipy.special”, covers names, argument types, error handling, multi-output functions, the C interface and where zuspecial differs from SciPy.</p></li>
 </ul></div>
   </main></div>
 

@@ -32,6 +32,12 @@ or a complex vector for complex `z`, with `z`'s dimensions or names.
   \\Ai'(z) e^{\zeta}\\, \\Bi(z) e^{-\|\Re \zeta\|}\\ and \\Bi'(z)
   e^{-\|\Re \zeta\|}\\, with \\\zeta = \frac23 z^{3/2}\\.
 
+## Other packages
+
+In `gsl`, for real arguments: `airy_Ai()`, `airy_Bi()`,
+`airy_Ai_deriv()`, `airy_Bi_deriv()` and their `_scaled` forms. In
+`Bessel`, for complex arguments: `AiryA(z, deriv)` and `AiryB()`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.airy.html>

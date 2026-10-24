@@ -46,6 +46,17 @@ does; see
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
 for the conditions the kernels raise.
 
+## Branch cuts
+
+`sc_hyp2f1()` has a branch cut on the real axis from 1 to infinity, as
+in SciPy. `sc_hyp0f1()` and `sc_hyp1f1()` are entire in `z`.
+
+## Other packages
+
+In `gsl`, for real arguments: `hyperg_0F1()`, `hyperg_1F1()`,
+`hyperg_2F1()` and `hyperg_U()`. In `hypergeo`: `hypergeo(A, B, C, z)`,
+the Gauss function for complex `z`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#hypergeometric-functions>

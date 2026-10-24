@@ -48,6 +48,13 @@ does; see
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
 for the conditions the kernels raise.
 
+## Other packages
+
+In `gsl`, for real `x`: `bessel_jl(l, x)` and `bessel_yl()`, and the
+scaled `bessel_il_scaled()` and `bessel_kl_scaled()`, which are
+`sc_spherical_in(n, x) * exp(-abs(x))` and
+`sc_spherical_kn(n, x) * exp(x)`.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.spherical_jn.html>

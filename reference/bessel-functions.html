@@ -22,6 +22,10 @@ and accept only real arguments."></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/scipy.html">Translating from scipy.special</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -149,6 +153,26 @@ conditions the kernels raise.</p>
 evaluates <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> and <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos()</a></code> inaccurately for arguments beyond about
 <code>1e5</code>, as base R's own <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> shows there. Arguments that large are
 correspondingly inaccurate on Windows only.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="branch-cuts">Branch cuts<a class="anchor" aria-label="anchor" href="#branch-cuts"></a></h2>
+
+
+<p>For complex <code>z</code>, as in SciPy: \(J_v\) and \(I_v\) are entire in <code>z</code>
+for a whole order <code>v</code>, and otherwise have a branch cut on the negative
+real axis; \(Y_v\), \(K_v\) and the Hankel functions have that cut
+for every order.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="other-packages">Other packages<a class="anchor" aria-label="anchor" href="#other-packages"></a></h2>
+
+
+<p>In <code>gsl</code>, for real arguments, in SciPy's order: <code>bessel_Jnu(nu, x)</code>,
+<code>bessel_Ynu()</code>, <code>bessel_Inu()</code>, <code>bessel_Knu()</code>, the scaled
+<code>bessel_Inu_scaled()</code> and <code>bessel_Knu_scaled()</code>, and <code>bessel_J0()</code> to
+<code>bessel_K1_scaled()</code>. In <code>Bessel</code>, for complex arguments, in base R's
+order: <code>BesselJ(z, nu)</code>, <code>BesselY()</code>, <code>BesselI()</code>, <code>BesselK()</code> and
+<code>BesselH(m, z, nu)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
