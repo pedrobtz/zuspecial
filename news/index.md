@@ -122,6 +122,11 @@
   choose whether each kind of floating-point condition is ignored, warns
   or raises, after `scipy.special`.
 
+- A registered C interface, `zuspecial_api_v1`
+  (`inst/include/zuspecial.h`), lets other packages call 32 of the
+  functions from C through `LinkingTo:`, each returning its value and
+  the error code it raised.
+
 - [`zuspecial_info()`](https://pedrobtz.github.io/zuspecial/reference/zuspecial_info.md)
   reports the vendored xsf commit, the SciPy release it matches, the
   compiler and the function table.

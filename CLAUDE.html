@@ -107,6 +107,8 @@
 <li>
 <a href="src/zsp_wright.h">src/zsp_wright.h</a>, and in <a href="src/zsp_shim_hyper.h">src/zsp_shim_hyper.h</a> <code>hyp0f1</code>, <code>hyperu</code>, complex <code>spence</code>: code ported from SciPy where xsf lacks it, with NumPy’s complex <code>csqrt</code>/<code>cpow</code> from <a href="src/zsp_ccomplex.c">src/zsp_ccomplex.c</a> where the original used them. Keep ports line for line; parity depends on it.</li>
 <li>
+<a href="inst/include/zuspecial.h">inst/include/zuspecial.h</a> and <a href="src/zsp_api.c">src/zsp_api.c</a>: the public C table <code>zuspecial_api_v1</code>, registered in <code>R_init_zuspecial</code>; <code>tests/testthat/fixtures/zsconsumer</code> is a consumer package the tests build.</li>
+<li>
 <a href="src/zsp_boost.cpp">src/zsp_boost.cpp</a>: the six functions SciPy evaluates with Boost.Math (<code>LinkingTo: BH</code>), ported from SciPy’s <code>boost_special_functions.h</code>. A unit of its own: it includes no xsf kernels, only <code>xsf/error.h</code>.</li>
 <li>
 <a href="src/zsp_error.cpp">src/zsp_error.cpp</a>: defines <code>xsf::set_error</code> (declared because the build sets <code>SP_SPECFUN_ERROR</code>) and <code>zsp_err_take()</code>. It holds the only mutable state: a thread-local bitmask, bit <code>1 &lt;&lt; code</code> per <code>sf_error_t</code>.</li>
@@ -131,6 +133,8 @@
 <strong>Only <code>src/zsp_shim.cpp</code> includes xsf kernel headers.</strong> xsf defines non-inline functions in headers (<code>cephes::chbevl</code>, the <code>erfcx</code> in <code>faddeeva.h</code>, …), as SciPy builds it in one unit. A second translation unit that includes them fails to link with duplicate symbols.</li>
 <li>
 <strong><code>src/Makevars</code> and <code>src/Makevars.win</code> keep <code>-DNDEBUG</code>.</strong> Without it the bare <code>assert</code> in xsf’s <code>specfun/specfun.h</code> links <code>abort</code>, which CRAN’s compiled-code check rejects. <code>tools/check-symbols</code> catches it.</li>
+<li>
+<strong>The C table is append-only, and its header is plain C99.</strong> Never reorder or remove a member of <code>zuspecial_api</code>; append, and <code>struct_size</code> tells consumers. A layout change in <code>zuspecial_complex</code> means a new registered name (<code>zuspecial_api_v2</code>). The header includes no xsf, Boost or C++; <code>test-c-api.R</code> compiles it under <code>-std=c99 -pedantic</code>.</li>
 <li>
 <strong>No automatic complex promotion.</strong> Real input stays on the real path, so <code>sc_jv(0.5, -1)</code> is <code>NaN</code>, as in SciPy.</li>
 </ul></div>

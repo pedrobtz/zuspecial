@@ -155,6 +155,12 @@ The C++ side:
   [src/zsp_ccomplex.c](https://pedrobtz.github.io/zuspecial/src/zsp_ccomplex.c)
   where the original used them. Keep ports line for line; parity depends
   on it.
+- [inst/include/zuspecial.h](https://pedrobtz.github.io/zuspecial/inst/include/zuspecial.h)
+  and
+  [src/zsp_api.c](https://pedrobtz.github.io/zuspecial/src/zsp_api.c):
+  the public C table `zuspecial_api_v1`, registered in
+  `R_init_zuspecial`; `tests/testthat/fixtures/zsconsumer` is a consumer
+  package the tests build.
 - [src/zsp_boost.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_boost.cpp):
   the six functions SciPy evaluates with Boost.Math (`LinkingTo: BH`),
   ported from SciPy’s `boost_special_functions.h`. A unit of its own: it
@@ -199,6 +205,12 @@ code.
 - **`src/Makevars` and `src/Makevars.win` keep `-DNDEBUG`.** Without it
   the bare `assert` in xsf’s `specfun/specfun.h` links `abort`, which
   CRAN’s compiled-code check rejects. `tools/check-symbols` catches it.
+- **The C table is append-only, and its header is plain C99.** Never
+  reorder or remove a member of `zuspecial_api`; append, and
+  `struct_size` tells consumers. A layout change in `zuspecial_complex`
+  means a new registered name (`zuspecial_api_v2`). The header includes
+  no xsf, Boost or C++; `test-c-api.R` compiles it under
+  `-std=c99 -pedantic`.
 - **No automatic complex promotion.** Real input stays on the real path,
   so `sc_jv(0.5, -1)` is `NaN`, as in SciPy.
 
