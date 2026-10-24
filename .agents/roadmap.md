@@ -18,7 +18,7 @@ tables built in Stage 3.
 | --- | --- | --- | --- | --- | --- |
 | 0 | [Package identity](#stage-0--package-identity) | quick | [#2](https://github.com/pedrobtz/zuspecial/issues/2) | [#16](https://github.com/pedrobtz/zuspecial/pull/16) | 2026-10-23 |
 | 1 | [Vendored xsf and the build](#stage-1--vendored-xsf-and-the-build) | full | [#3](https://github.com/pedrobtz/zuspecial/issues/3) | [#17](https://github.com/pedrobtz/zuspecial/pull/17) | 2026-10-23 |
-| 2 | [Glue, error state, gamma and error functions](#stage-2--glue-error-state-gamma-and-error-functions) | full | [#4](https://github.com/pedrobtz/zuspecial/issues/4) | | |
+| 2 | [Glue, error state, gamma and error functions](#stage-2--glue-error-state-gamma-and-error-functions) | full | [#4](https://github.com/pedrobtz/zuspecial/issues/4) | [#18](https://github.com/pedrobtz/zuspecial/pull/18) | 2026-10-24 |
 | 3 | [Test oracles: xsref and SciPy values](#stage-3--test-oracles-xsref-and-scipy-values) | quick | [#5](https://github.com/pedrobtz/zuspecial/issues/5) | | |
 | 4 | [Incomplete gamma and beta, Boost backend, normal functions](#stage-4--incomplete-gamma-and-beta-boost-backend-normal-functions) | quick | [#6](https://github.com/pedrobtz/zuspecial/issues/6) | | |
 | 5 | [Bessel, Hankel, spherical Bessel, Airy](#stage-5--bessel-hankel-spherical-bessel-airy) | quick | [#7](https://github.com/pedrobtz/zuspecial/issues/7) | | |
@@ -180,6 +180,11 @@ tested, on the gamma, beta and error-function families.
   function (`gamma()`, `lgamma()`, `beta()`, `digamma()`, `choose()`).
 
 **Design.** §5, §6, §9; §2 (gamma, beta, error, exponential integrals).
+
+**Deviation (2026-10-24).** The xsf shim is one translation unit, not one
+per family: xsf's headers define non-inline functions, so two units that
+include them fail to link. Recorded in design §4. Compile time is
+re-measured in this stage's `symbols` run.
 
 ## Stage 3 — Test oracles: xsref and SciPy values
 

@@ -6,7 +6,8 @@
 # Copies include/xsf/** from the xsf commit that SciPy's subprojects/xsf
 # gitlink names at <scipy-tag>, without numpy.h (it includes Python.h) and
 # third_party/ (mdspan, reached only from numpy.h), into src/vendor/xsf/,
-# then rewrites tools/vendor/manifest.tsv and tools/vendor/checksums.sha256.
+# then rewrites tools/vendor/manifest.tsv, tools/vendor/checksums.sha256 and
+# src/zsp_xsf_version.h.
 # Run from the package root. Needs git, gh and shasum.
 set -eu
 
@@ -40,5 +41,13 @@ printf 'xsf\thttps://github.com/scipy/xsf\t%s\t%s\t%s\n' \
   "$xsf_commit" "$tag" "$scipy_commit" >> tools/vendor/manifest.tsv
 
 find "$dest" -type f | LC_ALL=C sort | xargs shasum -a 256 > tools/vendor/checksums.sha256
+
+# The versions zuspecial_info() reports. Outside the vendored tree, since
+# it is ours, not upstream's.
+cat > src/zsp_xsf_version.h <<EOH
+/* Written by tools/vendor/vendor-xsf; do not edit. */
+#define ZSP_XSF_COMMIT "$xsf_commit"
+#define ZSP_SCIPY_TAG "$tag"
+EOH
 
 echo "xsf $xsf_commit (SciPy $tag) vendored: $(find "$dest" -type f | wc -l | tr -d ' ') files"

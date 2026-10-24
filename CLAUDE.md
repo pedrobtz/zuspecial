@@ -25,8 +25,9 @@ licences (§12.2) are still open.
 ## Current state
 
 Scaffolded 2026-10-23 with `create-pkg.sh`; package identity and CI set up
-in Stage 0 (2026-10-23). No functionality yet. The roadmap in
-`.agents/roadmap.md` takes it to v0.1.0, tracked in
+in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue, the
+error state, and 21 gamma, error and exponential-integral functions. The
+roadmap in `.agents/roadmap.md` takes it to v0.1.0, tracked in
 [#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
 ## Stage tracking
@@ -95,28 +96,41 @@ on objects from `R CMD INSTALL`, never from `load_all()`.
 
 ## Architecture
 
-The full picture is `.agents/design.md` §4. Built so far:
+The full picture is `.agents/design.md` §4. Every exported function is one
+line over [R/eval.R](R/eval.R)'s `zsp_eval()`, which runs:
 
-- [src/zuspecial.c](src/zuspecial.c): `R_init_zuspecial`, the only exported
-  symbol, registers every `.Call` routine.
+1. [R/args.R](R/args.R) `zsp_prep()`: type checks, recycling, coercion,
+   real-or-complex choice, and the template whose attributes the result
+   takes.
+2. [src/zsp_glue.c](src/zsp_glue.c): one `.Call` loop per signature
+   (`zsp_call_d`, `_c`, `_dd`, `_ddd`, `_id`), which looks the kernel up by
+   SciPy name, sets `NA` without calling it, and attaches the error report
+   as attribute `zsp_err`.
+3. [R/conditions.R](R/conditions.R) `zsp_signal_report()`: one condition per
+   raised code, under the action [R/errstate.R](R/errstate.R) keeps in the
+   `zuspecial.errstate` option.
+
+The C++ side:
+
 - [src/zsp_shim.h](src/zsp_shim.h): the C/C++ boundary. Plain C types only;
   every function is `extern "C"` and `noexcept`.
-- `src/zsp_shim_<family>.cpp`: one translation unit per function family,
-  each wrapping xsf kernels. Only [src/zsp_shim_gamma.cpp](src/zsp_shim_gamma.cpp)
-  exists yet.
+- [src/zsp_shim.cpp](src/zsp_shim.cpp): the only translation unit that
+  includes xsf kernels. It includes one `src/zsp_shim_<family>.h` per
+  family, which must never be included anywhere else.
 - [src/zsp_error.cpp](src/zsp_error.cpp): defines `xsf::set_error`
   (declared because the build sets `SP_SPECFUN_ERROR`) and `zsp_err_take()`.
   It holds the only mutable state: a thread-local bitmask, bit `1 << code`
   per `sf_error_t`.
 - `src/vendor/xsf/include/`: the include root (`-Ivendor/xsf/include` in
   `src/Makevars`), since xsf includes itself as `"xsf/..."`.
-- [src/zsp_spike.c](src/zsp_spike.c): Stage 1's internal `gamma` routine,
-  replaced by the Stage 2 glue.
+
+Adding a function means a shim entry in its family header, a row in the
+glue's table for its signature, an `sc_` wrapper, and a row in
+[R/info.R](R/info.R)'s `zsp_functions`.
 
 ## Invariants that are easy to break
 
-These come from the design. Stage 1 put the shim boundary and `set_error` in
-code.
+These come from the design and from Stages 1 and 2, and all are now in code.
 
 - **No C++ crosses into C or R.** The shim is `extern "C"` and `noexcept`,
   catches Boost.Math exceptions into sf_error codes, and never calls R's API.
@@ -132,6 +146,10 @@ code.
   discriminator. Never reorder or remove members. A layout change in
   `zuspecial_complex` bumps the registered name `zuspecial_api_v1`.
   Consumers include only `inst/include/zuspecial.h`, never xsf or Boost.
+- **Only `src/zsp_shim.cpp` includes xsf kernel headers.** xsf defines
+  non-inline functions in headers (`cephes::chbevl`, the `erfcx` in
+  `faddeeva.h`, ...), as SciPy builds it in one unit. A second translation
+  unit that includes them fails to link with duplicate symbols.
 - **`src/Makevars` and `src/Makevars.win` keep `-DNDEBUG`.** Without it the
   bare `assert` in xsf's `specfun/specfun.h` links `abort`, which CRAN's
   compiled-code check rejects. `tools/check-symbols` catches it.
