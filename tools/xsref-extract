@@ -78,6 +78,12 @@ for (i in seq_len(nrow(fns))) {
     if (kind == "scipy") {
       meta <- arrow::read_parquet(out_path, as_data_frame = FALSE)$metadata
       entry$commit <- meta$scipy_version
+      entry$xsref_row <- out$xsref_row[rows]
+      err_cols <- grep("^err_", names(out), value = TRUE)
+      entry$err <- stats::setNames(
+        lapply(err_cols, function(col) out[[col]][rows]),
+        sub("^err_", "", err_cols)
+      )
     }
     if (kind == "xsref") {
       errs <- Sys.glob(file.path(base, paste0("Err_", sig, "_*.parquet")))

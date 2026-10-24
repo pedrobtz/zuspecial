@@ -9,7 +9,10 @@ Run with the SciPy release zuspecial's xsf pin comes from, for example:
 
 Inputs per function and signature: the xsref inputs, sampled as
 tools/xsref-extract samples them (cap 250), plus 200 random inputs from a
-fixed seed. Each Out_ table's metadata records the SciPy version.
+fixed seed. Each Out_ table's metadata records the SciPy version; its
+columns record, for rows taken from xsref, the xsref row (1-based, 0 for a
+random input) and xsref's recorded error on every platform (NaN for random
+inputs), from which the R test builds each row's tolerance.
 """
 
 import argparse
@@ -99,6 +102,12 @@ def main():
             ins = read_inputs(xsref / table / f"In_{sig}.parquet", types)
             keep = sample_rows(len(ins[0]))
             ins = [np.concatenate([x[keep], r]) for x, r in zip(ins, random_inputs(rng, types))]
+            pad = np.full(N_RANDOM, np.nan)
+            errs = {}
+            for path in sorted((xsref / table).glob(f"Err_{sig}_*.parquet")):
+                platform = path.stem[len(f"Err_{sig}_"):]
+                err = pq.read_table(path).column("err0").to_numpy()
+                errs[f"err_{platform}"] = np.concatenate([err[keep], pad])
             with np.errstate(all="ignore"):
                 values = fn(*ins)
             meta = {"scipy_version": scipy.__version__, "function": table}
@@ -107,6 +116,8 @@ def main():
             pq.write_table(pa.table(columns("in", ins)), dest / f"In_{sig}.parquet")
             o = columns("out", [values])
             o["fallback"] = np.zeros(len(values), dtype=bool)
+            o["xsref_row"] = np.concatenate([keep + 1, np.zeros(N_RANDOM, dtype=np.int64)])
+            o.update(errs)
             t = pa.table(o).replace_schema_metadata(meta)
             pq.write_table(t, dest / f"Out_{sig}.parquet")
             print(f"{table} {sig}: {len(values)} rows")

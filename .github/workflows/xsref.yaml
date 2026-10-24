@@ -40,8 +40,10 @@ jobs:
         shell: bash
         run: |
           commit=$(awk -F'\t' '$1 == "xsref" { print $3 }' tools/vendor/manifest.tsv)
+          # No leading slash: Git Bash on Windows would rewrite /tables/...
+          # into a Windows path.
           tables=$(tail -n +2 tools/xsref/functions.tsv | cut -f2 |
-            sed 's|.*|/tables/scipy_special_tests/&/|')
+            sed 's|.*|tables/scipy_special_tests/&/|')
           git init -q "$RUNNER_TEMP/xsref"
           cd "$RUNNER_TEMP/xsref"
           git remote add origin https://github.com/scipy/xsref
