@@ -6,7 +6,11 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
-library(testthat)
-library(zuspecial)
+# testthat is a Suggests: without it (CRAN's no-Suggests check), skip the
+# suite rather than fail.
+if (requireNamespace("testthat", quietly = TRUE)) {
+  library(testthat)
+  library(zuspecial)
 
-test_check("zuspecial")
+  test_check("zuspecial")
+}
