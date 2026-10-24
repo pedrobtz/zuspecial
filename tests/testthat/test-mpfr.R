@@ -114,11 +114,17 @@ test_that("explained disagreements: where xsf, and so SciPy, is less accurate", 
   # 5.7721605273286514e-11 for 1 - 1e-10, 5.9e-7 relative but 3.4e-17
   # absolute from MPFR, because Cephes' lgam forms log(gamma(x)) there.
   x <- 0.99999999989999999
-  expect_identical(sc_gammaln(x), 5.7721605273286514e-11)
+  # Compared with tolerance: the value is not bit-identical across platforms
+  # (libm, FMA); same-platform parity with SciPy is test-xsref.R's job.
+  expect_lt(abs(sc_gammaln(x) - 5.7721605273286514e-11), 1e-16)
   expect_lt(abs(sc_gammaln(x) - Rmpfr::asNumeric(lgamma(mpfr_200(x)))), 1e-16)
   # psi next to its pole at -3 is ill-conditioned; SciPy 1.18.1 gives the
   # same -9998.743581707211, 8.7e-14 relative from MPFR.
-  expect_identical(sc_psi(-2.9998999999999998), -9998.743581707211)
+  expect_equal(
+    sc_psi(-2.9998999999999998),
+    -9998.743581707211,
+    tolerance = 1e-12
+  )
   expect_lt(
     mpfr_rel_err(
       sc_psi(-2.9998999999999998),
