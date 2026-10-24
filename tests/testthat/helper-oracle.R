@@ -108,6 +108,22 @@ oracle_eval <- function(entry) {
   sc_errstate(do.call(fn, unname(entry$inputs)), all = "ignore")
 }
 
+# One entry per output. A multi-output function (airy) has a list of outputs
+# and of per-platform errors; each output is checked on its own, as
+# "<sig>#<k>", which is also how known-windows.tsv.gz names it.
+oracle_outputs <- function(entry, got) {
+  if (!is.list(entry$out)) {
+    return(list(list(entry = entry, got = got)))
+  }
+  lapply(seq_along(entry$out), function(k) {
+    part <- entry
+    part$out <- entry$out[[k]]
+    part$err <- lapply(entry$err, `[[`, k)
+    part$sig <- paste0(entry$sig, "#", k)
+    list(entry = part, got = got[[k]])
+  })
+}
+
 # The identity of each row: its xsref row number, or for a random SciPy
 # input its position in the seeded stream.
 oracle_ids <- function(entry) {
@@ -270,11 +286,19 @@ scipy_row_tol <- function(entry, same_platform) {
     return(rep_len(scipy_tol, length(entry$out)))
   }
   if (isTRUE(entry$no_xsref)) {
-    return(rep_len(if (same_platform) Inf else scipy_smoke_tol, length(entry$out)))
+    return(rep_len(
+      if (same_platform) Inf else scipy_smoke_tol,
+      length(entry$out)
+    ))
   }
-  mine <- entry$err[[xsf_platform()]] %||% entry$err[["other"]]
+  mine <- entry$err[["other"]]
   theirs <- entry$err[[if (same_platform) "msvc-windows-x86_64" else "other"]]
   bound <- xsf_tol(mine) + xsf_tol(theirs)
   bound[is.na(bound)] <- if (same_platform) Inf else 0
+  # Where the bound reaches 1, xsref allows either result to be wrong by
+  # 100% or more: near the zeros of airy at large negative x, say, where
+  # SciPy's MSVC build returns 0, zuspecial 1e-17 and mpmath 4e-15. Such a row
+  # has no correct digits to compare, so it is not compared.
+  bound[bound >= 1] <- Inf
   pmax(scipy_tol, bound)
 }

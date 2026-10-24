@@ -26,6 +26,12 @@ Patches:    tools/patches/*.patch, applied in order by tools/vendor/vendor-xsf.
             (https://github.com/scipy/xsf/issues/338). Drop it when a SciPy
             release's xsf includes a fix.
 
+  0002-bessel-float-to-int-conversion.patch (2026-10-24)
+            bessel.h, cephes/yv.h, amos/amos.h: three more conversions of
+            out-of-range doubles to int that the Bessel xsref inputs reach;
+            behaviour unchanged below 2^31, SciPy's values kept above it.
+            Added to scipy/xsf#338.
+
 Update procedure
 ----------------
 1. tools/vendor/vendor-xsf <scipy-tag>   (a SciPy release tag, e.g. v1.19.0);

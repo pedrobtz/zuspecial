@@ -50,10 +50,13 @@ if grep -rnE '#[[:space:]]*include[[:space:]]*[<"].*(numpy\.h|Python\.h|third_pa
   exit 1
 fi
 
-printf 'name\tupstream\tcommit\tscipy_tag\tscipy_commit\n' > tools/vendor/manifest.tsv
-printf 'xsf\thttps://github.com/scipy/xsf\t%s\t%s\t%s\n' \
-  "$xsf_commit" "$tag" "$scipy_commit" >> tools/vendor/manifest.tsv
-printf 'xsref\thttps://github.com/scipy/xsref\t%s\t%s\t%s\n' \
+# The patches applied, so the manifest alone says "upstream plus exactly
+# these" (and changes, as r-actions' vendor guard requires, with them).
+patches=$(for p in tools/patches/*.patch; do [ -e "$p" ] && basename "$p"; done | tr '\n' ' ' | sed 's/ $//')
+printf 'name\tupstream\tcommit\tscipy_tag\tscipy_commit\tpatches\n' > tools/vendor/manifest.tsv
+printf 'xsf\thttps://github.com/scipy/xsf\t%s\t%s\t%s\t%s\n' \
+  "$xsf_commit" "$tag" "$scipy_commit" "${patches:--}" >> tools/vendor/manifest.tsv
+printf 'xsref\thttps://github.com/scipy/xsref\t%s\t%s\t%s\t-\n' \
   "$xsref_commit" "$tag" "$scipy_commit" >> tools/vendor/manifest.tsv
 
 find "$dest" -type f | LC_ALL=C sort | xargs shasum -a 256 > tools/vendor/checksums.sha256

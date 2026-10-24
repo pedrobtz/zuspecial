@@ -25,7 +25,10 @@ small <- 0L
 for (i in seq_len(nrow(keys))) {
   k <- keys[i, ]
   rows <- report[report$r_name == k$r_name & report$sig == k$sig & report$kind == k$kind, ]
-  entry <- readRDS(file.path(dirs[[k$kind]], paste0(k$r_name, "__", k$sig, ".rds")))
+  # A multi-output function's outputs are checked as "<sig>#<k>"; the
+  # inputs, which are all this needs, are in the table "<sig>".
+  file_sig <- sub("#[0-9]+$", "", k$sig)
+  entry <- readRDS(file.path(dirs[[k$kind]], paste0(k$r_name, "__", file_sig, ".rds")))
   ids <- if (k$kind == "xsref") entry$rows else entry$xsref_row
   at <- match(rows$xsref_row, ids)
   stopifnot(!anyNA(at))

@@ -98,6 +98,18 @@ static const struct {
   {"ndtr", zsp_ndtr_d},         {"log_ndtr", zsp_log_ndtr_d},
   {"ndtri", zsp_ndtri_d},       {"ndtri_exp", zsp_ndtri_exp_d},
   {"erfinv", zsp_erfinv_d},
+  {"j0", zsp_j0_d},
+  {"j1", zsp_j1_d},
+  {"y0", zsp_y0_d},
+  {"y1", zsp_y1_d},
+  {"i0", zsp_i0_d},
+  {"i0e", zsp_i0e_d},
+  {"i1", zsp_i1_d},
+  {"i1e", zsp_i1e_d},
+  {"k0", zsp_k0_d},
+  {"k0e", zsp_k0e_d},
+  {"k1", zsp_k1_d},
+  {"k1e", zsp_k1e_d},
 };
 
 static const struct {
@@ -126,6 +138,14 @@ static const struct {
   {"gammaincinv", zsp_gammaincinv_dd},
   {"gammainccinv", zsp_gammainccinv_dd},
   {"owens_t", zsp_owens_t_dd},
+  {"jv", zsp_jv_dd},
+  {"yv", zsp_yv_dd},
+  {"iv", zsp_iv_dd},
+  {"kv", zsp_kv_dd},
+  {"jve", zsp_jve_dd},
+  {"yve", zsp_yve_dd},
+  {"ive", zsp_ive_dd},
+  {"kve", zsp_kve_dd},
 };
 
 static const struct {
@@ -144,6 +164,68 @@ static const struct {
   zsp_fn_id fn;
 } zsp_table_id[] = {
   {"expn", zsp_expn_id},
+  {"spherical_jn", zsp_spherical_jn_id},
+  {"spherical_jn_d", zsp_spherical_jn_d_id},
+  {"spherical_yn", zsp_spherical_yn_id},
+  {"spherical_yn_d", zsp_spherical_yn_d_id},
+  {"spherical_in", zsp_spherical_in_id},
+  {"spherical_in_d", zsp_spherical_in_d_id},
+  {"spherical_kn", zsp_spherical_kn_id},
+  {"spherical_kn_d", zsp_spherical_kn_d_id},
+};
+
+
+typedef zsp_complex (*zsp_fn_dc)(double, zsp_complex);
+typedef zsp_complex (*zsp_fn_ic)(int, zsp_complex);
+typedef void (*zsp_fn_d4)(double, double *);
+typedef void (*zsp_fn_c4)(zsp_complex, zsp_complex *);
+
+static const struct {
+  const char *name;
+  zsp_fn_dc fn;
+} zsp_table_dc[] = {
+  {"jv", zsp_jv_dc},
+  {"yv", zsp_yv_dc},
+  {"iv", zsp_iv_dc},
+  {"kv", zsp_kv_dc},
+  {"jve", zsp_jve_dc},
+  {"yve", zsp_yve_dc},
+  {"ive", zsp_ive_dc},
+  {"kve", zsp_kve_dc},
+  {"hankel1", zsp_hankel1_dc},
+  {"hankel2", zsp_hankel2_dc},
+  {"hankel1e", zsp_hankel1e_dc},
+  {"hankel2e", zsp_hankel2e_dc},
+};
+
+static const struct {
+  const char *name;
+  zsp_fn_ic fn;
+} zsp_table_ic[] = {
+  {"spherical_jn", zsp_spherical_jn_ic},
+  {"spherical_jn_d", zsp_spherical_jn_d_ic},
+  {"spherical_yn", zsp_spherical_yn_ic},
+  {"spherical_yn_d", zsp_spherical_yn_d_ic},
+  {"spherical_in", zsp_spherical_in_ic},
+  {"spherical_in_d", zsp_spherical_in_d_ic},
+  {"spherical_kn", zsp_spherical_kn_ic},
+  {"spherical_kn_d", zsp_spherical_kn_d_ic},
+};
+
+static const struct {
+  const char *name;
+  zsp_fn_d4 fn;
+} zsp_table_d4[] = {
+  {"airy", zsp_airy_d4},
+  {"airye", zsp_airye_d4},
+};
+
+static const struct {
+  const char *name;
+  zsp_fn_c4 fn;
+} zsp_table_c4[] = {
+  {"airy", zsp_airy_c4},
+  {"airye", zsp_airye_c4},
 };
 
 SEXP zsp_call_d(SEXP name, SEXP x) {
@@ -277,6 +359,153 @@ SEXP zsp_call_id(SEXP name, SEXP k, SEXP x) {
       continue;
     }
     po[i] = fn(pk[i], px[i]);
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_dc(SEXP name, SEXP v, SEXP z) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_dc, zsp_fn_dc, nm);
+  R_xlen_t n = XLENGTH(z);
+  zsp_check(v, REALSXP, n);
+  zsp_check(z, CPLXSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(CPLXSXP, n));
+  const double *pv = REAL(v);
+  const Rcomplex *pz = COMPLEX(z);
+  Rcomplex *po = COMPLEX(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pv[i]) || R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
+      po[i].r = NA_REAL;
+      po[i].i = NA_REAL;
+      continue;
+    }
+    zsp_complex arg;
+    arg.re = pz[i].r;
+    arg.im = pz[i].i;
+    zsp_complex res = fn(pv[i], arg);
+    po[i].r = res.re;
+    po[i].i = res.im;
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_ic(SEXP name, SEXP k, SEXP z) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_ic, zsp_fn_ic, nm);
+  R_xlen_t n = XLENGTH(z);
+  zsp_check(k, INTSXP, n);
+  zsp_check(z, CPLXSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(CPLXSXP, n));
+  const int *pk = INTEGER(k);
+  const Rcomplex *pz = COMPLEX(z);
+  Rcomplex *po = COMPLEX(out);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (pk[i] == NA_INTEGER || R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
+      po[i].r = NA_REAL;
+      po[i].i = NA_REAL;
+      continue;
+    }
+    zsp_complex arg;
+    arg.re = pz[i].r;
+    arg.im = pz[i].i;
+    zsp_complex res = fn(pk[i], arg);
+    po[i].r = res.re;
+    po[i].i = res.im;
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+/* Four outputs (airy, airye): a list of four vectors, with the report on
+   the list. */
+SEXP zsp_call_d4(SEXP name, SEXP x) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_d4, zsp_fn_d4, nm);
+  R_xlen_t n = XLENGTH(x);
+  zsp_check(x, REALSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, 4));
+  double *po[4];
+  for (int j = 0; j < 4; j++) {
+    SET_VECTOR_ELT(out, j, Rf_allocVector(REALSXP, n));
+    po[j] = REAL(VECTOR_ELT(out, j));
+  }
+  const double *px = REAL(x);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(px[i])) {
+      for (int j = 0; j < 4; j++) {
+        po[j][i] = NA_REAL;
+      }
+      continue;
+    }
+    double res[4];
+    fn(px[i], res);
+    for (int j = 0; j < 4; j++) {
+      po[j][i] = res[j];
+    }
+    unsigned int bits = zsp_err_take();
+    if (bits) {
+      zsp_note(&r, bits, i);
+    }
+  }
+  zsp_attach(out, &r);
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP zsp_call_c4(SEXP name, SEXP z) {
+  const char *nm = zsp_name(name);
+  ZSP_LOOKUP(zsp_table_c4, zsp_fn_c4, nm);
+  R_xlen_t n = XLENGTH(z);
+  zsp_check(z, CPLXSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, 4));
+  Rcomplex *po[4];
+  for (int j = 0; j < 4; j++) {
+    SET_VECTOR_ELT(out, j, Rf_allocVector(CPLXSXP, n));
+    po[j] = COMPLEX(VECTOR_ELT(out, j));
+  }
+  const Rcomplex *pz = COMPLEX(z);
+  zsp_report r = {{0}, {0}};
+  zsp_err_take();
+  for (R_xlen_t i = 0; i < n; i++) {
+    if (R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
+      for (int j = 0; j < 4; j++) {
+        po[j][i].r = NA_REAL;
+        po[j][i].i = NA_REAL;
+      }
+      continue;
+    }
+    zsp_complex arg;
+    arg.re = pz[i].r;
+    arg.im = pz[i].i;
+    zsp_complex res[4];
+    fn(arg, res);
+    for (int j = 0; j < 4; j++) {
+      po[j][i].r = res[j].re;
+      po[j][i].i = res[j].im;
+    }
     unsigned int bits = zsp_err_take();
     if (bits) {
       zsp_note(&r, bits, i);

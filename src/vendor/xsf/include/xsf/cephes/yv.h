@@ -25,8 +25,8 @@ namespace cephes {
         double y, t;
         int n;
 
-        n = v;
-        if (n == v) {
+        n = std::fabs(v) < 2147483648.0 ? static_cast<int>(v) : 0;
+        if (std::fabs(v) < 2147483648.0 && n == v) {
             y = yn(n, x);
             return (y);
         } else if (v == std::floor(v)) {

@@ -466,7 +466,9 @@ below is the RFC as drafted.
   `cephes/beta.h` and `faddeeva.h`, undefined behaviour that clang's UBSan
   reports and CRAN's UBSan check would. The patch guards them without
   changing results; it is reported upstream and listed in
-  `src/vendor/PROVENANCE`.
+  `src/vendor/PROVENANCE`. Stage 5 adds `0002` for three more such sites the
+  Bessel inputs reach (`bessel.h`, `cephes/yv.h`, one of ten in
+  `amos/amos.h`; the other nine are reached by no test and left alone).
 - Re-vendoring follows SciPy releases rather than xsf commits, after the
   full suite including the SciPy-parity tables (§10).
 
@@ -505,6 +507,14 @@ carry the same fields.
     64 ulps on the same platform.
   A table's worst recorded error is no use as a tolerance: it is `Inf` for
   12 of the 32 tables. On macOS x86_64 agreement is bit for bit.
+- **Platform tables (2026-10-24, Stage 5).** The xsref check uses xsref's
+  `other` table on every platform, not the one for the platform. Those
+  tables describe xsf's own CI toolchains; zuspecial is built with R's
+  compilers and flags, the case `other` is for. On Linux one complex
+  `iv(36.27, -2.237)` row of 1 005 413 was 1.6e-14 from mpmath against the
+  `gcc-linux-x86_64` table's 6.5e-15, while agreeing with SciPy's Linux
+  build within 64 ulps; on no row is a platform table above `other`.
+  Precision is held by the same-platform SciPy check.
 - **Windows (2026-10-24).** Rtools45 uses mingw-w64 v11, whose `sin` and
   `cos` lose accuracy from |x| ~ 1e5 (about 18 ulps at 1e5, 400 at 1e8)
   and are wrong in value and sign beyond ~1e15, as base R's `sin()` is on

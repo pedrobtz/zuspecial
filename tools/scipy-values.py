@@ -122,10 +122,15 @@ def main():
             if has_xsref:
                 for path in sorted((xsref / table).glob(f"Err_{sig}_*.parquet")):
                     platform = path.stem[len(f"Err_{sig}_"):]
-                    err = pq.read_table(path).column("err0").to_numpy()
-                    errs[f"err_{platform}"] = np.concatenate([err[keep], pad])
+                    t = pq.read_table(path)
+                    for col in t.column_names:  # err0, err1, ... one per output
+                        k = col[len("err"):]
+                        err = t.column(col).to_numpy()
+                        errs[f"err{k}_{platform}"] = np.concatenate([err[keep], pad])
             with np.errstate(all="ignore"):
                 values = fn(*ins)
+            # airy and airye return a tuple of four arrays.
+            values = values if isinstance(values, tuple) else (values,)
             meta = {
                 "scipy_version": scipy.__version__,
                 "function": name,
@@ -134,8 +139,8 @@ def main():
             dest = out / (table if has_xsref else name)
             dest.mkdir(parents=True, exist_ok=True)
             pq.write_table(pa.table(columns("in", ins)), dest / f"In_{sig}.parquet")
-            o = columns("out", [values])
-            o["fallback"] = np.zeros(len(values), dtype=bool)
+            o = columns("out", list(values))
+            o["fallback"] = np.zeros(len(values[0]), dtype=bool)
             o["xsref_row"] = np.concatenate([keep + 1, np.zeros(n_random, dtype=np.int64)])
             # Stable identity of a random input: its position in this table's
             # seeded stream (1-based; 0 for an xsref row).
@@ -143,7 +148,7 @@ def main():
             o.update(errs)
             t = pa.table(o).replace_schema_metadata(meta)
             pq.write_table(t, dest / f"Out_{sig}.parquet")
-            print(f"{name} {sig}: {len(values)} rows")
+            print(f"{name} {sig}: {len(values[0])} rows")
 
 
 if __name__ == "__main__":

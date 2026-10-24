@@ -48,3 +48,30 @@ test_that("two- and three-argument loops and the integer-order loop", {
 test_that("an unknown kernel is an error before the loop", {
   expect_error(.Call(zsp_call_d, "nosuch", 1), "nosuch")
 })
+
+test_that("order-real, argument-complex loop handles NA in either argument", {
+  out <- .Call(
+    zsp_call_dc,
+    "jv",
+    c(0, NA, 1),
+    complex(real = c(1, 1, NA), imaginary = 0)
+  )
+  expect_equal(Re(out[1]), besselJ(1, 0), tolerance = 1e-14)
+  expect_identical(out[2:3], c(NA_complex_, NA_complex_))
+})
+
+test_that("integer-order complex loop", {
+  out <- .Call(zsp_call_ic, "spherical_jn", c(0L, NA), c(1 + 0i, 1 + 0i))
+  expect_equal(Re(out[1]), sin(1), tolerance = 1e-14)
+  expect_identical(out[2], NA_complex_)
+})
+
+test_that("four-output loops return four vectors and one report", {
+  out <- .Call(zsp_call_d4, "airy", c(0, NA))
+  expect_length(out, 4)
+  expect_equal(out[[1]][1], 1 / (3^(2 / 3) * gamma(2 / 3)), tolerance = 1e-14)
+  expect_identical(vapply(out, function(x) x[2], 0), rep(NA_real_, 4))
+  outc <- .Call(zsp_call_c4, "airy", c(0 + 0i, NA))
+  expect_type(outc[[3]], "complex")
+  expect_identical(outc[[4]][2], NA_complex_)
+})

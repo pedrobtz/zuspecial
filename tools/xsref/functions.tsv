@@ -34,3 +34,33 @@ sc_betaincc	-	d_d_d-d	pos pos unit
 sc_betaincinv	-	d_d_d-d	pos pos unit
 sc_betainccinv	-	d_d_d-d	pos pos unit
 sc_erfinv	-	d-d	unitpm
+sc_jv	cyl_bessel_j	d_d-d,d_cd-cd	real pos,real complex
+sc_yv	cyl_bessel_y	d_d-d,d_cd-cd	real pos,real complex
+sc_iv	cyl_bessel_i	d_d-d,d_cd-cd	real pos,real complex
+sc_kv	cyl_bessel_k	d_d-d,d_cd-cd	real pos,real complex
+sc_jve	cyl_bessel_je	d_d-d,d_cd-cd	real pos,real complex
+sc_yve	cyl_bessel_ye	d_d-d,d_cd-cd	real pos,real complex
+sc_ive	cyl_bessel_ie	d_d-d,d_cd-cd	real pos,real complex
+sc_kve	cyl_bessel_ke	d_d-d,d_cd-cd	real pos,real complex
+sc_hankel1	cyl_hankel_1	d_cd-cd	real complex
+sc_hankel2	cyl_hankel_2	d_cd-cd	real complex
+sc_hankel1e	cyl_hankel_1e	d_cd-cd	real complex
+sc_hankel2e	cyl_hankel_2e	d_cd-cd	real complex
+sc_j0	cyl_bessel_j0	d-d	real
+sc_j1	cyl_bessel_j1	d-d	real
+sc_y0	cyl_bessel_y0	d-d	pos
+sc_y1	cyl_bessel_y1	d-d	pos
+sc_i0	cyl_bessel_i0	d-d	real
+sc_i0e	cyl_bessel_i0e	d-d	real
+sc_i1	cyl_bessel_i1	d-d	real
+sc_i1e	cyl_bessel_i1e	d-d	real
+sc_k0	cyl_bessel_k0	d-d	pos
+sc_k0e	cyl_bessel_k0e	d-d	pos
+sc_k1	cyl_bessel_k1	d-d	pos
+sc_k1e	cyl_bessel_k1e	d-d	pos
+sc_spherical_jn	-	p_d-d,p_cd-cd	int pos,int complex
+sc_spherical_yn	-	p_d-d,p_cd-cd	int pos,int complex
+sc_spherical_in	-	p_d-d,p_cd-cd	int pos,int complex
+sc_spherical_kn	-	p_d-d,p_cd-cd	int pos,int complex
+sc_airy	airy	d-d_d_d_d,cd-cd_cd_cd_cd	real,complex
+sc_airye	airye	d-d_d_d_d,cd-cd_cd_cd_cd	real,complex

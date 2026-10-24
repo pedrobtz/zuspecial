@@ -111,3 +111,15 @@ zsp_whole <- function(x, name, call = NULL) {
   }
   as.integer(x)
 }
+
+# A logical flag argument: TRUE or FALSE, nothing else.
+zsp_check_flag <- function(x, name, call = NULL) {
+  if (!is.logical(x) || length(x) != 1L || is.na(x)) {
+    zsp_abort(
+      "zuspecial_invalid_argument",
+      sprintf("`%s` must be `TRUE` or `FALSE`.", name),
+      argument = name,
+      call = call
+    )
+  }
+}
