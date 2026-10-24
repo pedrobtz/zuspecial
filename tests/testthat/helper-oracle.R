@@ -143,10 +143,17 @@ oracle_ids <- function(entry) {
 # so elsewhere the same rows are checked like any other; and on every
 # platform each listed row must have an argument of at least 1e5, so the list
 # can only ever hold large-argument rows.
-known_windows <- utils::read.delim(
-  test_path("known-windows.tsv.gz"),
-  comment.char = "#"
-)
+# The header lines start with "#"; the data may contain "#" too, in the
+# signatures of multi-output functions ("d_d-d_d_d_d#2"), so comments are
+# dropped by line rather than by read.delim's comment.char.
+known_windows <- local({
+  lines <- readLines(test_path("known-windows.tsv.gz"))
+  utils::read.delim(
+    text = lines[!startsWith(lines, "#")],
+    comment.char = "",
+    colClasses = c("character", "character", "character", "integer", "integer")
+  )
+})
 
 oracle_known <- function(entry, ids) {
   known <- known_windows[
