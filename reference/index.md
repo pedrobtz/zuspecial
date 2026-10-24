@@ -1,1 +1,34 @@
-# 
+# Package index
+
+## All functions
+
+- [`sc_erf()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_erfc()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_erfcx()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_erfi()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_erfcinv()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_dawsn()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_wofz()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  [`sc_voigt_profile()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  : Error functions and the Faddeeva function
+- [`sc_geterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
+  [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
+  [`sc_errstate()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
+  : Floating-point error handling
+- [`sc_exp1()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md)
+  [`sc_expi()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md)
+  [`sc_expn()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md)
+  : Exponential integrals
+- [`sc_gamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_gammaln()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_loggamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_rgamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_gammasgn()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_psi()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_beta()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_betaln()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_binom()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  [`sc_poch()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  : Gamma and beta functions
+- [`zuspecial_info()`](https://pedrobtz.github.io/zuspecial/reference/zuspecial_info.md)
+  : Versions and functions

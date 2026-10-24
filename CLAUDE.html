@@ -43,7 +43,7 @@
 </div>
 <div class="section level2">
 <h2 id="current-state">Current state<a class="anchor" aria-label="anchor" href="#current-state"></a></h2>
-<p>Scaffolded 2026-10-23 with <code>create-pkg.sh</code>; package identity and CI set up in Stage 0 (2026-10-23). No functionality yet. The roadmap in <code>.agents/roadmap.md</code> takes it to v0.1.0, tracked in <a href="https://github.com/pedrobtz/zuspecial/issues/1" class="external-link">#1</a>.</p>
+<p>Scaffolded 2026-10-23 with <code>create-pkg.sh</code>; package identity and CI set up in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue, the error state, and 21 gamma, error and exponential-integral functions. The roadmap in <code>.agents/roadmap.md</code> takes it to v0.1.0, tracked in <a href="https://github.com/pedrobtz/zuspecial/issues/1" class="external-link">#1</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="stage-tracking">Stage tracking<a class="anchor" aria-label="anchor" href="#stage-tracking"></a></h2>
@@ -85,23 +85,27 @@
 </div>
 <div class="section level2">
 <h2 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a></h2>
-<p>The full picture is <code>.agents/design.md</code> §4. Built so far:</p>
-<ul><li>
-<a href="src/zuspecial.c">src/zuspecial.c</a>: <code>R_init_zuspecial</code>, the only exported symbol, registers every <code>.Call</code> routine.</li>
+<p>The full picture is <code>.agents/design.md</code> §4. Every exported function is one line over <a href="R/eval.R">R/eval.R</a>’s <code>zsp_eval()</code>, which runs:</p>
+<ol style="list-style-type: decimal"><li>
+<a href="R/args.R">R/args.R</a> <code>zsp_prep()</code>: type checks, recycling, coercion, real-or-complex choice, and the template whose attributes the result takes.</li>
 <li>
+<a href="src/zsp_glue.c">src/zsp_glue.c</a>: one <code>.Call</code> loop per signature (<code>zsp_call_d</code>, <code>_c</code>, <code>_dd</code>, <code>_ddd</code>, <code>_id</code>), which looks the kernel up by SciPy name, sets <code>NA</code> without calling it, and attaches the error report as attribute <code>zsp_err</code>.</li>
+<li>
+<a href="R/conditions.R">R/conditions.R</a> <code>zsp_signal_report()</code>: one condition per raised code, under the action <a href="R/errstate.R">R/errstate.R</a> keeps in the <code>zuspecial.errstate</code> option.</li>
+</ol><p>The C++ side:</p>
+<ul><li>
 <a href="src/zsp_shim.h">src/zsp_shim.h</a>: the C/C++ boundary. Plain C types only; every function is <code>extern "C"</code> and <code>noexcept</code>.</li>
 <li>
-<code>src/zsp_shim_&lt;family&gt;.cpp</code>: one translation unit per function family, each wrapping xsf kernels. Only <a href="src/zsp_shim_gamma.cpp">src/zsp_shim_gamma.cpp</a> exists yet.</li>
+<a href="src/zsp_shim.cpp">src/zsp_shim.cpp</a>: the only translation unit that includes xsf kernels. It includes one <code>src/zsp_shim_&lt;family&gt;.h</code> per family, which must never be included anywhere else.</li>
 <li>
 <a href="src/zsp_error.cpp">src/zsp_error.cpp</a>: defines <code>xsf::set_error</code> (declared because the build sets <code>SP_SPECFUN_ERROR</code>) and <code>zsp_err_take()</code>. It holds the only mutable state: a thread-local bitmask, bit <code>1 &lt;&lt; code</code> per <code>sf_error_t</code>.</li>
 <li>
 <code>src/vendor/xsf/include/</code>: the include root (<code>-Ivendor/xsf/include</code> in <code>src/Makevars</code>), since xsf includes itself as <code>"xsf/..."</code>.</li>
-<li>
-<a href="src/zsp_spike.c">src/zsp_spike.c</a>: Stage 1’s internal <code>gamma</code> routine, replaced by the Stage 2 glue.</li>
-</ul></div>
+</ul><p>Adding a function means a shim entry in its family header, a row in the glue’s table for its signature, an <code>sc_</code> wrapper, and a row in <a href="R/info.R">R/info.R</a>’s <code>zsp_functions</code>.</p>
+</div>
 <div class="section level2">
 <h2 id="invariants-that-are-easy-to-break">Invariants that are easy to break<a class="anchor" aria-label="anchor" href="#invariants-that-are-easy-to-break"></a></h2>
-<p>These come from the design. Stage 1 put the shim boundary and <code>set_error</code> in code.</p>
+<p>These come from the design and from Stages 1 and 2, and all are now in code.</p>
 <ul><li>
 <strong>No C++ crosses into C or R.</strong> The shim is <code>extern "C"</code> and <code>noexcept</code>, catches Boost.Math exceptions into sf_error codes, and never calls R’s API. An R error raised under a C++ frame longjmps past destructors.</li>
 <li>
@@ -112,6 +116,8 @@
 <strong><code>xsf::set_error</code> only records.</strong> It writes a thread-local accumulator and never signals, allocates or calls R. Conditions are signalled once per call, after the loop, under the R function’s name.</li>
 <li>
 <strong>The C table is append-only.</strong> <code>struct_size</code> is the only version discriminator. Never reorder or remove members. A layout change in <code>zuspecial_complex</code> bumps the registered name <code>zuspecial_api_v1</code>. Consumers include only <code>inst/include/zuspecial.h</code>, never xsf or Boost.</li>
+<li>
+<strong>Only <code>src/zsp_shim.cpp</code> includes xsf kernel headers.</strong> xsf defines non-inline functions in headers (<code>cephes::chbevl</code>, the <code>erfcx</code> in <code>faddeeva.h</code>, …), as SciPy builds it in one unit. A second translation unit that includes them fails to link with duplicate symbols.</li>
 <li>
 <strong><code>src/Makevars</code> and <code>src/Makevars.win</code> keep <code>-DNDEBUG</code>.</strong> Without it the bare <code>assert</code> in xsf’s <code>specfun/specfun.h</code> links <code>abort</code>, which CRAN’s compiled-code check rejects. <code>tools/check-symbols</code> catches it.</li>
 <li>

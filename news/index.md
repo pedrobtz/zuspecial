@@ -2,4 +2,45 @@
 
 ## zuspecial 0.0.0.9000
 
-- Initial development version; no user-facing functions yet.
+- Gamma and beta functions:
+  [`sc_gamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_gammaln()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_loggamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_rgamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_gammasgn()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_psi()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_beta()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_betaln()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  [`sc_binom()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
+  and
+  [`sc_poch()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
+  with complex arguments where SciPy has them.
+
+- Error functions:
+  [`sc_erf()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md),
+  [`sc_erfc()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md),
+  [`sc_erfcx()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md),
+  [`sc_erfi()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md),
+  [`sc_erfcinv()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md),
+  [`sc_dawsn()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md),
+  the Faddeeva function
+  [`sc_wofz()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
+  and
+  [`sc_voigt_profile()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md).
+
+- Exponential integrals:
+  [`sc_exp1()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md),
+  [`sc_expi()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md)
+  and
+  [`sc_expn()`](https://pedrobtz.github.io/zuspecial/reference/exponential-integrals.md).
+
+- [`sc_geterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md),
+  [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
+  and
+  [`sc_errstate()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
+  choose whether each kind of floating-point condition is ignored, warns
+  or raises, after `scipy.special`.
+
+- [`zuspecial_info()`](https://pedrobtz.github.io/zuspecial/reference/zuspecial_info.md)
+  reports the vendored xsf commit, the SciPy release it matches, the
+  compiler and the function table.
