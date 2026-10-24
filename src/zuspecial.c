@@ -20,6 +20,7 @@ SEXP zsp_call_cd(SEXP name, SEXP, SEXP);
 SEXP zsp_call_cid(SEXP name, SEXP, SEXP, SEXP);
 SEXP zsp_call_dd4(SEXP name, SEXP u, SEXP m);
 SEXP zsp_info(void);
+void zsp_register_api(void);
 SEXP zsp_boost_version_r(void);
 
 static const R_CallMethodDef call_methods[] = {
@@ -47,4 +48,5 @@ void attribute_visible R_init_zuspecial(DllInfo *dll) {
   R_registerRoutines(dll, NULL, call_methods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
+  zsp_register_api();
 }
