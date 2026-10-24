@@ -87,3 +87,6 @@ xsf_platform <- function() {
     "other"
   }
 }
+
+# Base R has %||% only from 4.4; the package supports 4.1.
+`%||%` <- function(x, y) if (is.null(x)) y else x
