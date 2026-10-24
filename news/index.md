@@ -80,6 +80,32 @@
   [`sc_airye()`](https://pedrobtz.github.io/zuspecial/reference/airy-functions.md),
   returning `ai`, `aip`, `bi` and `bip` as a named list.
 
+- Hypergeometric functions
+  [`sc_hyp0f1()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md),
+  [`sc_hyp1f1()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md),
+  [`sc_hyp2f1()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md)
+  and
+  [`sc_hyperu()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md);
+  elliptic integrals
+  [`sc_ellipk()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md),
+  [`sc_ellipkm1()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md),
+  [`sc_ellipkinc()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md),
+  [`sc_ellipe()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md),
+  [`sc_ellipeinc()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  and the Jacobi functions
+  [`sc_ellipj()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md);
+  [`sc_zeta()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  (Riemann and Hurwitz),
+  [`sc_zetac()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md),
+  [`sc_lambertw()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md),
+  [`sc_wrightomega()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md),
+  [`sc_spence()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md),
+  [`sc_struve()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  and
+  [`sc_modstruve()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md).
+  The Carlson elliptic integrals wait for a SciPy release whose xsf has
+  them.
+
 - Normal distribution functions:
   [`sc_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
   [`sc_log_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),

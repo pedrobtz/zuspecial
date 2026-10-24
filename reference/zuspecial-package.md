@@ -68,3 +68,9 @@ Other contributors:
   \[copyright holder\]
 
 - Albert Steppi (ndtri_exp, ported from SciPy) \[copyright holder\]
+
+- Piers Lawrence (Wright omega function, ported from SciPy) \[copyright
+  holder\]
+
+- NumPy developers (complex power, ported from NumPy) \[copyright
+  holder\]

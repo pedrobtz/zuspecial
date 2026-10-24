@@ -32,9 +32,10 @@ up in Stage 0 (2026-10-23). Stage 2 (2026-10-24) added the R and C glue,
 the error state, and 21 gamma, error and exponential-integral functions;
 Stage 3 the xsref and SciPy oracles; Stage 4 the incomplete gamma and
 beta, normal and Boost-backed functions; Stage 5 the Bessel, Hankel,
-spherical Bessel and Airy functions (65 in all). The roadmap in
-`.agents/roadmap.md` takes it to v0.1.0, tracked in
-[\#1](https://github.com/pedrobtz/zuspecial/issues/1).
+spherical Bessel and Airy functions; Stage 6 the hypergeometric,
+elliptic, zeta, Lambert W, Wright omega, Spence and Struve functions (82
+in all). The roadmap in `.agents/roadmap.md` takes it to v0.1.0, tracked
+in [\#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
 ## Stage tracking
 
@@ -146,8 +147,16 @@ The C++ side:
   the only translation unit that includes xsf kernels. It includes one
   `src/zsp_shim_<family>.h` per family, which must never be included
   anywhere else.
+- [src/zsp_wright.h](https://pedrobtz.github.io/zuspecial/src/zsp_wright.h),
+  and in
+  [src/zsp_shim_hyper.h](https://pedrobtz.github.io/zuspecial/src/zsp_shim_hyper.h)
+  `hyp0f1`, `hyperu`, complex `spence`: code ported from SciPy where xsf
+  lacks it, with NumPy’s complex `csqrt`/`cpow` from
+  [src/zsp_ccomplex.c](https://pedrobtz.github.io/zuspecial/src/zsp_ccomplex.c)
+  where the original used them. Keep ports line for line; parity depends
+  on it.
 - [src/zsp_boost.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_boost.cpp):
-  the five functions SciPy evaluates with Boost.Math (`LinkingTo: BH`),
+  the six functions SciPy evaluates with Boost.Math (`LinkingTo: BH`),
   ported from SciPy’s `boost_special_functions.h`. A unit of its own: it
   includes no xsf kernels, only `xsf/error.h`.
 - [src/zsp_error.cpp](https://pedrobtz.github.io/zuspecial/src/zsp_error.cpp):

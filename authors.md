@@ -46,6 +46,12 @@
 - **Albert Steppi**. Copyright holder.  
   ndtri_exp, ported from SciPy
 
+- **Piers Lawrence**. Copyright holder.  
+  Wright omega function, ported from SciPy
+
+- **NumPy developers**. Copyright holder.  
+  complex power, ported from NumPy
+
 ## Citation
 
 Source:

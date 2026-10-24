@@ -55,6 +55,13 @@ library(zuspecial)
   [`sc_k1()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md)
   [`sc_k1e()`](https://pedrobtz.github.io/zuspecial/reference/bessel-functions.md)
   : Bessel and Hankel functions
+- [`sc_ellipk()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  [`sc_ellipkm1()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  [`sc_ellipkinc()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  [`sc_ellipe()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  [`sc_ellipeinc()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  [`sc_ellipj()`](https://pedrobtz.github.io/zuspecial/reference/elliptic-functions.md)
+  : Elliptic integrals and Jacobi elliptic functions
 - [`sc_erf()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
   [`sc_erfc()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
   [`sc_erfcx()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md)
@@ -92,6 +99,11 @@ library(zuspecial)
   [`sc_betaincinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
   [`sc_betainccinv()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md)
   : Gamma and beta functions
+- [`sc_hyp0f1()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md)
+  [`sc_hyp1f1()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md)
+  [`sc_hyp2f1()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md)
+  [`sc_hyperu()`](https://pedrobtz.github.io/zuspecial/reference/hypergeometric-functions.md)
+  : Hypergeometric functions
 - [`sc_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
   [`sc_log_ndtr()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
   [`sc_ndtri()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)
@@ -103,6 +115,14 @@ library(zuspecial)
   [`sc_spherical_in()`](https://pedrobtz.github.io/zuspecial/reference/spherical-bessel.md)
   [`sc_spherical_kn()`](https://pedrobtz.github.io/zuspecial/reference/spherical-bessel.md)
   : Spherical Bessel functions
+- [`sc_zeta()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  [`sc_zetac()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  [`sc_lambertw()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  [`sc_wrightomega()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  [`sc_spence()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  [`sc_struve()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  [`sc_modstruve()`](https://pedrobtz.github.io/zuspecial/reference/zeta-functions.md)
+  : Zeta, Lambert W, Wright omega, Spence and Struve functions
 - [`zuspecial_info()`](https://pedrobtz.github.io/zuspecial/reference/zuspecial_info.md)
   : Versions and functions
 
