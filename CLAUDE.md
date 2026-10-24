@@ -91,6 +91,18 @@ tools/vendor/verify               # vendored tree matches the checksums
 R CMD INSTALL . && tools/check-symbols src   # forbidden imports, shim state
 ```
 
+Regenerating the test tables, after a function is added or the pin moves
+(xsref sparse-checked out at the commit in `tools/vendor/manifest.tsv`):
+
+```sh
+tools/xsref-extract --source <xsref>/tables/scipy_special_tests --kind xsref \
+  --commit <xsref-commit> --out tests/testthat/xsref
+uv run --no-project --python 3.12 --with scipy==1.18.1 --with pyarrow \
+  python tools/scipy-values.py --xsref <xsref>/tables/scipy_special_tests \
+  --functions tools/xsref/functions.tsv --out <tmp>
+tools/xsref-extract --source <tmp> --kind scipy --cap 0 --out tests/testthat/scipy
+```
+
 `devtools::load_all()` builds with `-UNDEBUG`, so run `tools/check-symbols`
 on objects from `R CMD INSTALL`, never from `load_all()`.
 
@@ -125,8 +137,9 @@ The C++ side:
   `src/Makevars`), since xsf includes itself as `"xsf/..."`.
 
 Adding a function means a shim entry in its family header, a row in the
-glue's table for its signature, an `sc_` wrapper, and a row in
-[R/info.R](R/info.R)'s `zsp_functions`.
+glue's table for its signature, an `sc_` wrapper, a row in
+[R/info.R](R/info.R)'s `zsp_functions`, and a row in
+`tools/xsref/functions.tsv` with regenerated test tables.
 
 ## Invariants that are easy to break
 
@@ -170,12 +183,21 @@ These come from the design and from Stages 1 and 2, and all are now in code.
 - **Borrow a conformance suite before writing one.** Mainstream
   implementations in Python, Java, Go or Node usually ship a test corpus.
   Use it as an oracle rather than inventing cases by hand. zuspecial's is
-  xsref (mpmath reference values, under xsf's `4 * max(eps, recorded)`
-  rule); it has no tables for the Boost-backed functions, which are checked
-  against values from the pinned SciPy instead (design §10).
-- **Helpers live in `tests/testthat/helper-*.R`.** None yet.
-- **Keep the suite inside the CRAN time budget.** None yet; the design's
-  target is under 15 s.
+  xsref: mpmath reference values, checked under xsf's `4 * max(eps,
+  recorded)` rule against the `Err_` table for this platform. A second
+  oracle is SciPy 1.18.1 itself, within 64 ulps, on the same inputs plus
+  seeded random ones. Both live as `.rds` samples in
+  `tests/testthat/xsref/` and `tests/testthat/scipy/`, listed in
+  `tools/xsref/functions.tsv`; the full xsref set runs in `xsref.yaml`.
+  xsref has no tables for the Boost-backed functions (Stage 4), which only
+  the SciPy tables cover.
+- **Helpers live in `tests/testthat/helper-*.R`.**
+  [helper-oracle.R](tests/testthat/helper-oracle.R) ports xsf's
+  `extended_relative_error` (`xsf_rel_err()`), its tolerance
+  (`xsf_tol()`) and its platform choice (`xsf_platform()`). Change them
+  only to follow xsf.
+- **Keep the suite inside the CRAN time budget.** About 1.5 s locally
+  (2026-10-24); the design's limit is 15 s.
 
 ## Definition of done
 

@@ -476,6 +476,24 @@ carry the same fields.
 
 ## 10. Testing
 
+**As built (2026-10-24, Stage 3).**
+
+- The xsref pin is the commit xsf's own `pixi.toml` clones at the vendored
+  xsf commit: `4e9b234` for `f7b85f5`, not `b511621`, which goes with
+  SciPy `main`'s xsf. `tools/vendor/vendor-xsf` records it, and
+  `zuspecial_info()` reports it.
+- `tools/xsref-extract` reads Parquet with `arrow`, as a tool only, and
+  writes one `.rds` per function and signature. No value passes through
+  text: R's parser loses subnormals in hex floats. The shipped sample is
+  250 evenly spaced rows per table: 208 KB of xsref and 284 KB of SciPy
+  values for the 21 Stage 2 functions.
+- Agreement with SciPy is required within 64 ulps, not within the
+  table's worst recorded error: that error is `Inf` for 12 of the 32
+  tables, so it bounds nothing. On macOS x86_64 the agreement is bit for
+  bit on every row.
+- `sc_expn` is tested on xsref's integer-`n` table only; its float-`n`
+  table holds non-whole orders, which zuspecial refuses (§6.2).
+
 - **xsref**, the primary oracle: mpmath reference values for the cases
   that were in `scipy.special`'s own tests, stored as Parquet under
   `src/xsref/tables/scipy_special_tests/<xsf kernel>/` with `In_`,
