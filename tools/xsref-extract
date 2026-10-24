@@ -70,6 +70,9 @@ for (i in seq_len(nrow(fns))) {
     stopifnot(nrow(inp) == nrow(out))
     rows <- sample_rows(nrow(inp))
 
+    # One output: a vector; several (airy): a list of vectors, as are the
+    # error columns err0, err1, ...
+    outs <- lapply(columns(out, "out"), `[`, rows)
     entry <- list(
       r_name = fns$r_name[[i]],
       sig = sig,
@@ -78,7 +81,7 @@ for (i in seq_len(nrow(fns))) {
       n_total = nrow(inp),
       rows = rows,
       inputs = lapply(columns(inp, "in"), `[`, rows),
-      out = columns(out, "out")[[1]][rows],
+      out = if (length(outs) == 1L) outs[[1]] else outs,
       fallback = if ("fallback" %in% names(out)) out$fallback[rows] else logical(length(rows))
     )
     if (kind == "scipy") {
@@ -87,19 +90,23 @@ for (i in seq_len(nrow(fns))) {
       entry$no_xsref <- identical(meta$xsref, "none")
       entry$xsref_row <- out$xsref_row[rows]
       entry$random_id <- out$random_id[rows]
-      err_cols <- grep("^err_", names(out), value = TRUE)
-      entry$err <- stats::setNames(
-        lapply(err_cols, function(col) out[[col]][rows]),
-        sub("^err_", "", err_cols)
-      )
+      # err<k>_<platform>: the xsref error of output k on that platform.
+      err_cols <- grep("^err[0-9]+_", names(out), value = TRUE)
+      platforms <- unique(sub("^err[0-9]+_", "", err_cols))
+      entry$err <- stats::setNames(lapply(platforms, function(p) {
+        cols <- err_cols[sub("^err[0-9]+_", "", err_cols) == p]
+        cols <- cols[order(as.integer(sub("^err([0-9]+)_.*$", "\\1", cols)))]
+        e <- lapply(cols, function(col) out[[col]][rows])
+        if (length(e) == 1L) e[[1]] else e
+      }), platforms)
     }
     if (kind == "xsref") {
       errs <- Sys.glob(file.path(base, paste0("Err_", sig, "_*.parquet")))
       platforms <- sub(paste0("^Err_", sig, "_(.*)\\.parquet$"), "\\1", basename(errs))
-      entry$err <- stats::setNames(
-        lapply(errs, function(p) read_table(p)$err0[rows]),
-        platforms
-      )
+      entry$err <- stats::setNames(lapply(errs, function(p) {
+        e <- lapply(columns(read_table(p), "err"), `[`, rows)
+        if (length(e) == 1L) e[[1]] else e
+      }), platforms)
       stopifnot("other" %in% platforms)
     }
     saveRDS(

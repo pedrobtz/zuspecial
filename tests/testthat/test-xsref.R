@@ -8,10 +8,12 @@ test_that("every function matches xsref within xsf's tolerance", {
   expect_gt(length(files), 0)
   platform <- xsf_platform()
   for (file in files) {
-    entry <- readRDS(file)
-    got <- oracle_eval(entry)
-    recorded <- entry$err[[platform]] %||% entry$err[["other"]]
-    oracle_check(entry, got, xsf_tol(recorded))
+    whole <- readRDS(file)
+    for (part in oracle_outputs(whole, oracle_eval(whole))) {
+      entry <- part$entry
+      recorded <- entry$err[[platform]] %||% entry$err[["other"]]
+      oracle_check(entry, part$got, xsf_tol(recorded))
+    }
   }
 })
 
@@ -21,11 +23,14 @@ test_that("every function agrees with SciPy 1.18.1", {
   files <- list.files(dir, pattern = "\\.rds$", full.names = TRUE)
   expect_gt(length(files), 0)
   for (file in files) {
-    entry <- readRDS(file)
-    got <- oracle_eval(entry)
-    if (!same_platform && !isTRUE(entry$no_xsref)) {
-      expect_true(all(entry$xsref_row > 0))
+    whole <- readRDS(file)
+    if (!same_platform && !isTRUE(whole$no_xsref)) {
+      expect_true(all(whole$xsref_row > 0))
     }
-    oracle_check(entry, got, scipy_row_tol(entry, same_platform))
+    for (part in oracle_outputs(whole, oracle_eval(whole))) {
+      oracle_check(
+        part$entry, part$got, scipy_row_tol(part$entry, same_platform)
+      )
+    }
   }
 })

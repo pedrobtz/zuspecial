@@ -108,6 +108,22 @@ oracle_eval <- function(entry) {
   sc_errstate(do.call(fn, unname(entry$inputs)), all = "ignore")
 }
 
+# One entry per output. A multi-output function (airy) has a list of outputs
+# and of per-platform errors; each output is checked on its own, as
+# "<sig>#<k>", which is also how known-windows.tsv.gz names it.
+oracle_outputs <- function(entry, got) {
+  if (!is.list(entry$out)) {
+    return(list(list(entry = entry, got = got)))
+  }
+  lapply(seq_along(entry$out), function(k) {
+    part <- entry
+    part$out <- entry$out[[k]]
+    part$err <- lapply(entry$err, `[[`, k)
+    part$sig <- paste0(entry$sig, "#", k)
+    list(entry = part, got = got[[k]])
+  })
+}
+
 # The identity of each row: its xsref row number, or for a random SciPy
 # input its position in the seeded stream.
 oracle_ids <- function(entry) {
