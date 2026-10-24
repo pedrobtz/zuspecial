@@ -256,9 +256,13 @@ scipy_tol <- 64 * .Machine$double.eps
 
 # Functions xsref has no table for (the Boost-backed ones, log_ndtr,
 # ndtri_exp) ship random rows only. Nothing records their error, so across
-# platforms they get a smoke check at a relative 1e-12, while CI holds them to
-# 64 ulps on the same platform.
-scipy_smoke_tol <- 1e-12
+# platforms they get a smoke check that catches a wrong kernel or broken glue
+# (errors of order 1), at a relative 1e-6; their precision is held by CI, at
+# 64 ulps against SciPy on the same platform. 1e-12 was too strict: complex
+# log_ndtr(5.47 - 0.119i) is about 2.3e-8 computed as log(1 + w), and its
+# imaginary part differs between macOS arm64 and x86_64 by 1e-16 absolute,
+# 4.9e-9 relative, with zuspecial and SciPy agreeing on each platform.
+scipy_smoke_tol <- 1e-6
 
 scipy_row_tol <- function(entry, same_platform) {
   windows <- .Platform$OS.type == "windows"
