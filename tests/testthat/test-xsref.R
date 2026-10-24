@@ -12,19 +12,79 @@ oracle_eval <- function(entry) {
   sc_errstate(do.call(fn, unname(entry$inputs)), all = "ignore")
 }
 
-oracle_report <- function(entry, got, err, tol, n = 5) {
-  bad <- which(!(err <= tol))
+# The identity of each row: its xsref row number, or for a random SciPy
+# input its position in the seeded stream.
+oracle_ids <- function(entry) {
+  if (entry$kind == "xsref") {
+    data.frame(xsref_row = as.integer(entry$rows), random_id = 0L)
+  } else {
+    data.frame(
+      xsref_row = as.integer(entry$xsref_row),
+      random_id = as.integer(entry$random_id %||% 0L)
+    )
+  }
+}
+
+# Rows listed in known-windows.tsv: on Windows, Rtools' mingw-w64 v11 sin and
+# cos lose accuracy from |x| ~ 1e5 and are wrong beyond ~1e15, which these
+# rows' large complex arguments reach (design 10). The list applies on
+# Windows only, so elsewhere the same rows are checked like any other.
+oracle_known <- function(entry, ids) {
+  if (.Platform$OS.type != "windows") {
+    return(logical(nrow(ids)))
+  }
+  known <- utils::read.delim(test_path("known-windows.tsv"), comment.char = "#")
+  known <- known[known$r_name == entry$r_name & known$sig == entry$sig, ]
+  paste(ids$xsref_row, ids$random_id) %in%
+    paste(known$xsref_row, known$random_id)
+}
+
+oracle_check <- function(entry, got, tol) {
+  err <- xsf_rel_err(got, entry$out)
+  ids <- oracle_ids(entry)
+  known <- oracle_known(entry, ids)
+  outside <- !(err <= tol)
+
+  report <- Sys.getenv("ZUSPECIAL_ORACLE_REPORT")
+  if (nzchar(report) && any(outside)) {
+    rows <- data.frame(
+      r_name = entry$r_name, sig = entry$sig, kind = entry$kind,
+      ids[outside, ], err = err[outside], tol = tol[outside],
+      known = known[outside]
+    )
+    utils::write.table(
+      rows, report, sep = "\t", quote = FALSE, row.names = FALSE,
+      append = file.exists(report), col.names = !file.exists(report)
+    )
+  }
+
+  ok <- all(!outside | known)
+  expect(ok, if (ok) "" else oracle_report(entry, got, err, tol, outside & !known))
+  if (any(known) && identical(Sys.getenv("ZUSPECIAL_KNOWN_STRICT"), "true")) {
+    stale <- known & !outside
+    expect(
+      !any(stale),
+      sprintf(
+        "%s %s: %d rows listed in known-windows.tsv now pass; remove them.",
+        entry$r_name, entry$sig, sum(stale)
+      )
+    )
+  }
+}
+
+oracle_report <- function(entry, got, err, tol, bad, n = 5) {
+  bad <- which(bad)
   shown <- utils::head(bad, n)
   rows <- vapply(shown, function(i) {
     ins <- vapply(entry$inputs, function(x) format(x[[i]], digits = 17), "")
     sprintf(
       "  row %d: in = (%s) got = %s want = %s err = %.3g tol = %.3g%s",
-      entry$rows[[i]], paste(ins, collapse = ", "),
+      i, paste(ins, collapse = ", "),
       format(got[[i]], digits = 17), format(entry$out[[i]], digits = 17),
       err[[i]], tol[[i]], if (entry$fallback[[i]]) " [fallback]" else ""
     )
   }, "")
-  random <- if (is.null(entry$xsref_row)) 0L else sum(entry$xsref_row[bad] == 0)
+  random <- if (is.null(entry$random_id)) 0L else sum(entry$random_id[bad] > 0)
   sprintf(
     "%s %s: %d of %d rows outside tolerance (%d random; %d fallback rows in table)\n%s",
     entry$r_name, entry$sig, length(bad), length(err), random,
@@ -40,11 +100,8 @@ test_that("every function matches xsref within xsf's tolerance", {
   for (file in files) {
     entry <- readRDS(file)
     got <- oracle_eval(entry)
-    err <- xsf_rel_err(got, entry$out)
     recorded <- entry$err[[platform]] %||% entry$err[["other"]]
-    tol <- xsf_tol(recorded)
-    ok <- all(err <= tol)
-    expect(ok, if (ok) "" else oracle_report(entry, got, err, tol))
+    oracle_check(entry, got, xsf_tol(recorded))
   }
 })
 
@@ -80,12 +137,9 @@ test_that("every function agrees with SciPy 1.18.1", {
   for (file in files) {
     entry <- readRDS(file)
     got <- oracle_eval(entry)
-    err <- xsf_rel_err(got, entry$out)
     if (!same_platform) {
       expect_true(all(entry$xsref_row > 0))
     }
-    tol <- scipy_row_tol(entry, same_platform)
-    ok <- all(err <= tol)
-    expect(ok, if (ok) "" else oracle_report(entry, got, err, tol))
+    oracle_check(entry, got, scipy_row_tol(entry, same_platform))
   }
 })

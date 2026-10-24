@@ -1,0 +1,4 @@
+# Rows that fail on Windows only, because Rtools' mingw-w64 v11 sin and cos
+# lose accuracy for large arguments (design 10). Applied on Windows only.
+# Re-check when Rtools moves to mingw-w64 v12 (sin/cos from UCRT).
+r_name	sig	xsref_row	random_id	reason

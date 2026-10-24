@@ -123,6 +123,9 @@ def main():
             o = columns("out", [values])
             o["fallback"] = np.zeros(len(values), dtype=bool)
             o["xsref_row"] = np.concatenate([keep + 1, np.zeros(a.random, dtype=np.int64)])
+            # Stable identity of a random input: its position in this table's
+            # seeded stream (1-based; 0 for an xsref row).
+            o["random_id"] = np.concatenate([np.zeros(len(keep), dtype=np.int64), np.arange(1, a.random + 1)])
             o.update(errs)
             t = pa.table(o).replace_schema_metadata(meta)
             pq.write_table(t, dest / f"Out_{sig}.parquet")
