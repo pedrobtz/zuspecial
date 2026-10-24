@@ -30,3 +30,7 @@ jobs:
          {"os": "windows-latest", "r": "devel"},
          {"os": "ubuntu-latest", "r": "release"},
          {"os": "ubuntu-latest", "r": "oldrel-1"}]
+      # R-hub's nosuggests image (hard dependencies only) and nold image (R
+      # built --disable-long-double). Full profile only.
+      nosuggests: true
+      nold: true
