@@ -1,0 +1,89 @@
+#!/usr/bin/env Rscript
+# The performance targets of design section 11, measured against the
+# installed zuspecial. Base R timing only: each case is the median of `reps`
+# runs. Prints a Markdown table for the design; a missed target is reported,
+# never hidden.
+#
+# Usage: tools/run-benchmarks [reps]   (default 15)
+
+reps <- as.integer(commandArgs(trailingOnly = TRUE)[1])
+if (is.na(reps)) reps <- 15L
+suppressMessages(library(zuspecial))
+
+time_of <- function(expr) {
+  f <- function() NULL
+  body(f) <- substitute(expr)
+  environment(f) <- parent.frame()
+  f() # warm up
+  # Repeat the expression until one sample takes at least 50 ms, so the
+  # clock's resolution does not dominate; report seconds per evaluation.
+  k <- 1L
+  repeat {
+    t0 <- proc.time()[["elapsed"]]
+    for (i in seq_len(k)) f()
+    if (proc.time()[["elapsed"]] - t0 >= 0.05) break
+    k <- k * 2L
+  }
+  stats::median(vapply(seq_len(reps), function(r) {
+    t0 <- proc.time()[["elapsed"]]
+    for (i in seq_len(k)) f()
+    (proc.time()[["elapsed"]] - t0) / k
+  }, numeric(1)))
+}
+
+# The C loop alone: the registered routines the sc_ functions call.
+zsp_call_d <- get("zsp_call_d", envir = asNamespace("zuspecial"))
+zsp_call_dd <- get("zsp_call_dd", envir = asNamespace("zuspecial"))
+zsp_call <- function(name, x) .Call(zsp_call_d, name, x)
+
+set.seed(20261024)
+rows <- list()
+add <- function(case, ours, theirs, ratio, target, met) {
+  rows[[length(rows) + 1L]] <<- data.frame(
+    case = case, ours_ms = round(1e3 * ours, 3), other_ms = round(1e3 * theirs, 3),
+    ratio = round(ratio, 2), target = target, met = met
+  )
+}
+
+# 1. The R layer's overhead over the C loop alone, for long vectors.
+for (n in c(1e4, 1e5, 1e6)) {
+  x <- stats::runif(n, 0.1, 50)
+  t_r <- time_of(sc_gamma(x))
+  t_c <- time_of(zsp_call("gamma", x))
+  add(sprintf("sc_gamma, n = %g: R layer over the C loop", n),
+    t_r, t_c, t_r / t_c, "<= 1.10", t_r / t_c <= 1.10)
+}
+
+# 2. Against base R on real input (different algorithms: a guard against glue
+# overhead, not a promise of speed).
+n <- 1e5
+x <- stats::runif(n, 0.1, 50)
+t1 <- time_of(sc_gamma(x)); t2 <- time_of(gamma(x))
+add("sc_gamma vs gamma", t1, t2, t1 / t2, "<= 2", t1 / t2 <= 2)
+t1 <- time_of(sc_gammaln(x)); t2 <- time_of(lgamma(x))
+add("sc_gammaln vs lgamma", t1, t2, t1 / t2, "<= 2", t1 / t2 <= 2)
+v <- stats::runif(n, 0, 10)
+t1 <- time_of(sc_jv(v, x)); t2 <- time_of(besselJ(x, v))
+add("sc_jv vs besselJ", t1, t2, t1 / t2, "<= 2", t1 / t2 <= 2)
+# Where sc_jv's time goes: the R layer over the C loop, for the same input.
+t3 <- time_of(.Call(zsp_call_dd, "jv", v, x))
+add("sc_jv, n = 1e5: R layer over the C loop", t1, t3, t1 / t3, "<= 1.10", t1 / t3 <= 1.10)
+
+# 3. Complex jv against Bessel::BesselJ.
+if (requireNamespace("Bessel", quietly = TRUE)) {
+  z <- complex(real = stats::runif(1e4, -20, 20), imaginary = stats::runif(1e4, -20, 20))
+  t1 <- time_of(sc_jv(1.5, z)); t2 <- time_of(Bessel::BesselJ(z, 1.5))
+  add("sc_jv vs Bessel::BesselJ, complex, n = 1e4", t1, t2, t1 / t2, "<= 1", t1 / t2 <= 1)
+}
+
+out <- do.call(rbind, rows)
+cat(sprintf("zuspecial %s, %s, R %s, %s; median of %d runs.\n\n",
+  utils::packageVersion("zuspecial"), zuspecial_info()$compiler,
+  getRversion(), R.version$platform, reps))
+cat("| Case | zuspecial (ms) | other (ms) | ratio | target | met |\n")
+cat("| --- | ---: | ---: | ---: | --- | --- |\n")
+for (i in seq_len(nrow(out))) {
+  r <- out[i, ]
+  cat(sprintf("| %s | %.3f | %.3f | %.2f | %s | %s |\n", r$case, r$ours_ms,
+    r$other_ms, r$ratio, r$target, if (r$met) "yes" else "**no**"))
+}

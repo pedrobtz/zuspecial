@@ -623,6 +623,30 @@ different algorithm, so not a promise of speed, only a guard against
 glue overhead); `sc_jv()` on complex input is no slower than `Bessel`'s
 `BesselJ()`. A missed target is reported, not hidden by relaxing it.
 
+**Measured (2026-10-24, Stage 9)** with `tools/run-benchmarks 25`:
+
+zuspecial 0.0.0.9000, clang 17.0.0 (clang-1700.6.4.2), R 4.5.2, x86_64-apple-darwin20; median of 25 runs.
+
+| Case | zuspecial (ms) | other (ms) | ratio | target | met |
+| --- | ---: | ---: | ---: | --- | --- |
+| sc_gamma, n = 10000: R layer over the C loop | 0.445 | 0.406 | 1.10 | <= 1.10 | yes |
+| sc_gamma, n = 100000: R layer over the C loop | 4.000 | 4.000 | 1.00 | <= 1.10 | yes |
+| sc_gamma, n = 1e+06: R layer over the C loop | 37.500 | 37.000 | 1.01 | <= 1.10 | yes |
+| sc_gamma vs gamma | 4.000 | 4.500 | 0.89 | <= 2 | yes |
+| sc_gammaln vs lgamma | 2.656 | 3.938 | 0.67 | <= 2 | yes |
+| sc_jv vs besselJ | 79.000 | 29.000 | 2.72 | <= 2 | **no** |
+| sc_jv, n = 1e5: R layer over the C loop | 79.000 | 80.000 | 0.99 | <= 1.10 | yes |
+| sc_jv vs Bessel::BesselJ, complex, n = 1e4 | 9.000 | 61.000 | 0.15 | <= 1 | yes |
+
+The one missed target: real `sc_jv()` takes 2.7 times `besselJ()`. The R
+layer adds nothing to it (0.99 of the C loop alone), so the time is xsf's
+kernel, Cephes `jv` with AMOS for large orders, against R's own algorithm;
+it is SciPy's speed too, and parity rules out swapping the kernel. Getting
+the R layer within target took two changes in Stage 9: `rep_len()` and the
+`NaN`-order scan skipped when not needed, and `zsp_prep()`/`zsp_eval()`
+written with plain loops rather than `vapply()` (45 to 28 microseconds per
+call). Runs on this laptop vary by about 10 %.
+
 ## 12. Build, portability and CRAN
 
 ### 12.1 The Boost.Math backend

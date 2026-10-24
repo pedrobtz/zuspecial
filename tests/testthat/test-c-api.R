@@ -2,17 +2,6 @@
 # sees it. These need the installed package, which R CMD check provides and
 # devtools::load_all() does not, so they skip there.
 
-skip_if_not_installed_layout <- function() {
-  skip_if(
-    !nzchar(system.file("Meta", "package.rds", package = "zuspecial")),
-    "not an installed layout"
-  )
-}
-
-r_cmd <- function(...) {
-  system2(file.path(R.home("bin"), "R"), c(...), stdout = TRUE, stderr = TRUE)
-}
-
 test_that("the public header compiles on its own as C99", {
   skip_if_not_installed_layout()
   skip_on_cran()

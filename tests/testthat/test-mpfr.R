@@ -3,17 +3,6 @@
 # and overflow thresholds. Oscillating functions are judged against their
 # envelope, since relative error is unbounded at their zeros.
 
-mpfr_200 <- function(x) Rmpfr::mpfr(x, 200)
-
-mpfr_rel_err <- function(got, want) {
-  want <- Rmpfr::asNumeric(want)
-  abs(got - want) / abs(want)
-}
-
-mpfr_env_err <- function(got, want, envelope) {
-  abs(got - Rmpfr::asNumeric(want)) / envelope
-}
-
 test_that("gamma, gammaln, psi and zeta sweep against MPFR", {
   skip_if_not_installed("Rmpfr")
   withr::local_seed(20261024)

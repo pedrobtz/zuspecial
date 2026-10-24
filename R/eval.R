@@ -21,7 +21,7 @@ zsp_eval <- function(
     prep$args[complex_ok] <- lapply(prep$args[complex_ok], as.complex)
     prep$complex <- TRUE
   }
-  nan_order <- logical(prep$n)
+  nan_order <- if (length(whole) > 0L) logical(prep$n)
   for (arg in whole) {
     nan_order <- nan_order | is.nan(prep$args[[arg]])
     prep$args[[arg]] <- zsp_whole(prep$args[[arg]], arg, call)
@@ -29,19 +29,17 @@ zsp_eval <- function(
 
   # The loop for this signature: one letter per argument (i whole, c
   # complex, d double), then the number of outputs if more than one.
-  types <- vapply(
-    names(prep$args),
-    function(arg) {
-      if (arg %in% whole) {
-        "i"
-      } else if (is.complex(prep$args[[arg]])) {
-        "c"
-      } else {
-        "d"
-      }
-    },
-    ""
-  )
+  a <- prep$args
+  types <- character(length(a))
+  for (j in seq_along(a)) {
+    types[[j]] <- if (names(a)[[j]] %in% whole) {
+      "i"
+    } else if (is.complex(a[[j]])) {
+      "c"
+    } else {
+      "d"
+    }
+  }
   signature <- paste0(paste(types, collapse = ""), length(outputs) %|0|% "")
   routine <- switch(
     signature,
@@ -62,12 +60,22 @@ zsp_eval <- function(
     cid = zsp_call_cid,
     stop("internal: no loop for signature ", signature)
   )
-  value <- do.call(.Call, c(list(routine, name), unname(prep$args)))
+  # A direct .Call by argument count: do.call() costs more than the loop for
+  # short vectors.
+  value <- switch(
+    length(a),
+    .Call(routine, name, a[[1]]),
+    .Call(routine, name, a[[1]], a[[2]]),
+    .Call(routine, name, a[[1]], a[[2]], a[[3]]),
+    .Call(routine, name, a[[1]], a[[2]], a[[3]], a[[4]])
+  )
 
   report <- attr(value, "zsp_err")
   attr(value, "zsp_err") <- NULL
   if (is.null(outputs)) {
-    value[nan_order] <- NaN
+    if (!is.null(nan_order)) {
+      value[nan_order] <- NaN
+    }
     value <- zsp_finish(value, prep$template)
   } else {
     value <- lapply(value, zsp_finish, template = prep$template)
