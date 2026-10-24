@@ -99,7 +99,7 @@ tools/xsref-extract --source <xsref>/tables/scipy_special_tests --kind xsref \
   --commit <xsref-commit> --out tests/testthat/xsref
 uv run --no-project --python 3.12 --with scipy==1.18.1 --with pyarrow \
   python tools/scipy-values.py --xsref <xsref>/tables/scipy_special_tests \
-  --functions tools/xsref/functions.tsv --out <tmp>
+  --functions tools/xsref/functions.tsv --random 0 --out <tmp>
 tools/xsref-extract --source <tmp> --kind scipy --cap 0 --out tests/testthat/scipy
 ```
 
@@ -185,8 +185,10 @@ These come from the design and from Stages 1 and 2, and all are now in code.
   Use it as an oracle rather than inventing cases by hand. zuspecial's is
   xsref: mpmath reference values, checked under xsf's `4 * max(eps,
   recorded)` rule against the `Err_` table for this platform. A second
-  oracle is SciPy 1.18.1 itself, within 64 ulps, on the same inputs plus
-  seeded random ones. Both live as `.rds` samples in
+  oracle is SciPy 1.18.1 itself: the shipped tables (xsref inputs, made on
+  macOS x86_64) allow the sum of both platforms' xsref tolerances, and CI
+  runs SciPy on each OS and requires 64 ulps on xsref and seeded random
+  inputs. Both live as `.rds` samples in
   `tests/testthat/xsref/` and `tests/testthat/scipy/`, listed in
   `tools/xsref/functions.tsv`; the full xsref set runs in `xsref.yaml`.
   xsref has no tables for the Boost-backed functions (Stage 4), which only

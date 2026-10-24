@@ -487,10 +487,18 @@ carry the same fields.
   text: R's parser loses subnormals in hex floats. The shipped sample is
   250 evenly spaced rows per table: 208 KB of xsref and 284 KB of SciPy
   values for the 21 Stage 2 functions.
-- Agreement with SciPy is required within 64 ulps, not within the
-  table's worst recorded error: that error is `Inf` for 12 of the 32
-  tables, so it bounds nothing. On macOS x86_64 the agreement is bit for
-  bit on every row.
+- Agreement with SciPy is checked two ways, because it is not bit for bit
+  across platforms. On macOS arm64, with FMA contraction, ill-conditioned
+  inputs such as `beta(0.76, 897)` differ from SciPy's macOS x86_64 values
+  by up to 3e-11, while both are within xsref's tolerance of mpmath.
+  - Shipped tables, generated once on macOS x86_64 from xsref inputs only:
+    a row may differ by the sum of the two platforms' xsref tolerances,
+    since each result is within its own of mpmath.
+  - CI (`xsref.yaml`): SciPy 1.18.1 runs on each OS over every xsref row
+    and 200 seeded random inputs, and zuspecial must agree with it within
+    64 ulps on the same platform.
+  A table's worst recorded error is no use as a tolerance: it is `Inf` for
+  12 of the 32 tables. On macOS x86_64 agreement is bit for bit.
 - `sc_expn` is tested on xsref's integer-`n` table only; its float-`n`
   table holds non-whole orders, which zuspecial refuses (§6.2).
 

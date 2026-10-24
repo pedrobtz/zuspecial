@@ -59,6 +59,23 @@ jobs:
             --kind xsref --commit "$XSREF_COMMIT" --cap 0 --out "$RUNNER_TEMP/tables"
           echo "ZUSPECIAL_XSREF_DIR=$RUNNER_TEMP/tables" >> "$GITHUB_ENV"
 
+      - uses: astral-sh/setup-uv@v6
+
+      # SciPy's values on this platform, every xsref row plus seeded random
+      # inputs, so parity is checked against the same libm (design 10).
+      - name: SciPy values on this platform
+        shell: bash
+        run: |
+          tag=$(awk -F'\t' '$1 == "xsf" { print $4 }' tools/vendor/manifest.tsv)
+          uv run --no-project --python 3.12 --with "scipy==${tag#v}" --with pyarrow \
+            python tools/scipy-values.py \
+            --xsref "$RUNNER_TEMP/xsref/tables/scipy_special_tests" \
+            --functions tools/xsref/functions.tsv --cap 0 --random 200 \
+            --out "$RUNNER_TEMP/scipy-parquet"
+          Rscript tools/xsref-extract --source "$RUNNER_TEMP/scipy-parquet" \
+            --kind scipy --cap 0 --out "$RUNNER_TEMP/scipy"
+          echo "ZUSPECIAL_SCIPY_DIR=$RUNNER_TEMP/scipy" >> "$GITHUB_ENV"
+
       - name: Install
         shell: bash
         run: R CMD INSTALL --no-multiarch .

@@ -8,8 +8,11 @@ Run with the SciPy release zuspecial's xsf pin comes from, for example:
         --functions tools/xsref/functions.tsv --out <dir>
 
 Inputs per function and signature: the xsref inputs, sampled as
-tools/xsref-extract samples them (cap 250), plus 200 random inputs from a
-fixed seed. Each Out_ table's metadata records the SciPy version; its
+tools/xsref-extract samples them (--cap, default 250; 0 keeps every row),
+plus --random seeded random inputs (default 200). The tables shipped in
+tests/testthat/scipy use --random 0: random inputs have no recorded error to
+bound cross-platform differences, so they are only compared with SciPy run
+on the same platform, in CI (xsref.yaml). Each Out_ table's metadata records the SciPy version; its
 columns record, for rows taken from xsref, the xsref row (1-based, 0 for a
 random input) and xsref's recorded error on every platform (NaN for random
 inputs), from which the R test builds each row's tolerance.
@@ -25,18 +28,16 @@ import pyarrow.parquet as pq
 import scipy
 import scipy.special as sc
 
-CAP = 250
-N_RANDOM = 200
 SEED = 20261024
 DTYPES = {"d": np.float64, "cd": np.complex128, "p": np.int64}
 
 
-def sample_rows(n):
-    if n <= CAP:
+def sample_rows(n, cap):
+    if cap == 0 or n <= cap:
         return np.arange(n)
     # R's round() is round-half-even, like numpy's rint; seq(1, n, length.out)
     # is 1-based.
-    return np.unique(np.rint(np.linspace(1, n, CAP)).astype(np.int64)) - 1
+    return np.unique(np.rint(np.linspace(1, n, cap)).astype(np.int64)) - 1
 
 
 def read_inputs(path, types):
@@ -54,7 +55,9 @@ def read_inputs(path, types):
     return cols
 
 
-def random_inputs(rng, types):
+def random_inputs(rng, types, n_random):
+    N_RANDOM = n_random
+
     def real(n):
         return rng.choice([-1.0, 1.0], n) * 10.0 ** rng.uniform(-3, 3, n)
 
@@ -85,6 +88,8 @@ def main():
     ap.add_argument("--xsref", required=True)
     ap.add_argument("--functions", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--cap", type=int, default=250)
+    ap.add_argument("--random", type=int, default=200)
     a = ap.parse_args()
 
     sc.seterr(all="ignore")
@@ -100,9 +105,10 @@ def main():
         for sig in row["sigs"].split(","):
             types = sig.split("-")[0].split("_")
             ins = read_inputs(xsref / table / f"In_{sig}.parquet", types)
-            keep = sample_rows(len(ins[0]))
-            ins = [np.concatenate([x[keep], r]) for x, r in zip(ins, random_inputs(rng, types))]
-            pad = np.full(N_RANDOM, np.nan)
+            keep = sample_rows(len(ins[0]), a.cap)
+            rand = random_inputs(rng, types, a.random)
+            ins = [np.concatenate([x[keep], r]) for x, r in zip(ins, rand)]
+            pad = np.full(a.random, np.nan)
             errs = {}
             for path in sorted((xsref / table).glob(f"Err_{sig}_*.parquet")):
                 platform = path.stem[len(f"Err_{sig}_"):]
@@ -116,7 +122,7 @@ def main():
             pq.write_table(pa.table(columns("in", ins)), dest / f"In_{sig}.parquet")
             o = columns("out", [values])
             o["fallback"] = np.zeros(len(values), dtype=bool)
-            o["xsref_row"] = np.concatenate([keep + 1, np.zeros(N_RANDOM, dtype=np.int64)])
+            o["xsref_row"] = np.concatenate([keep + 1, np.zeros(a.random, dtype=np.int64)])
             o.update(errs)
             t = pa.table(o).replace_schema_metadata(meta)
             pq.write_table(t, dest / f"Out_{sig}.parquet")

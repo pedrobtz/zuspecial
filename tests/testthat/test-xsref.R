@@ -50,14 +50,21 @@ test_that("every function matches xsref within xsf's tolerance", {
 
 # Agreement with SciPy is not bit for bit across platforms, because xsf
 # calls the platform's libm and compilers contract into FMA differently
-# (design 10). For a row taken from xsref, both results are within their
-# platform's xsref tolerance of mpmath, so they are within the sum of the
-# two of each other: this platform's table for zuspecial, "other" for the
-# SciPy values, generated on macOS x86_64. Random inputs have no recorded
-# error and must agree within 64 ulps. On macOS x86_64 agreement is exact.
+# (design 10). Two cases:
+#
+# - The shipped tables were generated on macOS x86_64 and hold xsref inputs
+#   only. Both results are within their platform's xsref tolerance of
+#   mpmath, so a row may differ by the sum: this platform's table for
+#   zuspecial, "other" for SciPy's machine.
+# - With ZUSPECIAL_SCIPY_DIR, the tables come from SciPy run on this same
+#   platform (xsref.yaml), xsref and random inputs, and every row must agree
+#   within 64 ulps.
 scipy_tol <- 64 * .Machine$double.eps
 
-scipy_row_tol <- function(entry) {
+scipy_row_tol <- function(entry, same_platform) {
+  if (same_platform) {
+    return(rep_len(scipy_tol, length(entry$out)))
+  }
   mine <- entry$err[[xsf_platform()]] %||% entry$err[["other"]]
   theirs <- entry$err[["other"]]
   bound <- xsf_tol(mine) + xsf_tol(theirs)
@@ -66,13 +73,18 @@ scipy_row_tol <- function(entry) {
 }
 
 test_that("every function agrees with SciPy 1.18.1", {
-  files <- list.files(test_path("scipy"), pattern = "\\.rds$", full.names = TRUE)
+  same_platform <- nzchar(Sys.getenv("ZUSPECIAL_SCIPY_DIR"))
+  dir <- oracle_dir("ZUSPECIAL_SCIPY_DIR", "scipy")
+  files <- list.files(dir, pattern = "\\.rds$", full.names = TRUE)
   expect_gt(length(files), 0)
   for (file in files) {
     entry <- readRDS(file)
     got <- oracle_eval(entry)
     err <- xsf_rel_err(got, entry$out)
-    tol <- scipy_row_tol(entry)
+    if (!same_platform) {
+      expect_true(all(entry$xsref_row > 0))
+    }
+    tol <- scipy_row_tol(entry, same_platform)
     ok <- all(err <= tol)
     expect(ok, if (ok) "" else oracle_report(entry, got, err, tol))
   }
