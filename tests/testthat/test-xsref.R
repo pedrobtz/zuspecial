@@ -46,3 +46,21 @@ test_that("every function matches xsref within xsf's tolerance", {
     expect(ok, if (ok) "" else oracle_report(entry, got, err, tol))
   }
 })
+
+# Agreement with SciPy is within 64 ulps rather than bit for bit, because
+# xsf calls the platform's libm and compilers contract into FMA differently
+# (design 10). On macOS x86_64, where the tables were generated, it is exact.
+scipy_tol <- 64 * .Machine$double.eps
+
+test_that("every function agrees with SciPy 1.18.1 within 64 ulps", {
+  files <- list.files(test_path("scipy"), pattern = "\\.rds$", full.names = TRUE)
+  expect_gt(length(files), 0)
+  for (file in files) {
+    entry <- readRDS(file)
+    got <- oracle_eval(entry)
+    err <- xsf_rel_err(got, entry$out)
+    tol <- rep_len(scipy_tol, length(err))
+    ok <- all(err <= tol)
+    expect(ok, if (ok) "" else oracle_report(entry, got, err, tol))
+  }
+})
