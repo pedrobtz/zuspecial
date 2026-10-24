@@ -41,33 +41,27 @@ zsp_eval <- function(
     }
   }
   signature <- paste0(paste(types, collapse = ""), length(outputs) %|0|% "")
-  routine <- switch(
-    signature,
-    d = zsp_call_d,
-    c = zsp_call_c,
-    dd = zsp_call_dd,
-    ddd = zsp_call_ddd,
-    id = zsp_call_id,
-    dc = zsp_call_dc,
-    ic = zsp_call_ic,
-    d4 = zsp_call_d4,
-    c4 = zsp_call_c4,
-    dd4 = zsp_call_dd4,
-    dddd = zsp_call_dddd,
-    dddc = zsp_call_dddc,
-    ddc = zsp_call_ddc,
-    cd = zsp_call_cd,
-    cid = zsp_call_cid,
-    stop("internal: no loop for signature ", signature)
-  )
-  # A direct .Call by argument count: do.call() costs more than the loop for
-  # short vectors.
+  # A direct .Call with the routine named literally, as R CMD check wants;
+  # the signature fixes the argument count. do.call() costs more than the
+  # loop for short vectors.
   value <- switch(
-    length(a),
-    .Call(routine, name, a[[1]]),
-    .Call(routine, name, a[[1]], a[[2]]),
-    .Call(routine, name, a[[1]], a[[2]], a[[3]]),
-    .Call(routine, name, a[[1]], a[[2]], a[[3]], a[[4]])
+    signature,
+    d = .Call(zsp_call_d, name, a[[1]]),
+    c = .Call(zsp_call_c, name, a[[1]]),
+    d4 = .Call(zsp_call_d4, name, a[[1]]),
+    c4 = .Call(zsp_call_c4, name, a[[1]]),
+    dd = .Call(zsp_call_dd, name, a[[1]], a[[2]]),
+    id = .Call(zsp_call_id, name, a[[1]], a[[2]]),
+    dc = .Call(zsp_call_dc, name, a[[1]], a[[2]]),
+    ic = .Call(zsp_call_ic, name, a[[1]], a[[2]]),
+    cd = .Call(zsp_call_cd, name, a[[1]], a[[2]]),
+    dd4 = .Call(zsp_call_dd4, name, a[[1]], a[[2]]),
+    ddd = .Call(zsp_call_ddd, name, a[[1]], a[[2]], a[[3]]),
+    ddc = .Call(zsp_call_ddc, name, a[[1]], a[[2]], a[[3]]),
+    cid = .Call(zsp_call_cid, name, a[[1]], a[[2]], a[[3]]),
+    dddd = .Call(zsp_call_dddd, name, a[[1]], a[[2]], a[[3]], a[[4]]),
+    dddc = .Call(zsp_call_dddc, name, a[[1]], a[[2]], a[[3]], a[[4]]),
+    stop("internal: no loop for signature ", signature)
   )
 
   report <- attr(value, "zsp_err")
