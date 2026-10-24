@@ -505,6 +505,21 @@ carry the same fields.
     64 ulps on the same platform.
   A table's worst recorded error is no use as a tolerance: it is `Inf` for
   12 of the 32 tables. On macOS x86_64 agreement is bit for bit.
+- **Windows (2026-10-24).** Rtools45 uses mingw-w64 v11, whose `sin` and
+  `cos` lose accuracy from |x| ~ 1e5 (about 18 ulps at 1e5, 400 at 1e8)
+  and are wrong in value and sign beyond ~1e15, as base R's `sin()` is on
+  Windows. Complex `exp`, `sin` and `cos`, and GCC's fused sin/cos (lowered
+  to `cexp`), inherit it. 14 085 xsref and SciPy rows with an argument of at
+  least 1e5 fail on Windows only; `tests/testthat/known-windows.tsv.gz` lists
+  them, and the tests apply it on Windows only, check that every listed row
+  has such an argument, and in CI fail when a listed row starts passing.
+  R core's post on mingw-w64 v12 (2025-04-24) explains why Rtools stayed on
+  v11; v12 takes `sin` and `cos` from UCRT, which reduces large arguments
+  accurately, so the list is re-checked when Rtools moves. Shipping an own
+  trig on Windows was considered and declined (2026-10-24). SciPy's Windows
+  wheels use UCRT, so on Windows the SciPy comparison is not same-platform:
+  xsref rows take the summed rule with SciPy's `msvc-windows-x86_64` table,
+  and random rows are compared on Linux and macOS only.
 - `sc_expn` is tested on xsref's integer-`n` table only; its float-`n`
   table holds non-whole orders, which zuspecial refuses (§6.2).
 

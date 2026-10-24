@@ -101,6 +101,16 @@ jobs:
             file = Sys.getenv("GITHUB_STEP_SUMMARY"), append = TRUE
           )
 
+      # The shipped sample too, as CRAN's checks run it on this platform.
+      - name: Test the shipped tables
+        shell: Rscript {0}
+        run: |
+          Sys.unsetenv(c("ZUSPECIAL_XSREF_DIR", "ZUSPECIAL_SCIPY_DIR"))
+          testthat::test_dir(
+            "tests/testthat", filter = "xsref", package = "zuspecial",
+            load_package = "installed", stop_on_failure = TRUE
+          )
+
       - name: Upload the rows outside tolerance
         if: always()
         uses: actions/upload-artifact@v4

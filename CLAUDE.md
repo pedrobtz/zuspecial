@@ -191,6 +191,10 @@ These come from the design and from Stages 1 and 2, and all are now in code.
   inputs. Both live as `.rds` samples in
   `tests/testthat/xsref/` and `tests/testthat/scipy/`, listed in
   `tools/xsref/functions.tsv`; the full xsref set runs in `xsref.yaml`.
+  On Windows only, rows in `tests/testthat/known-windows.tsv.gz` are
+  excused: Rtools' mingw-w64 v11 `sin`/`cos` are wrong for large arguments
+  (design §10). Regenerate it from the workflow's `oracle-report` artifact,
+  never by hand, and keep every row's argument at or above 1e5.
   xsref has no tables for the Boost-backed functions (Stage 4), which only
   the SciPy tables cover.
 - **Helpers live in `tests/testthat/helper-*.R`.**

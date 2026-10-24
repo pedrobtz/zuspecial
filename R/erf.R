@@ -30,6 +30,13 @@
 #' @param sigma,gamma Numeric vectors, the Voigt profile's parameters.
 #' @returns A double vector, or a complex vector for complex input (always
 #'   complex for `sc_wofz()`).
+#' @section Windows:
+#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+#' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
+#' `1e5`, as base R's own `sin()` shows there. Complex arguments with a part
+#' that large, and real ones where the kernel takes a sine of such a value,
+#' are correspondingly inaccurate on Windows only.
+#'
 #' @seealso <https://docs.scipy.org/doc/scipy/reference/special.html#error-function-and-fresnel-integrals>
 #' @examples
 #' sc_erf(c(-1, 0, 1))

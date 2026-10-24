@@ -68,6 +68,15 @@ Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
 does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
 }
+\section{Windows}{
+
+R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+evaluates \code{sin()} and \code{cos()} inaccurately for arguments beyond about
+\code{1e5}, as base R's own \code{sin()} shows there. Complex arguments with a part
+that large, and real ones where the kernel takes a sine of such a value,
+are correspondingly inaccurate on Windows only.
+}
+
 \examples{
 sc_erf(c(-1, 0, 1))
 sc_erf(1 + 1i)
