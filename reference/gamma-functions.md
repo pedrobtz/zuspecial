@@ -78,6 +78,16 @@ does. Conditions the kernels raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
 says.
 
+## Windows
+
+R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+evaluates [`sin()`](https://rdrr.io/r/base/Trig.html) and
+[`cos()`](https://rdrr.io/r/base/Trig.html) inaccurately for arguments
+beyond about `1e5`, as base R's own
+[`sin()`](https://rdrr.io/r/base/Trig.html) shows there. Complex
+arguments with a part that large, and real ones where the kernel takes a
+sine of such a value, are correspondingly inaccurate on Windows only.
+
 ## See also
 
 <https://docs.scipy.org/doc/scipy/reference/special.html#gamma-and-related-functions>

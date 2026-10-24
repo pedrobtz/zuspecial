@@ -81,6 +81,13 @@
 <div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">tools/vendor/vendor-xsf</span> v1.18.1   <span class="co"># re-vendor xsf at a SciPy release's pin</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">tools/vendor/verify</span>               <span class="co"># vendored tree matches the checksums</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="ex">R</span> CMD INSTALL . <span class="kw">&amp;&amp;</span> <span class="ex">tools/check-symbols</span> src   <span class="co"># forbidden imports, shim state</span></span></code></pre></div>
+<p>Regenerating the test tables, after a function is added or the pin moves (xsref sparse-checked out at the commit in <code>tools/vendor/manifest.tsv</code>):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">tools/xsref-extract</span> <span class="at">--source</span> <span class="op">&lt;</span>xsref<span class="op">&gt;</span>/tables/scipy_special_tests <span class="at">--kind</span> xsref <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">--commit</span> <span class="op">&lt;</span>xsref-commit<span class="op">&gt;</span> --out tests/testthat/xsref</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--no-project</span> <span class="at">--python</span> 3.12 <span class="at">--with</span> scipy==1.18.1 <span class="at">--with</span> pyarrow <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  python tools/scipy-values.py <span class="at">--xsref</span> <span class="op">&lt;</span>xsref<span class="op">&gt;</span>/tables/scipy_special_tests <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">--functions</span> tools/xsref/functions.tsv <span class="at">--random</span> 0 <span class="at">--out</span> <span class="op">&lt;</span>tmp<span class="op">&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="ex">tools/xsref-extract</span> <span class="at">--source</span> <span class="op">&lt;</span>tmp<span class="op">&gt;</span> --kind scipy <span class="at">--cap</span> 0 <span class="at">--out</span> tests/testthat/scipy</span></code></pre></div>
 <p><code>devtools::load_all()</code> builds with <code>-UNDEBUG</code>, so run <code>tools/check-symbols</code> on objects from <code>R CMD INSTALL</code>, never from <code>load_all()</code>.</p>
 </div>
 <div class="section level2">
@@ -101,7 +108,7 @@
 <a href="src/zsp_error.cpp">src/zsp_error.cpp</a>: defines <code>xsf::set_error</code> (declared because the build sets <code>SP_SPECFUN_ERROR</code>) and <code>zsp_err_take()</code>. It holds the only mutable state: a thread-local bitmask, bit <code>1 &lt;&lt; code</code> per <code>sf_error_t</code>.</li>
 <li>
 <code>src/vendor/xsf/include/</code>: the include root (<code>-Ivendor/xsf/include</code> in <code>src/Makevars</code>), since xsf includes itself as <code>"xsf/..."</code>.</li>
-</ul><p>Adding a function means a shim entry in its family header, a row in the glue’s table for its signature, an <code>sc_</code> wrapper, and a row in <a href="R/info.R">R/info.R</a>’s <code>zsp_functions</code>.</p>
+</ul><p>Adding a function means a shim entry in its family header, a row in the glue’s table for its signature, an <code>sc_</code> wrapper, a row in <a href="R/info.R">R/info.R</a>’s <code>zsp_functions</code>, and a row in <code>tools/xsref/functions.tsv</code> with regenerated test tables.</p>
 </div>
 <div class="section level2">
 <h2 id="invariants-that-are-easy-to-break">Invariants that are easy to break<a class="anchor" aria-label="anchor" href="#invariants-that-are-easy-to-break"></a></h2>
@@ -134,11 +141,11 @@
 <li>
 <strong>Order independence.</strong> <code>devtools::test(shuffle = TRUE)</code> is part of the definition of done.</li>
 <li>
-<strong>Borrow a conformance suite before writing one.</strong> Mainstream implementations in Python, Java, Go or Node usually ship a test corpus. Use it as an oracle rather than inventing cases by hand. zuspecial’s is xsref (mpmath reference values, under xsf’s <code>4 * max(eps, recorded)</code> rule); it has no tables for the Boost-backed functions, which are checked against values from the pinned SciPy instead (design §10).</li>
+<strong>Borrow a conformance suite before writing one.</strong> Mainstream implementations in Python, Java, Go or Node usually ship a test corpus. Use it as an oracle rather than inventing cases by hand. zuspecial’s is xsref: mpmath reference values, checked under xsf’s <code>4 * max(eps, recorded)</code> rule against the <code>Err_</code> table for this platform. A second oracle is SciPy 1.18.1 itself: the shipped tables (xsref inputs, made on macOS x86_64) allow the sum of both platforms’ xsref tolerances, and CI runs SciPy on each OS and requires 64 ulps on xsref and seeded random inputs. Both live as <code>.rds</code> samples in <code>tests/testthat/xsref/</code> and <code>tests/testthat/scipy/</code>, listed in <code>tools/xsref/functions.tsv</code>; the full xsref set runs in <code>xsref.yaml</code>. On Windows only, rows in <code>tests/testthat/known-windows.tsv.gz</code> are excused: Rtools’ mingw-w64 v11 <code>sin</code>/<code>cos</code> are wrong for large arguments (design §10). Regenerate it with <code>tools/known-windows</code> from the workflow’s Windows <code>oracle-report</code> artifact, never by hand; the script refuses any failing row without an argument of at least 1e5. xsref has no tables for the Boost-backed functions (Stage 4), which only the SciPy tables cover.</li>
 <li>
-<strong>Helpers live in <code>tests/testthat/helper-*.R</code>.</strong> None yet.</li>
+<strong>Helpers live in <code>tests/testthat/helper-*.R</code>.</strong> <a href="tests/testthat/helper-oracle.R">helper-oracle.R</a> ports xsf’s <code>extended_relative_error</code> (<code>xsf_rel_err()</code>), its tolerance (<code>xsf_tol()</code>) and its platform choice (<code>xsf_platform()</code>). Change them only to follow xsf.</li>
 <li>
-<strong>Keep the suite inside the CRAN time budget.</strong> None yet; the design’s target is under 15 s.</li>
+<strong>Keep the suite inside the CRAN time budget.</strong> About 1.5 s locally (2026-10-24); the design’s limit is 15 s.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="definition-of-done">Definition of done<a class="anchor" aria-label="anchor" href="#definition-of-done"></a></h2>
@@ -194,7 +201,7 @@
 </div>
 <div class="section level2">
 <h2 id="vendored-native-code">Vendored native code<a class="anchor" aria-label="anchor" href="#vendored-native-code"></a></h2>
-<p>xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun code; <code>inst/COPYRIGHTS</code> lists every notice) is vendored in <code>src/vendor/xsf/</code> at <code>f7b85f5</code>, the commit SciPy v1.18.1’s <code>subprojects/xsf</code> gitlink names, without <code>numpy.h</code> and <code>third_party/</code>. The pin follows SciPy releases, not xsf tags (design D12), so this one exception to “pin a stable upstream release” is deliberate: the release pinned is SciPy’s. <code>tools/vendor/manifest.tsv</code> and <code>tools/vendor/checksums.sha256</code> record it, <code>src/vendor/PROVENANCE</code> gives the update procedure, and <code>vendor-upstream.yml</code> opens an issue when SciPy releases. No patches; the build defines <code>NDEBUG</code> instead, because of a bare <code>assert</code> in <code>specfun/specfun.h</code>.</p>
+<p>xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun code; <code>inst/COPYRIGHTS</code> lists every notice) is vendored in <code>src/vendor/xsf/</code> at <code>f7b85f5</code>, the commit SciPy v1.18.1’s <code>subprojects/xsf</code> gitlink names, without <code>numpy.h</code> and <code>third_party/</code>. The pin follows SciPy releases, not xsf tags (design D12), so this one exception to “pin a stable upstream release” is deliberate: the release pinned is SciPy’s. <code>tools/vendor/manifest.tsv</code> and <code>tools/vendor/checksums.sha256</code> record it, <code>src/vendor/PROVENANCE</code> gives the update procedure, and <code>vendor-upstream.yml</code> opens an issue when SciPy releases. Local patches live in <code>tools/patches/</code>, which <code>tools/vendor/vendor-xsf</code> applies in order; each is listed in <code>src/vendor/PROVENANCE</code> with its reason. There is one: <code>0001</code> guards float-to-int conversions UBSan flags (2026-10-24). The build also defines <code>NDEBUG</code>, because of a bare <code>assert</code> in <code>specfun/specfun.h</code>.</p>
 <ul><li>Pin a stable upstream release, never <code>master</code> or a release candidate.</li>
 <li>Record the tag, the commit and the checksums, and write down the update procedure so the next bump is mechanical.</li>
 <li>Keep upstream <code>LICENSE</code> and <code>NOTICE</code> under <code>src/vendor/&lt;lib&gt;/</code>, declare the vendored code in <code>DESCRIPTION</code> and <code>inst/COPYRIGHTS</code>.</li>

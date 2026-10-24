@@ -94,6 +94,16 @@ dimensions, or else its names, from the arguments as base R arithmetic
 does; see <code><a href="errstate.html">sc_seterr()</a></code> for the conditions the kernels raise.</p>
     </div>
     <div class="section level2">
+    <h2 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a></h2>
+
+
+<p>R on Windows is built with Rtools, whose C library (mingw-w64 v11)
+evaluates <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> and <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos()</a></code> inaccurately for arguments beyond about
+<code>1e5</code>, as base R's own <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> shows there. Complex arguments with a part
+that large, and real ones where the kernel takes a sine of such a value,
+are correspondingly inaccurate on Windows only.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><a href="https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions" class="external-link">https://docs.scipy.org/doc/scipy/reference/special.html#other-special-functions</a></p></div>
     </div>
