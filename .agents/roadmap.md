@@ -24,7 +24,7 @@ tables built in Stage 3.
 | 5 | [Bessel, Hankel, spherical Bessel, Airy](#stage-5--bessel-hankel-spherical-bessel-airy) | quick | [#7](https://github.com/pedrobtz/zuspecial/issues/7) | [#22](https://github.com/pedrobtz/zuspecial/pull/22) | 2026-10-24 |
 | 6 | [Hypergeometric, elliptic, zeta, Lambert W, Struve](#stage-6--hypergeometric-elliptic-zeta-lambert-w-struve) | quick | [#8](https://github.com/pedrobtz/zuspecial/issues/8) | [#23](https://github.com/pedrobtz/zuspecial/pull/23) | 2026-10-24 |
 | 7 | [Independent oracles and mpfr checks](#stage-7--independent-oracles-and-mpfr-checks) | quick | [#9](https://github.com/pedrobtz/zuspecial/issues/9) | [#24](https://github.com/pedrobtz/zuspecial/pull/24) | 2026-10-24 |
-| 8 | [The C table and a consumer fixture](#stage-8--the-c-table-and-a-consumer-fixture) | quick | [#10](https://github.com/pedrobtz/zuspecial/issues/10) | | 2026-10-24 |
+| 8 | [The C table and a consumer fixture](#stage-8--the-c-table-and-a-consumer-fixture) | quick | [#10](https://github.com/pedrobtz/zuspecial/issues/10) | [#25](https://github.com/pedrobtz/zuspecial/pull/25) | 2026-10-24 |
 | 9 | [Benchmarks and documentation](#stage-9--benchmarks-and-documentation) | quick | [#11](https://github.com/pedrobtz/zuspecial/issues/11) | | |
 | 10 | [Full CI](#stage-10--full-ci) | full | [#12](https://github.com/pedrobtz/zuspecial/issues/12) | | |
 | 11 | [v0.1.0 readiness](#stage-11--v010-readiness) | full | [#13](https://github.com/pedrobtz/zuspecial/issues/13) | | |
