@@ -10,6 +10,14 @@
 
 * Exponential integrals: `sc_exp1()`, `sc_expi()` and `sc_expn()`.
 
+* Incomplete gamma and beta functions and their inverses: `sc_gammainc()`,
+  `sc_gammaincc()`, `sc_gammaincinv()`, `sc_gammainccinv()`, `sc_betainc()`,
+  `sc_betaincc()`, `sc_betaincinv()` and `sc_betainccinv()`. The incomplete
+  beta functions use Boost.Math, from the BH package, as SciPy does.
+
+* Normal distribution functions: `sc_ndtr()`, `sc_log_ndtr()`, `sc_ndtri()`,
+  `sc_ndtri_exp()`, `sc_owens_t()`, and `sc_erfinv()`.
+
 * `sc_geterr()`, `sc_seterr()` and `sc_errstate()` choose whether each kind
   of floating-point condition is ignored, warns or raises, after
   `scipy.special`.

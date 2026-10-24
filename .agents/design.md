@@ -600,6 +600,17 @@ Stage 0 decides between:
 
 The recommendation is the first, with the second as the fallback if any
 table disagrees. Either way `zuspecial_info()` reports the Boost version.
+
+**As built (2026-10-24, Stage 4).** SciPy 1.18.1 pins Boost.Math 1.91.0
+(`subprojects/boost_math`), not 1.92.0; CRAN's `BH` is 1.90.0-1. zuspecial
+uses `LinkingTo: BH` with `BOOST_MATH_STANDALONE`, in its own translation
+unit (`src/zsp_boost.cpp`, which includes no xsf kernels, so the §4
+single-unit rule does not apply). On macOS x86_64 all five functions agree
+with SciPy 1.18.1 within 64 ulps on 200 random inputs each; CI repeats this
+on every OS against SciPy run there. That is the §16 question 4 evidence
+for `BH`. `ndtri_exp` is not in xsf at the 1.18.1 pin; it is ported from
+SciPy's Cython `_ndtri_exp.pxd` (Albert Steppi, SciPy's licence) on xsf's
+`cephes::ndtri`.
 In the drafting session, four of the wrappers' calls (`ibeta`,
 `ibeta_inv`, `erf_inv`, `hypergeometric_1F1`) compiled at `7ff2d2b`
 without warnings under `-Wall -pedantic` and imported `__cxa_throw`,

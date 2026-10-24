@@ -71,3 +71,12 @@ xsf's BSD-3-Clause licence
 -------------------------------------------------------------------
 binom.h (Pauli Virtanen, Eric Moore), cephes/ellie.h and cephes/ellik.h
 (Eric W. Moore, 2014).
+
+Code ported from SciPy into zuspecial's own sources
+---------------------------------------------------
+src/zsp_shim_error.h, ndtri_exp: ported from SciPy 1.18.1's
+scipy/special/_ndtri_exp.pxd, (C) Albert Steppi, "distributed under the same
+license as SciPy" (BSD-3-Clause, licenses/xsf-LICENSE).
+src/zsp_boost.cpp: the wrappers around Boost.Math follow SciPy 1.18.1's
+scipy/special/boost_special_functions.h, (C) SciPy developers, BSD-3-Clause.
+Boost.Math itself is not bundled: it comes from the BH package (LinkingTo).
