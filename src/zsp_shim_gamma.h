@@ -38,4 +38,17 @@ double zsp_poch_dd(double z, double m) noexcept {
   return xsf::cephes::poch(z, m);
 }
 
+double zsp_gammainc_dd(double a, double x) noexcept {
+  return xsf::gammainc(a, x);
+}
+double zsp_gammaincc_dd(double a, double x) noexcept {
+  return xsf::gammaincc(a, x);
+}
+double zsp_gammaincinv_dd(double a, double y) noexcept {
+  return xsf::gammaincinv(a, y);
+}
+double zsp_gammainccinv_dd(double a, double y) noexcept {
+  return xsf::gammainccinv(a, y);
+}
+
 } // extern "C"

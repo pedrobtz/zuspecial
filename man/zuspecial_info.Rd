@@ -8,15 +8,16 @@ zuspecial_info()
 }
 \value{
 A list with \code{xsf_commit}, \code{scipy_version}, \code{xsref_commit},
-\code{compiler} and \code{functions}, a data frame with one row per exported function: \code{r_name},
+\code{boost_version}, \code{compiler} and \code{functions}, a data frame with one row per exported function: \code{r_name},
 \code{scipy_name}, \code{backend} (the library that evaluates it) and \code{complex}
 (whether it takes complex arguments).
 }
 \description{
 Reports what this build of zuspecial evaluates with: the vendored xsf
 commit, the SciPy release whose \code{subprojects/xsf} pin it is, the xsref
-commit whose mpmath reference tables the tests use, the compiler, and the
-table of exported functions.
+commit whose mpmath reference tables the tests use, the Boost.Math version
+(from the BH package) used for the functions SciPy evaluates with Boost,
+the compiler, and the table of exported functions.
 }
 \examples{
 info <- zuspecial_info()

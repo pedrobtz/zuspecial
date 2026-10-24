@@ -29,7 +29,9 @@ Authors@R: c(
     person("Christian", "Lorentzen", role = "cph",
            comment = "Wright Bessel code in the bundled xsf library"),
     person("Eric W.", "Moore", role = "cph",
-           comment = "elliptic integral code in the bundled xsf library"))
+           comment = "elliptic integral code in the bundled xsf library"),
+    person("Albert", "Steppi", role = "cph",
+           comment = "ndtri_exp, ported from SciPy"))
 Description: Evaluates the special functions of mathematical physics and
     statistics, including gamma, beta, error, Bessel, Airy, hypergeometric,
     elliptic and zeta functions, for real and complex arguments, using the
@@ -46,6 +48,8 @@ URL: https://github.com/pedrobtz/zuspecial,
 BugReports: https://github.com/pedrobtz/zuspecial/issues
 Depends: 
     R (>= 4.1)
+LinkingTo: 
+    BH
 Suggests: 
     testthat (>= 3.0.0),
     withr

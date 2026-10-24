@@ -16,9 +16,24 @@
 #'   [digamma()].
 #' - `sc_beta()`, `sc_betaln()`: \eqn{B(a, b)} and \eqn{\log|B(a, b)|}. Base
 #'   R: [beta()], [lbeta()].
+#' - `sc_betainc()`, `sc_betaincc()`: the regularised incomplete beta
+#'   function \eqn{I_x(a, b)} and its complement. Base R: `pbeta(x, a, b)`
+#'   and `pbeta(x, a, b, lower.tail = FALSE)`. At the limits `a` or `b` equal
+#'   to 0 or `Inf`, SciPy's pointwise limits in `x` are returned.
+#' - `sc_betaincinv()`, `sc_betainccinv()`: their inverses in `x`. Base R:
+#'   `qbeta(y, a, b)` and `qbeta(y, a, b, lower.tail = FALSE)`.
+#'
+#' The incomplete beta functions and their inverses are evaluated, as in
+#' SciPy, with Boost.Math (from the BH package) rather than xsf.
 #' - `sc_binom()`: the binomial coefficient for real `x` and `y`. Base R:
 #'   [choose()].
 #' - `sc_poch()`: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
+#' - `sc_gammainc()`, `sc_gammaincc()`: the regularised lower and upper
+#'   incomplete gamma functions \eqn{P(a, x)} and \eqn{Q(a, x)}. Base R:
+#'   `pgamma(x, a)` and `pgamma(x, a, lower.tail = FALSE)`; note the
+#'   argument order.
+#' - `sc_gammaincinv()`, `sc_gammainccinv()`: their inverses in `x`. Base R:
+#'   `qgamma(y, a)` and `qgamma(y, a, lower.tail = FALSE)`.
 #'
 #' Arguments are recycled: each must have length one or the common length.
 #' `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
@@ -27,7 +42,8 @@
 #' [sc_seterr()] says.
 #'
 #' @param z,x Numeric vector; for `z`, also complex.
-#' @param a,b,y,m Numeric vectors.
+#' @param a,b,y,m Numeric vectors; for the incomplete gamma functions `a` is
+#'   the shape and `y` a probability.
 #' @returns A double vector, or a complex vector for complex input.
 #' @section Windows:
 #' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
@@ -85,3 +101,43 @@ sc_binom <- function(x, y) zsp_eval("binom", list(x = x, y = y))
 #' @rdname gamma-functions
 #' @export
 sc_poch <- function(z, m) zsp_eval("poch", list(z = z, m = m))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammainc <- function(a, x) zsp_eval("gammainc", list(a = a, x = x))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammaincc <- function(a, x) zsp_eval("gammaincc", list(a = a, x = x))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammaincinv <- function(a, y) zsp_eval("gammaincinv", list(a = a, y = y))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammainccinv <- function(a, y) zsp_eval("gammainccinv", list(a = a, y = y))
+
+#' @rdname gamma-functions
+#' @export
+sc_betainc <- function(a, b, x) {
+  zsp_eval("betainc", list(a = a, b = b, x = x))
+}
+
+#' @rdname gamma-functions
+#' @export
+sc_betaincc <- function(a, b, x) {
+  zsp_eval("betaincc", list(a = a, b = b, x = x))
+}
+
+#' @rdname gamma-functions
+#' @export
+sc_betaincinv <- function(a, b, y) {
+  zsp_eval("betaincinv", list(a = a, b = b, y = y))
+}
+
+#' @rdname gamma-functions
+#' @export
+sc_betainccinv <- function(a, b, y) {
+  zsp_eval("betainccinv", list(a = a, b = b, y = y))
+}

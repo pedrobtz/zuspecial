@@ -12,6 +12,14 @@
 \alias{sc_betaln}
 \alias{sc_binom}
 \alias{sc_poch}
+\alias{sc_gammainc}
+\alias{sc_gammaincc}
+\alias{sc_gammaincinv}
+\alias{sc_gammainccinv}
+\alias{sc_betainc}
+\alias{sc_betaincc}
+\alias{sc_betaincinv}
+\alias{sc_betainccinv}
 \title{Gamma and beta functions}
 \usage{
 sc_gamma(z)
@@ -33,11 +41,28 @@ sc_betaln(a, b)
 sc_binom(x, y)
 
 sc_poch(z, m)
+
+sc_gammainc(a, x)
+
+sc_gammaincc(a, x)
+
+sc_gammaincinv(a, y)
+
+sc_gammainccinv(a, y)
+
+sc_betainc(a, b, x)
+
+sc_betaincc(a, b, x)
+
+sc_betaincinv(a, b, y)
+
+sc_betainccinv(a, b, y)
 }
 \arguments{
 \item{z, x}{Numeric vector; for \code{z}, also complex.}
 
-\item{a, b, y, m}{Numeric vectors.}
+\item{a, b, y, m}{Numeric vectors; for the incomplete gamma functions \code{a} is
+the shape and \code{y} a probability.}
 }
 \value{
 A double vector, or a complex vector for complex input.
@@ -61,9 +86,26 @@ with a branch cut on the negative real axis. For real \code{z < 0} it is
 \code{\link[=digamma]{digamma()}}.
 \item \code{sc_beta()}, \code{sc_betaln()}: \eqn{B(a, b)} and \eqn{\log|B(a, b)|}. Base
 R: \code{\link[=beta]{beta()}}, \code{\link[=lbeta]{lbeta()}}.
+\item \code{sc_betainc()}, \code{sc_betaincc()}: the regularised incomplete beta
+function \eqn{I_x(a, b)} and its complement. Base R: \code{pbeta(x, a, b)}
+and \code{pbeta(x, a, b, lower.tail = FALSE)}. At the limits \code{a} or \code{b} equal
+to 0 or \code{Inf}, SciPy's pointwise limits in \code{x} are returned.
+\item \code{sc_betaincinv()}, \code{sc_betainccinv()}: their inverses in \code{x}. Base R:
+\code{qbeta(y, a, b)} and \code{qbeta(y, a, b, lower.tail = FALSE)}.
+}
+
+The incomplete beta functions and their inverses are evaluated, as in
+SciPy, with Boost.Math (from the BH package) rather than xsf.
+\itemize{
 \item \code{sc_binom()}: the binomial coefficient for real \code{x} and \code{y}. Base R:
 \code{\link[=choose]{choose()}}.
 \item \code{sc_poch()}: the Pochhammer symbol \eqn{\Gamma(z + m) / \Gamma(z)}.
+\item \code{sc_gammainc()}, \code{sc_gammaincc()}: the regularised lower and upper
+incomplete gamma functions \eqn{P(a, x)} and \eqn{Q(a, x)}. Base R:
+\code{pgamma(x, a)} and \code{pgamma(x, a, lower.tail = FALSE)}; note the
+argument order.
+\item \code{sc_gammaincinv()}, \code{sc_gammainccinv()}: their inverses in \code{x}. Base R:
+\code{qgamma(y, a)} and \code{qgamma(y, a, lower.tail = FALSE)}.
 }
 
 Arguments are recycled: each must have length one or the common length.

@@ -10,6 +10,7 @@
 \alias{sc_dawsn}
 \alias{sc_wofz}
 \alias{sc_voigt_profile}
+\alias{sc_erfinv}
 \title{Error functions and the Faddeeva function}
 \usage{
 sc_erf(z)
@@ -27,12 +28,15 @@ sc_dawsn(x)
 sc_wofz(z)
 
 sc_voigt_profile(x, sigma, gamma)
+
+sc_erfinv(y)
 }
 \arguments{
 \item{z, x}{Numeric vector; for \code{z}, and for \code{x} in \code{sc_erfc()},
 \code{sc_erfcx()} and \code{sc_dawsn()}, also complex.}
 
-\item{y}{Numeric vector in \eqn{[0, 2]}.}
+\item{y}{Numeric vector: in \eqn{[0, 2]} for \code{sc_erfcinv()}, in
+\eqn{[-1, 1]} for \code{sc_erfinv()}.}
 
 \item{sigma, gamma}{Numeric vectors, the Voigt profile's parameters.}
 }
@@ -55,6 +59,8 @@ uses (the MIT Faddeeva package for complex arguments). Functions marked
 \item \code{sc_erfi()}: the imaginary error function \eqn{-i\,\mathrm{erf}(iz)},
 complex.
 \item \code{sc_erfcinv()}: the inverse of \code{sc_erfc()} on \eqn{(0, 2)}.
+\item \code{sc_erfinv()}: the inverse of \code{sc_erf()} on \eqn{[-1, 1]}, evaluated
+with Boost.Math (from the BH package), as SciPy does.
 \item \code{sc_dawsn()}: Dawson's integral, complex.
 \item \code{sc_wofz()}: the Faddeeva function \eqn{w(z) = e^{-z^2}
   \mathrm{erfc}(-iz)}. SciPy defines it for complex input only, so real

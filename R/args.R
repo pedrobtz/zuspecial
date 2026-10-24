@@ -92,15 +92,17 @@ zsp_finish <- function(value, template) {
 # 6.2). NA and NaN become NA_integer_; zsp_eval() puts NaN back in the
 # result, as SciPy returns NaN for a NaN order.
 zsp_whole <- function(x, name, call = NULL) {
-  bad <- !is.na(x) & (!is.finite(x) | x != trunc(x) |
-    abs(x) > .Machine$integer.max)
+  bad <- !is.na(x) &
+    (!is.finite(x) | x != trunc(x) | abs(x) > .Machine$integer.max)
   if (any(bad)) {
     index <- which(bad)[[1]]
     zsp_abort(
       "zuspecial_invalid_argument",
       sprintf(
         "`%s` must hold whole numbers within integer range; element %d is %s.",
-        name, index, format(x[[index]])
+        name,
+        index,
+        format(x[[index]])
       ),
       argument = name,
       index = index,

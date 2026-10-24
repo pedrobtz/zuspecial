@@ -75,7 +75,9 @@ test_that("each complex kernel is the right one, off the real axis", {
   expect_equal(sc_erfc(z), 1 - sc_erf(z), tolerance = 1e-14)
   expect_equal(sc_erfcx(z), exp(z^2) * sc_erfc(z), tolerance = 1e-14)
   expect_equal(sc_erfi(z), -1i * sc_erf(1i * z), tolerance = 1e-14)
-  expect_equal(sc_dawsn(z), sqrt(pi) / 2 * exp(-z^2) * sc_erfi(z),
+  expect_equal(
+    sc_dawsn(z),
+    sqrt(pi) / 2 * exp(-z^2) * sc_erfi(z),
     tolerance = 1e-14
   )
   expect_equal(sc_wofz(z), exp(-z^2) * sc_erfc(-1i * z), tolerance = 1e-14)
@@ -138,6 +140,8 @@ test_that("inputs that reached undefined behaviour in xsf give SciPy's values", 
   expect_true(is.nan(sc_erfcx(NaN)))
   expect_true(is.nan(sc_dawsn(NaN)))
   expect_true(is.nan(sc_erfi(NaN)))
-  expect_true(all(is.nan(c(Re(sc_wofz(complex(real = NaN, imaginary = 0))),
-    Im(sc_wofz(complex(real = NaN, imaginary = 0)))))))
+  expect_true(all(is.nan(c(
+    Re(sc_wofz(complex(real = NaN, imaginary = 0))),
+    Im(sc_wofz(complex(real = NaN, imaginary = 0)))
+  ))))
 })

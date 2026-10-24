@@ -14,13 +14,28 @@ test_that("the function table lists every exported kernel function", {
   )
   expect_setequal(fns$r_name, exported)
   expect_identical(fns$r_name, paste0("sc_", fns$scipy_name))
-  expect_true(all(fns$backend == "xsf"))
+  expect_true(all(fns$backend %in% c("xsf", "boost")))
   expect_identical(
     sort(fns$r_name[fns$complex]),
-    sort(paste0("sc_", c(
-      "gamma", "loggamma", "rgamma", "psi", "erf", "erfc", "erfcx", "erfi",
-      "dawsn", "wofz", "exp1", "expi"
-    )))
+    sort(paste0(
+      "sc_",
+      c(
+        "gamma",
+        "loggamma",
+        "rgamma",
+        "psi",
+        "erf",
+        "erfc",
+        "erfcx",
+        "erfi",
+        "dawsn",
+        "wofz",
+        "exp1",
+        "expi",
+        "ndtr",
+        "log_ndtr"
+      )
+    ))
   )
 })
 

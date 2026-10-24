@@ -20,11 +20,17 @@ test_that("the complex metric rescales zero and infinite parts as xsf does", {
     1e-20
   )
   expect_identical(
-    xsf_rel_err(complex(real = NaN, imaginary = 0), complex(real = NaN, imaginary = 0)),
+    xsf_rel_err(
+      complex(real = NaN, imaginary = 0),
+      complex(real = NaN, imaginary = 0)
+    ),
     0
   )
   expect_identical(
-    xsf_rel_err(complex(real = 1, imaginary = 0), complex(real = NaN, imaginary = 0)),
+    xsf_rel_err(
+      complex(real = 1, imaginary = 0),
+      complex(real = NaN, imaginary = 0)
+    ),
     Inf
   )
   big <- complex(real = 1e308, imaginary = 1e308)
@@ -34,7 +40,13 @@ test_that("the complex metric rescales zero and infinite parts as xsf does", {
 test_that("the tolerance and platform follow xsf's tests", {
   expect_identical(xsf_tol(0), 4 * .Machine$double.eps)
   expect_identical(xsf_tol(1e-10), 4e-10)
-  expect_true(xsf_platform() %in% c(
-    "clang-darwin-aarch64", "gcc-linux-x86_64", "msvc-windows-x86_64", "other"
-  ))
+  expect_true(
+    xsf_platform() %in%
+      c(
+        "clang-darwin-aarch64",
+        "gcc-linux-x86_64",
+        "msvc-windows-x86_64",
+        "other"
+      )
+  )
 })

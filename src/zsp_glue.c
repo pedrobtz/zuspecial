@@ -95,6 +95,9 @@ static const struct {
   {"erfcx", zsp_erfcx_d},       {"erfi", zsp_erfi_d},
   {"erfcinv", zsp_erfcinv_d},   {"dawsn", zsp_dawsn_d},
   {"exp1", zsp_exp1_d},         {"expi", zsp_expi_d},
+  {"ndtr", zsp_ndtr_d},         {"log_ndtr", zsp_log_ndtr_d},
+  {"ndtri", zsp_ndtri_d},       {"ndtri_exp", zsp_ndtri_exp_d},
+  {"erfinv", zsp_erfinv_d},
 };
 
 static const struct {
@@ -107,6 +110,7 @@ static const struct {
   {"erfcx", zsp_erfcx_c}, {"erfi", zsp_erfi_c},
   {"dawsn", zsp_dawsn_c}, {"wofz", zsp_wofz_c},
   {"exp1", zsp_exp1_c},   {"expi", zsp_expi_c},
+  {"ndtr", zsp_ndtr_c},   {"log_ndtr", zsp_log_ndtr_c},
 };
 
 static const struct {
@@ -117,6 +121,11 @@ static const struct {
   {"betaln", zsp_betaln_dd},
   {"binom", zsp_binom_dd},
   {"poch", zsp_poch_dd},
+  {"gammainc", zsp_gammainc_dd},
+  {"gammaincc", zsp_gammaincc_dd},
+  {"gammaincinv", zsp_gammaincinv_dd},
+  {"gammainccinv", zsp_gammainccinv_dd},
+  {"owens_t", zsp_owens_t_dd},
 };
 
 static const struct {
@@ -124,6 +133,10 @@ static const struct {
   zsp_fn_ddd fn;
 } zsp_table_ddd[] = {
   {"voigt_profile", zsp_voigt_profile_ddd},
+  {"betainc", zsp_betainc_ddd},
+  {"betaincc", zsp_betaincc_ddd},
+  {"betaincinv", zsp_betaincinv_ddd},
+  {"betainccinv", zsp_betainccinv_ddd},
 };
 
 static const struct {

@@ -2,7 +2,9 @@ test_that("error functions match their normal-distribution forms", {
   x <- c(-2, -0.3, 0, 0.7, 1.5, 3)
   expect_equal(sc_erf(x), 2 * pnorm(x * sqrt(2)) - 1, tolerance = 1e-14)
   expect_equal(sc_erfc(x), 2 * pnorm(-x * sqrt(2)), tolerance = 1e-14)
-  expect_equal(sc_erfcx(x), exp(x^2) * 2 * pnorm(-x * sqrt(2)),
+  expect_equal(
+    sc_erfcx(x),
+    exp(x^2) * 2 * pnorm(-x * sqrt(2)),
     tolerance = 1e-13
   )
   expect_equal(sc_erfcinv(sc_erfc(x)), x, tolerance = 1e-13)
@@ -17,7 +19,9 @@ test_that("erfi, dawsn and wofz at known values", {
 
 test_that("voigt_profile reduces to the normal density when gamma is 0", {
   x <- c(-1, 0, 2)
-  expect_equal(sc_voigt_profile(x, 1.3, 0), dnorm(x, sd = 1.3),
+  expect_equal(
+    sc_voigt_profile(x, 1.3, 0),
+    dnorm(x, sd = 1.3),
     tolerance = 1e-14
   )
 })
