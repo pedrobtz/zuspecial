@@ -515,6 +515,15 @@ carry the same fields.
   `gcc-linux-x86_64` table's 6.5e-15, while agreeing with SciPy's Linux
   build within 64 ulps; on no row is a platform table above `other`.
   Precision is held by the same-platform SciPy check.
+- **Ports from SciPy (2026-10-24, Stage 6).** xsf at the 1.18.1 pin lacks
+  five functions SciPy implements itself: `hyp0f1`, `hyperu` and complex
+  `spence` (Cython, ported to C++ line for line), `wrightomega` (`wright.cc`
+  with `_round.h`, Piers Lawrence, BSD-3, ported with its Python and
+  `sf_error` calls removed), and real `hyp1f1`, which SciPy evaluates with
+  Boost.Math (in `src/zsp_boost.cpp`). Ported Cython uses NumPy's `csqrt`
+  and `cpow` (`src/zsp_ccomplex.c`) where SciPy's does: `std::complex`
+  rounds differently, by up to 256 ulps in `hyp0f1` at large order. As in
+  SciPy, the Hurwitz zeta takes complex `x` only on the real axis.
 - **Fallback rows (2026-10-24, Stage 6).** xsref's `fallback` rows store
   an earlier SciPy's value where mpmath gave none; the xsref check skips
   them (the report still counts them), since agreement with SciPy 1.18.1 is
