@@ -1,22 +1,36 @@
-r_name	table	sigs
-sc_gamma	gamma	d-d,cd-cd
-sc_gammaln	gammaln	d-d
-sc_loggamma	loggamma	d-d,cd-cd
-sc_rgamma	rgamma	d-d,cd-cd
-sc_gammasgn	gammasgn	d-d
-sc_psi	digamma	d-d,cd-cd
-sc_beta	beta	d_d-d
-sc_betaln	betaln	d_d-d
-sc_binom	binom	d_d-d
-sc_poch	poch	d_d-d
-sc_erf	erf	d-d,cd-cd
-sc_erfc	erfc	d-d,cd-cd
-sc_erfcx	erfcx	d-d,cd-cd
-sc_erfi	erfi	d-d,cd-cd
-sc_erfcinv	erfcinv	d-d
-sc_dawsn	dawsn	d-d,cd-cd
-sc_wofz	wofz	cd-cd
-sc_voigt_profile	voigt_profile	d_d_d-d
-sc_exp1	exp1	d-d,cd-cd
-sc_expi	expi	d-d,cd-cd
-sc_expn	expn	p_d-d
+r_name	table	sigs	domains
+sc_gamma	gamma	d-d,cd-cd	real,complex
+sc_gammaln	gammaln	d-d	real
+sc_loggamma	loggamma	d-d,cd-cd	real,complex
+sc_rgamma	rgamma	d-d,cd-cd	real,complex
+sc_gammasgn	gammasgn	d-d	real
+sc_psi	digamma	d-d,cd-cd	real,complex
+sc_beta	beta	d_d-d	real real
+sc_betaln	betaln	d_d-d	real real
+sc_binom	binom	d_d-d	real real
+sc_poch	poch	d_d-d	real real
+sc_erf	erf	d-d,cd-cd	real,complex
+sc_erfc	erfc	d-d,cd-cd	real,complex
+sc_erfcx	erfcx	d-d,cd-cd	real,complex
+sc_erfi	erfi	d-d,cd-cd	real,complex
+sc_erfcinv	erfcinv	d-d	real
+sc_dawsn	dawsn	d-d,cd-cd	real,complex
+sc_wofz	wofz	cd-cd	complex
+sc_voigt_profile	voigt_profile	d_d_d-d	real real real
+sc_exp1	exp1	d-d,cd-cd	real,complex
+sc_expi	expi	d-d,cd-cd	real,complex
+sc_expn	expn	p_d-d	int real
+sc_gammainc	gammainc	d_d-d	pos pos
+sc_gammaincc	gammaincc	d_d-d	pos pos
+sc_gammaincinv	gammaincinv	d_d-d	pos unit
+sc_gammainccinv	gammainccinv	d_d-d	pos unit
+sc_ndtr	ndtr	d-d,cd-cd	real,complex
+sc_ndtri	ndtri	d-d	unit
+sc_owens_t	owens_t	d_d-d	real real
+sc_log_ndtr	-	d-d,cd-cd	real,complex
+sc_ndtri_exp	-	d-d	neg
+sc_betainc	-	d_d_d-d	pos pos unit
+sc_betaincc	-	d_d_d-d	pos pos unit
+sc_betaincinv	-	d_d_d-d	pos pos unit
+sc_betainccinv	-	d_d_d-d	pos pos unit
+sc_erfinv	-	d-d	unitpm

@@ -23,7 +23,7 @@ test_that("every function agrees with SciPy 1.18.1", {
   for (file in files) {
     entry <- readRDS(file)
     got <- oracle_eval(entry)
-    if (!same_platform) {
+    if (!same_platform && !isTRUE(entry$no_xsref)) {
       expect_true(all(entry$xsref_row > 0))
     }
     oracle_check(entry, got, scipy_row_tol(entry, same_platform))

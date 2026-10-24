@@ -254,10 +254,19 @@ oracle_report <- function(entry, got, err, tol, bad, n = 5) {
 #   left to Linux and macOS.
 scipy_tol <- 64 * .Machine$double.eps
 
+# Functions xsref has no table for (the Boost-backed ones, log_ndtr,
+# ndtri_exp) ship random rows only. Nothing records their error, so across
+# platforms they get a smoke check at a relative 1e-12, while CI holds them to
+# 64 ulps on the same platform.
+scipy_smoke_tol <- 1e-12
+
 scipy_row_tol <- function(entry, same_platform) {
   windows <- .Platform$OS.type == "windows"
   if (same_platform && !windows) {
     return(rep_len(scipy_tol, length(entry$out)))
+  }
+  if (isTRUE(entry$no_xsref)) {
+    return(rep_len(if (same_platform) Inf else scipy_smoke_tol, length(entry$out)))
   }
   mine <- entry$err[[xsf_platform()]] %||% entry$err[["other"]]
   theirs <- entry$err[[if (same_platform) "msvc-windows-x86_64" else "other"]]

@@ -9,10 +9,12 @@ Run with the SciPy release zuspecial's xsf pin comes from, for example:
 
 Inputs per function and signature: the xsref inputs, sampled as
 tools/xsref-extract samples them (--cap, default 250; 0 keeps every row),
-plus --random seeded random inputs (default 200). The tables shipped in
+plus --random seeded random inputs (default 200), drawn per argument from the
+domain tools/xsref/functions.tsv gives it. The tables shipped in
 tests/testthat/scipy use --random 0: random inputs have no recorded error to
 bound cross-platform differences, so they are only compared with SciPy run
-on the same platform, in CI (xsref.yaml). Each Out_ table's metadata records the SciPy version; its
+on the same platform, in CI (xsref.yaml). A function xsref has no table for
+(table "-") always gets NO_XSREF_RANDOM random inputs, its only SciPy check. Each Out_ table's metadata records the SciPy version; its
 columns record, for rows taken from xsref, the xsref row (1-based, 0 for a
 random input) and xsref's recorded error on every platform (NaN for random
 inputs), from which the R test builds each row's tolerance.
@@ -29,6 +31,7 @@ import scipy
 import scipy.special as sc
 
 SEED = 20261024
+NO_XSREF_RANDOM = 200
 DTYPES = {"d": np.float64, "cd": np.complex128, "p": np.int64}
 
 
@@ -55,21 +58,20 @@ def read_inputs(path, types):
     return cols
 
 
-def random_inputs(rng, types, n_random):
-    N_RANDOM = n_random
-
+def random_inputs(rng, domains, n):
     def real(n):
         return rng.choice([-1.0, 1.0], n) * 10.0 ** rng.uniform(-3, 3, n)
 
-    cols = []
-    for t in types:
-        if t == "d":
-            cols.append(real(N_RANDOM))
-        elif t == "cd":
-            cols.append(real(N_RANDOM) + 1j * real(N_RANDOM))
-        else:
-            cols.append(rng.integers(0, 31, N_RANDOM, dtype=np.int64))
-    return cols
+    gen = {
+        "real": real,
+        "pos": lambda n: 10.0 ** rng.uniform(-3, 3, n),
+        "unit": lambda n: rng.uniform(0, 1, n),
+        "unitpm": lambda n: rng.uniform(-1, 1, n),
+        "neg": lambda n: -(10.0 ** rng.uniform(-3, 4, n)),
+        "complex": lambda n: real(n) + 1j * real(n),
+        "int": lambda n: rng.integers(0, 31, n, dtype=np.int64),
+    }
+    return [gen[d](n) for d in domains]
 
 
 def columns(prefix, values):
@@ -101,35 +103,47 @@ def main():
         rows = list(csv.DictReader(f, delimiter="\t"))
     for row in rows:
         table = row["table"]
-        fn = getattr(sc, table)
-        for sig in row["sigs"].split(","):
+        name = row["r_name"][len("sc_"):]
+        fn = getattr(sc, name)
+        has_xsref = table != "-"
+        for sig, doms in zip(row["sigs"].split(","), row["domains"].split(",")):
             types = sig.split("-")[0].split("_")
-            ins = read_inputs(xsref / table / f"In_{sig}.parquet", types)
-            keep = sample_rows(len(ins[0]), a.cap)
-            rand = random_inputs(rng, types, a.random)
+            n_random = a.random if has_xsref else NO_XSREF_RANDOM
+            rand = random_inputs(rng, doms.split(" "), n_random)
+            if has_xsref:
+                ins = read_inputs(xsref / table / f"In_{sig}.parquet", types)
+                keep = sample_rows(len(ins[0]), a.cap)
+            else:
+                ins = [np.zeros(0, dtype=r.dtype) for r in rand]
+                keep = np.zeros(0, dtype=np.int64)
             ins = [np.concatenate([x[keep], r]) for x, r in zip(ins, rand)]
-            pad = np.full(a.random, np.nan)
+            pad = np.full(n_random, np.nan)
             errs = {}
-            for path in sorted((xsref / table).glob(f"Err_{sig}_*.parquet")):
-                platform = path.stem[len(f"Err_{sig}_"):]
-                err = pq.read_table(path).column("err0").to_numpy()
-                errs[f"err_{platform}"] = np.concatenate([err[keep], pad])
+            if has_xsref:
+                for path in sorted((xsref / table).glob(f"Err_{sig}_*.parquet")):
+                    platform = path.stem[len(f"Err_{sig}_"):]
+                    err = pq.read_table(path).column("err0").to_numpy()
+                    errs[f"err_{platform}"] = np.concatenate([err[keep], pad])
             with np.errstate(all="ignore"):
                 values = fn(*ins)
-            meta = {"scipy_version": scipy.__version__, "function": table}
-            dest = out / table
+            meta = {
+                "scipy_version": scipy.__version__,
+                "function": name,
+                "xsref": table if has_xsref else "none",
+            }
+            dest = out / (table if has_xsref else name)
             dest.mkdir(parents=True, exist_ok=True)
             pq.write_table(pa.table(columns("in", ins)), dest / f"In_{sig}.parquet")
             o = columns("out", [values])
             o["fallback"] = np.zeros(len(values), dtype=bool)
-            o["xsref_row"] = np.concatenate([keep + 1, np.zeros(a.random, dtype=np.int64)])
+            o["xsref_row"] = np.concatenate([keep + 1, np.zeros(n_random, dtype=np.int64)])
             # Stable identity of a random input: its position in this table's
             # seeded stream (1-based; 0 for an xsref row).
-            o["random_id"] = np.concatenate([np.zeros(len(keep), dtype=np.int64), np.arange(1, a.random + 1)])
+            o["random_id"] = np.concatenate([np.zeros(len(keep), dtype=np.int64), np.arange(1, n_random + 1)])
             o.update(errs)
             t = pa.table(o).replace_schema_metadata(meta)
             pq.write_table(t, dest / f"Out_{sig}.parquet")
-            print(f"{table} {sig}: {len(values)} rows")
+            print(f"{name} {sig}: {len(values)} rows")
 
 
 if __name__ == "__main__":
