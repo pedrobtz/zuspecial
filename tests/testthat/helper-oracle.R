@@ -160,11 +160,18 @@ oracle_known <- function(entry, ids) {
     mag <- function(x) {
       if (is.complex(x)) pmax(abs(Re(x)), abs(Im(x))) else abs(x)
     }
+    # The rows the defect can reach, as tools/known-windows decides them: an
+    # argument of at least 1e5, or ellipj with m = 0 (sin and cos directly).
     biggest <- do.call(pmax, lapply(entry$inputs, function(x) mag(x)[listed]))
+    direct_trig <- if (entry$r_name == "sc_ellipj") {
+      entry$inputs[[2]][listed] == 0
+    } else {
+      FALSE
+    }
     expect(
-      all(biggest >= 1e5),
+      all(biggest >= 1e5 | direct_trig),
       sprintf(
-        "%s %s: known-windows.tsv.gz lists rows with no argument >= 1e5",
+        "%s %s: known-windows.tsv.gz lists rows the defect cannot reach",
         entry$r_name,
         entry$sig
       )
