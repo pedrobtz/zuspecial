@@ -270,7 +270,10 @@ scipy_row_tol <- function(entry, same_platform) {
     return(rep_len(scipy_tol, length(entry$out)))
   }
   if (isTRUE(entry$no_xsref)) {
-    return(rep_len(if (same_platform) Inf else scipy_smoke_tol, length(entry$out)))
+    return(rep_len(
+      if (same_platform) Inf else scipy_smoke_tol,
+      length(entry$out)
+    ))
   }
   mine <- entry$err[[xsf_platform()]] %||% entry$err[["other"]]
   theirs <- entry$err[[if (same_platform) "msvc-windows-x86_64" else "other"]]

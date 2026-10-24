@@ -33,7 +33,11 @@ test_that("the function table lists every exported kernel function", {
         "exp1",
         "expi",
         "ndtr",
-        "log_ndtr"
+        "log_ndtr",
+        "jv", "yv", "iv", "kv", "jve", "yve", "ive", "kve",
+        "hankel1", "hankel2", "hankel1e", "hankel2e",
+        "spherical_jn", "spherical_yn", "spherical_in", "spherical_kn",
+        "airy", "airye"
       )
     ))
   )
