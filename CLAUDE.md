@@ -38,8 +38,11 @@ in all); Stage 7 the independent package and `Rmpfr` oracles; Stage 8
 the C table `zuspecial_api_v1`; Stage 9 the benchmarks (design §11), the
 README, the pkgdown reference index and the article
 `vignettes/articles/scipy.Rmd` (a pkgdown article, not an installed
-vignette). The roadmap in `.agents/roadmap.md` takes it to v0.1.0,
-tracked in [\#1](https://github.com/pedrobtz/zuspecial/issues/1).
+vignette); Stage 10 the full CI profile, `nosuggests` and `nold`
+included; Stage 11 (2026-10-26) the critical and CRAN reviews’ fixes and
+`Version: 0.1.0`. The roadmap in `.agents/roadmap.md` takes it to
+v0.1.0, tracked in
+[\#1](https://github.com/pedrobtz/zuspecial/issues/1).
 
 ## Stage tracking
 

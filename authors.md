@@ -52,19 +52,40 @@
 - **NumPy developers**. Copyright holder.  
   complex power, ported from NumPy
 
+- **Donald E. Amos**. Contributor.  
+  author of the AMOS Bessel code in the bundled xsf library
+
+- **Steven G. Johnson**. Contributor.  
+  author of the Faddeeva code in the bundled xsf library
+
+- **Yozo Hida**. Contributor.  
+  author of the qd code in the bundled xsf library
+
+- **David H. Bailey**. Contributor.  
+  double-double package the bundled qd code is based on
+
+- **Keith Briggs**. Contributor.  
+  double-double package the bundled qd code borrows from
+
+- **Josh Wilson**. Contributor.  
+  code in the bundled xsf library
+
+- **Matt Haberland**. Contributor.  
+  complex zeta code in the bundled xsf library
+
 ## Citation
 
 Source:
 [`DESCRIPTION`](https://github.com/pedrobtz/zuspecial/blob/main/DESCRIPTION)
 
 Baltazar P (2026). *zuspecial: Special Functions from 'SciPy' for Real
-and Complex Arguments*. R package version 0.0.0.9000,
+and Complex Arguments*. R package version 0.1.0,
 <https://github.com/pedrobtz/zuspecial>.
 
     @Manual{,
       title = {zuspecial: Special Functions from 'SciPy' for Real and Complex Arguments},
       author = {Pedro Baltazar},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
       url = {https://github.com/pedrobtz/zuspecial},
     }

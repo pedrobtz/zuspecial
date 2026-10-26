@@ -1,6 +1,8 @@
 # Changelog
 
-## zuspecial 0.0.0.9000
+## zuspecial 0.1.0
+
+- Initial CRAN submission.
 
 - Gamma and beta functions:
   [`sc_gamma()`](https://pedrobtz.github.io/zuspecial/reference/gamma-functions.md),
@@ -114,6 +116,8 @@
   [`sc_owens_t()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md),
   and
   [`sc_erfinv()`](https://pedrobtz.github.io/zuspecial/reference/error-functions.md).
+  [`sc_ndtri()`](https://pedrobtz.github.io/zuspecial/reference/normal-functions.md)’s
+  argument is `y`, as in SciPy’s `ndtri(y)`.
 
 - [`sc_geterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md),
   [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">zuspecial</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -204,10 +204,14 @@ the expression first, where Python uses a <code>with</code> block:</p>
 <span>  zuspecial_singular_error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "sc_gamma: singular in 1 element, first at index 1."</span></span></code></pre></div>
-<p>Two things differ from SciPy:</p>
+<p>Three things differ from SciPy:</p>
 <ul>
 <li>A code is signalled once per call, with the number of elements that
 raised it and the index of the first, not once per element.</li>
+<li>Only the codes the kernels report are signalled. SciPy also turns
+the processor’s floating-point flags into codes, so it raises a few that
+zuspecial does not, such as <code>overflow</code> for
+<code>exp1(800)</code>. The values are the same.</li>
 <li>Warnings and errors are R conditions with classes
 (<code>zuspecial_warning</code>, <code>zuspecial_&lt;code&gt;</code>,
 <code>zuspecial_error</code>,

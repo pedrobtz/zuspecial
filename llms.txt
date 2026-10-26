@@ -36,8 +36,14 @@ are needed to build it.
 
 ## Installation
 
-zuspecial is not on CRAN yet. Install the development version from
-GitHub with:
+Install zuspecial from CRAN with:
+
+``` r
+
+install.packages("zuspecial")
+```
+
+or the development version from GitHub with:
 
 ``` r
 

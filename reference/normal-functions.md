@@ -11,7 +11,7 @@ sc_ndtr(x)
 
 sc_log_ndtr(x)
 
-sc_ndtri(p)
+sc_ndtri(y)
 
 sc_ndtri_exp(y)
 
@@ -24,13 +24,10 @@ sc_owens_t(h, a)
 
   Numeric or complex vector.
 
-- p:
-
-  Numeric vector of probabilities.
-
 - y:
 
-  Numeric vector of log probabilities (at most 0).
+  Numeric vector: probabilities for `sc_ndtri()`, log probabilities (at
+  most 0) for `sc_ndtri_exp()`.
 
 - h, a:
 

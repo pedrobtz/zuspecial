@@ -62,7 +62,8 @@ returns the value of `expr`.
 
 The defaults are SciPy's: every code is ignored except `memory`, which
 raises. The state lives in the option `zuspecial.errstate`, so parallel
-workers start from the defaults.
+workers start from the defaults. Set it with `sc_seterr()`; a value set
+directly is completed from the defaults, and refused if malformed.
 
 ## See also
 
