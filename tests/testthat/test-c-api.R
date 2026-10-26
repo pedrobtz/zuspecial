@@ -118,7 +118,11 @@ test_that("a consumer package calls the table: real, complex, error code", {
     sc_betainccinv(a, b, c),
     sc_gamma(a) # gamma again, with code = NULL
   )
-  expect_identical(r$all, want)
+  # Compared to 1e-14, not bit for bit: under valgrind this process
+  # emulates long double at double precision while the consumer's Rscript,
+  # which valgrind does not trace, does not, and the Boost-backed betaincc
+  # then differs in the last bit. A mis-wired member differs by far more.
+  expect_equal(r$all, want, tolerance = 1e-14)
   expect_false(anyNA(want))
   expect_identical(anyDuplicated(want[-length(want)]), 0L)
   expect_identical(r$j[[2]], 0L)
