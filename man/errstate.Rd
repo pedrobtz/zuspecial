@@ -54,7 +54,8 @@ index.
 \details{
 The defaults are SciPy's: every code is ignored except \code{memory}, which
 raises. The state lives in the option \code{zuspecial.errstate}, so parallel
-workers start from the defaults.
+workers start from the defaults. Set it with \code{sc_seterr()}; a value set
+directly is completed from the defaults, and refused if malformed.
 }
 \examples{
 sc_geterr()

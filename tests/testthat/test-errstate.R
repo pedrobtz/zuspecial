@@ -97,3 +97,21 @@ test_that("a report signals each code once under its action", {
   expect_s3_class(cnd, "zuspecial_error")
   expect_identical(cnd$first_index, 5)
 })
+
+test_that("a malformed zuspecial.errstate option is refused or completed", {
+  withr::local_options(zuspecial.errstate = "bogus")
+  expect_error(sc_geterr(), class = "zuspecial_invalid_argument")
+  expect_error(sc_gamma(-1), class = "zuspecial_invalid_argument")
+
+  withr::local_options(zuspecial.errstate = c(domain = "loud"))
+  expect_error(sc_geterr(), class = "zuspecial_invalid_argument")
+
+  # A partial state keeps the defaults for the codes it leaves out.
+  withr::local_options(zuspecial.errstate = c(singular = "warn"))
+  state <- sc_geterr()
+  expect_identical(names(state), names(sc_seterr()))
+  expect_identical(state[["singular"]], "warn")
+  expect_identical(state[["memory"]], "raise")
+  expect_warning(sc_gamma(-1), class = "zuspecial_singular")
+  expect_silent(sc_gammainc(-1, 1))
+})
