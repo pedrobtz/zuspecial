@@ -1,4 +1,6 @@
-# zuspecial 0.0.0.9000
+# zuspecial 0.1.0
+
+* Initial CRAN submission.
 
 * Gamma and beta functions: `sc_gamma()`, `sc_gammaln()`, `sc_loggamma()`,
   `sc_rgamma()`, `sc_gammasgn()`, `sc_psi()`, `sc_beta()`, `sc_betaln()`,
