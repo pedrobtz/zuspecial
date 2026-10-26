@@ -44,13 +44,11 @@ test_that("real input stays real; complex input takes the complex path", {
   expect_true(is.nan(sc_jv(0.5, -1)))
   expect_type(sc_jv(0.5, -1 + 0i), "complex")
   expect_false(is.nan(Re(sc_jv(0.5, -1 + 0i))))
-  z <- 1.3 - 0.4i
+  # mpmath 1.3.0 at 30 digits: besselj(1.5, mpc("1.3", "-0.4")).
   expect_equal(
-    sc_jv(1.5, z),
-    complex(
-      real = Re(sc_jv(1.5, z)),
-      imaginary = Im(sc_jv(1.5, z))
-    )
+    sc_jv(1.5, 1.3 - 0.4i),
+    complex(real = 0.34085054823125799, imaginary = -0.12016052708966153),
+    tolerance = 1e-14
   )
   expect_error(sc_jv(1i, 2), class = "zuspecial_invalid_argument")
 })
