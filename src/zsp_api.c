@@ -164,9 +164,9 @@ static double api_log_ndtr(double x, int *code) {
   zsp_api_code(code);
   return value;
 }
-static double api_ndtri(double p, int *code) {
+static double api_ndtri(double y, int *code) {
   zsp_err_take();
-  double value = zsp_ndtri_d(p);
+  double value = zsp_ndtri_d(y);
   zsp_api_code(code);
   return value;
 }

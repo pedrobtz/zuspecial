@@ -27,7 +27,7 @@ tables built in Stage 3.
 | 8 | [The C table and a consumer fixture](#stage-8--the-c-table-and-a-consumer-fixture) | quick | [#10](https://github.com/pedrobtz/zuspecial/issues/10) | [#25](https://github.com/pedrobtz/zuspecial/pull/25) | 2026-10-24 |
 | 9 | [Benchmarks and documentation](#stage-9--benchmarks-and-documentation) | quick | [#11](https://github.com/pedrobtz/zuspecial/issues/11) | [#26](https://github.com/pedrobtz/zuspecial/pull/26) | 2026-10-24 |
 | 10 | [Full CI](#stage-10--full-ci) | full | [#12](https://github.com/pedrobtz/zuspecial/issues/12) | [#27](https://github.com/pedrobtz/zuspecial/pull/27) | 2026-10-24 |
-| 11 | [v0.1.0 readiness](#stage-11--v010-readiness) | full | [#13](https://github.com/pedrobtz/zuspecial/issues/13) | | |
+| 11 | [v0.1.0 readiness](#stage-11--v010-readiness) | full | [#13](https://github.com/pedrobtz/zuspecial/issues/13) | [#59](https://github.com/pedrobtz/zuspecial/pull/59) | 2026-10-26 |
 
 ## Stage 0 — Package identity
 

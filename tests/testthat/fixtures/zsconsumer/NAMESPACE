@@ -1,3 +1,3 @@
 useDynLib(zsconsumer, .registration = TRUE)
 importFrom(zuspecial, zuspecial_info)
-export(zsc_info, zsc_gamma, zsc_jv_c)
+export(zsc_info, zsc_gamma, zsc_jv_c, zsc_all)

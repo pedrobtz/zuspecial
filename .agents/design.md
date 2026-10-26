@@ -375,6 +375,16 @@ SciPy's ten codes (`singular`, `underflow`, `overflow`, `slow`, `loss`,
 - The action state lives in R options (`zuspecial.errstate`), so
   `sc_errstate()` is an `on.exit()` restore, and parallel R workers
   inherit nothing implicitly.
+- **Decided 2026-10-26 (#58):** only codes the kernels pass to
+  `set_error` are reported. SciPy's ufunc loops also call
+  `sf_error_check_fpe()`, which turns the CPU's floating-point status
+  flags into codes (divide-by-zero to `singular`, overflow, underflow,
+  invalid to `domain`). zuspecial does not read the flags, so a few codes
+  differ from SciPy's while the values agree: `exp1(800)` raises
+  `overflow` in SciPy and nothing here. Matching would mean clearing and
+  testing the flags around every element, with platforms where they are
+  unreliable (valgrind's x87 emulation, Windows); not worth it for
+  conditions that are ignored by default.
 
 ### 6.5 Names and argument order
 

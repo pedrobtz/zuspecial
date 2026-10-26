@@ -75,3 +75,39 @@ test_that("four-output loops return four vectors and one report", {
   expect_type(outc[[3]], "complex")
   expect_identical(outc[[4]][2], NA_complex_)
 })
+
+test_that("NA in any argument position gives NA in every C loop", {
+  withr::local_options(zuspecial.errstate = NULL)
+  sc_seterr(all = "raise")
+  # One call per loop signature (d, c, dd, ddd, id, dc, ic, d4, c4, dd4,
+  # dddd, dddc, ddc, cd, cid), with arguments that give a finite value.
+  cases <- list(
+    list(sc_gamma, list(1.5)),
+    list(sc_gamma, list(1.5 + 1i)),
+    list(sc_beta, list(1, 2)),
+    list(sc_hyperu, list(1, 2, 3)),
+    list(sc_expn, list(1, 1)),
+    list(sc_jv, list(1, 1 + 1i)),
+    list(sc_spherical_jn, list(1, 1 + 1i)),
+    list(sc_airy, list(1)),
+    list(sc_airy, list(1 + 1i)),
+    list(sc_ellipj, list(1, 0.5)),
+    list(sc_hyp2f1, list(1, 1, 2, 0.5)),
+    list(sc_hyp2f1, list(1, 1, 2, 0.5i)),
+    list(sc_hyp1f1, list(1, 2, 1i)),
+    list(sc_zeta, list(2 + 0i, 2)),
+    list(sc_lambertw, list(1, 0, 1e-8))
+  )
+  na_only <- function(x) is.na(x) & !is.nan(x)
+  for (case in cases) {
+    for (i in seq_along(case[[2]])) {
+      args <- case[[2]]
+      args[[i]] <- if (is.complex(args[[i]])) NA_complex_ else NA_real_
+      value <- do.call(case[[1]], args)
+      outputs <- if (is.list(value)) value else list(value)
+      for (out in outputs) {
+        expect_true(na_only(out))
+      }
+    }
+  }
+})

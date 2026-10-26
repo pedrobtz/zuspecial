@@ -1,6 +1,6 @@
 Package: zuspecial
 Title: Special Functions from 'SciPy' for Real and Complex Arguments
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Pedro", "Baltazar", , "pedrobtz@gmail.com",
            role = c("aut", "cre", "cph")),
@@ -35,16 +35,31 @@ Authors@R: c(
     person("Piers", "Lawrence", role = "cph",
            comment = "Wright omega function, ported from SciPy"),
     person("NumPy developers", role = "cph",
-           comment = "complex power, ported from NumPy"))
+           comment = "complex power, ported from NumPy"),
+    person("Donald E.", "Amos", role = "ctb",
+           comment = "author of the AMOS Bessel code in the bundled xsf library"),
+    person("Steven G.", "Johnson", role = "ctb",
+           comment = "author of the Faddeeva code in the bundled xsf library"),
+    person("Yozo", "Hida", role = "ctb",
+           comment = "author of the qd code in the bundled xsf library"),
+    person("David H.", "Bailey", role = "ctb",
+           comment = "double-double package the bundled qd code is based on"),
+    person("Keith", "Briggs", role = "ctb",
+           comment = "double-double package the bundled qd code borrows from"),
+    person("Josh", "Wilson", role = "ctb",
+           comment = "code in the bundled xsf library"),
+    person("Matt", "Haberland", role = "ctb",
+           comment = "complex zeta code in the bundled xsf library"))
 Description: Evaluates the special functions of mathematical physics and
     statistics, including gamma, beta, error, Bessel, Airy, hypergeometric,
     elliptic and zeta functions, for real and complex arguments, using the
     same kernels as the 'SciPy' library's 'scipy.special' module
     (<https://docs.scipy.org/doc/scipy/reference/special.html>). Functions
     keep 'SciPy' names and argument order so that code translates directly
-    between 'Python' and R, and results agree with 'SciPy' to within its
-    own test tolerances. A registered C interface lets other packages call
-    the functions from compiled code.
+    between 'Python' and 'R', and results agree with 'SciPy' to within its
+    own test tolerances. 'SciPy' is described in Virtanen et al. (2020)
+    <doi:10.1038/s41592-019-0686-2>. A registered C interface lets other
+    packages call the functions from compiled code.
 License: MIT + file LICENSE
 Copyright: See inst/COPYRIGHTS and src/vendor/PROVENANCE.
 URL: https://github.com/pedrobtz/zuspecial,

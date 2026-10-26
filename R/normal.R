@@ -20,8 +20,8 @@
 #' does; see [sc_seterr()] for the conditions the kernels raise.
 #'
 #' @param x Numeric or complex vector.
-#' @param p Numeric vector of probabilities.
-#' @param y Numeric vector of log probabilities (at most 0).
+#' @param y Numeric vector: probabilities for `sc_ndtri()`, log
+#'   probabilities (at most 0) for `sc_ndtri_exp()`.
 #' @param h,a Numeric vectors.
 #' @returns A double vector, or a complex vector for complex input.
 #' @section Other packages:
@@ -47,7 +47,7 @@ sc_log_ndtr <- function(x) zsp_eval("log_ndtr", list(x = x), "x")
 
 #' @rdname normal-functions
 #' @export
-sc_ndtri <- function(p) zsp_eval("ndtri", list(p = p))
+sc_ndtri <- function(y) zsp_eval("ndtri", list(y = y))
 
 #' @rdname normal-functions
 #' @export

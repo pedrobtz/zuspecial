@@ -141,10 +141,14 @@ tryCatch(
 )
 ```
 
-Two things differ from SciPy:
+Three things differ from SciPy:
 
 * A code is signalled once per call, with the number of elements that
   raised it and the index of the first, not once per element.
+* Only the codes the kernels report are signalled. SciPy also turns the
+  processor's floating-point flags into codes, so it raises a few that
+  zuspecial does not, such as `overflow` for `exp1(800)`. The values are
+  the same.
 * Warnings and errors are R conditions with classes
   (`zuspecial_warning`, `zuspecial_<code>`, `zuspecial_error`,
   `zuspecial_<code>_error`), for `tryCatch()` and

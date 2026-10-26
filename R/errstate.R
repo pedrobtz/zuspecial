@@ -19,7 +19,8 @@ zsp_default_errstate <- function() {
 #'
 #' The defaults are SciPy's: every code is ignored except `memory`, which
 #' raises. The state lives in the option `zuspecial.errstate`, so parallel
-#' workers start from the defaults.
+#' workers start from the defaults. Set it with `sc_seterr()`; a value set
+#' directly is completed from the defaults, and refused if malformed.
 #'
 #' @param all Action for every code, `memory` included, applied before the
 #'   named ones.
@@ -42,7 +43,32 @@ NULL
 #' @export
 sc_geterr <- function() {
   state <- getOption("zuspecial.errstate")
-  if (is.null(state)) zsp_default_errstate() else state
+  default <- zsp_default_errstate()
+  if (is.null(state)) {
+    return(default)
+  }
+  # Set by hand, the option may be partial or malformed: complete it from
+  # the defaults, and refuse what no action can be read from.
+  if (
+    !is.character(state) ||
+      is.null(names(state)) ||
+      !all(names(state) %in% zsp_codes) ||
+      anyNA(state) ||
+      !all(state %in% zsp_actions)
+  ) {
+    zsp_abort(
+      "zuspecial_invalid_argument",
+      paste(
+        "The option `zuspecial.errstate` must be a named character vector",
+        "of \"ignore\", \"warn\" or \"raise\", one per error code;",
+        "set it with `sc_seterr()`."
+      ),
+      argument = "zuspecial.errstate",
+      call = NULL
+    )
+  }
+  default[names(state)] <- state
+  default
 }
 
 #' @rdname errstate

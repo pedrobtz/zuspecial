@@ -21,10 +21,20 @@ zsp_eval <- function(
     prep$args[complex_ok] <- lapply(prep$args[complex_ok], as.complex)
     prep$complex <- TRUE
   }
-  nan_order <- if (length(whole) > 0L) logical(prep$n)
-  for (arg in whole) {
-    nan_order <- nan_order | is.nan(prep$args[[arg]])
-    prep$args[[arg]] <- zsp_whole(prep$args[[arg]], arg, call)
+  # A NaN order goes to the C loop as NA_integer_ and is set back to NaN
+  # after it, except where another argument is NA: NA wins, as in the glue.
+  nan_order <- NULL
+  if (length(whole) > 0L) {
+    nan_order <- logical(prep$n)
+    for (arg in whole) {
+      nan_order <- nan_order | is.nan(prep$args[[arg]])
+      prep$args[[arg]] <- zsp_whole(prep$args[[arg]], arg, call)
+    }
+    if (any(nan_order)) {
+      for (arg in setdiff(names(prep$args), whole)) {
+        nan_order <- nan_order & !zsp_is_na(prep$args[[arg]])
+      }
+    }
   }
 
   # The loop for this signature: one letter per argument (i whole, c
@@ -83,3 +93,12 @@ zsp_eval <- function(
 
 # The output count in a loop's signature: none for one output.
 `%|0|%` <- function(n, empty) if (n <= 1L) empty else n
+
+# R's NA, not NaN; complex when either part is NA, as the glue's test is.
+zsp_is_na <- function(x) {
+  if (is.complex(x)) {
+    zsp_is_na(Re(x)) | zsp_is_na(Im(x))
+  } else {
+    is.na(x) & !is.nan(x)
+  }
+}

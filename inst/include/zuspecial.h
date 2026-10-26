@@ -77,7 +77,7 @@ typedef struct {
   double (*erfcinv)(double y, int *code);
   double (*ndtr)(double x, int *code);
   double (*log_ndtr)(double x, int *code);
-  double (*ndtri)(double p, int *code);
+  double (*ndtri)(double y, int *code);
   double (*ndtri_exp)(double y, int *code);
   double (*owens_t)(double h, double a, int *code);
   double (*jv)(double v, double x, int *code);
