@@ -28,6 +28,8 @@ qd (double-double arithmetic)
 Files:     src/vendor/xsf/include/xsf/cephes/dd_real.h
 Copyright: (c) 2003-2009 The Regents of the University of California,
            through Lawrence Berkeley National Laboratory
+Authors:   Yozo Hida; based on David H. Bailey's Fortran-90 double-double
+           package, with a fix borrowed from Keith Briggs' C++ package
 Licence:   BSD-3-Clause-LBNL, licenses/xsf-LICENSES_bundled.txt
 
 Boost-derived code
@@ -70,7 +72,9 @@ Files with an author notice and no licence of their own, covered by
 xsf's BSD-3-Clause licence
 -------------------------------------------------------------------
 binom.h (Pauli Virtanen, Eric Moore), cephes/ellie.h and cephes/ellik.h
-(Eric W. Moore, 2014).
+(Eric W. Moore, 2014), digamma.h, loggamma.h, trig.h, evalpoly.h, zlog1.h
+and cephes/trig.h (Josh Wilson), zeta.h (complex zeta, after Matt
+Haberland).
 
 Code ported from SciPy into zuspecial's own sources
 ---------------------------------------------------
