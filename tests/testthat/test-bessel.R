@@ -82,12 +82,22 @@ test_that("spherical Bessel functions at closed forms and derivatives", {
   expect_equal(sc_spherical_yn(0, x), -cos(x) / x, tolerance = 1e-14)
   expect_equal(sc_spherical_in(0, x), sinh(x) / x, tolerance = 1e-14)
   expect_equal(sc_spherical_kn(0, x), pi / 2 * exp(-x) / x, tolerance = 1e-14)
-  # f_n'(z) = f_{n-1}(z) - (n + 1) / z f_n(z), for j and y
+  # Every derivative kernel, real and complex, against the recurrences of
+  # DLMF 10.51: f_n' = f_{n-1} - (n + 1) / z f_n for j, y and i, and
+  # k_n' = -k_{n-1} - (n + 1) / z k_n. A kernel wired to the wrong function
+  # fails them.
   n <- 3
-  for (f in list(sc_spherical_jn, sc_spherical_yn)) {
+  for (z in list(x, c(1.2 + 0.7i, 3 - 2i))) {
+    for (f in list(sc_spherical_jn, sc_spherical_yn, sc_spherical_in)) {
+      expect_equal(
+        f(n, z, derivative = TRUE),
+        f(n - 1, z) - (n + 1) / z * f(n, z),
+        tolerance = 1e-12
+      )
+    }
     expect_equal(
-      f(n, x, derivative = TRUE),
-      f(n - 1, x) - (n + 1) / x * f(n, x),
+      sc_spherical_kn(n, z, derivative = TRUE),
+      -sc_spherical_kn(n - 1, z) - (n + 1) / z * sc_spherical_kn(n, z),
       tolerance = 1e-12
     )
   }
