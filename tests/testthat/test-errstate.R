@@ -43,7 +43,10 @@ test_that("memory can be set like the other codes", {
 
 test_that("an invalid action names the user-facing call", {
   withr::local_options(zuspecial.errstate = NULL)
-  cnd <- expect_error(sc_errstate(1, domain = "loud"))
+  cnd <- expect_error(
+    sc_errstate(1, domain = "loud"),
+    class = "zuspecial_invalid_argument"
+  )
   expect_identical(deparse(conditionCall(cnd)[[1]]), "sc_errstate")
 })
 
@@ -57,10 +60,26 @@ test_that("seterr refuses unknown actions", {
   )
 })
 
+test_that("errstate refuses unnamed or unknown actions and changes nothing", {
+  withr::local_options(zuspecial.errstate = NULL)
+  before <- sc_geterr()
+  expect_error(sc_errstate(1, "warn"), class = "zuspecial_invalid_argument")
+  expect_error(
+    sc_errstate(1, singualr = "warn"),
+    class = "zuspecial_invalid_argument"
+  )
+  expect_error(
+    sc_errstate(1, "warn", domain = "raise"),
+    class = "zuspecial_invalid_argument"
+  )
+  expect_identical(sc_geterr(), before)
+})
+
 test_that("errstate applies actions and restores state after an error", {
   withr::local_options(zuspecial.errstate = NULL)
   inside <- sc_errstate(sc_geterr()[["overflow"]], overflow = "warn")
   expect_identical(inside, "warn")
+  expect_identical(sc_geterr()[["overflow"]], "ignore")
   expect_error(sc_errstate(stop("boom"), all = "raise"))
   expect_identical(sc_geterr()[["singular"]], "ignore")
 })
