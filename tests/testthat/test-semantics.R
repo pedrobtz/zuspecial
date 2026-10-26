@@ -126,6 +126,21 @@ test_that("a NaN order gives NaN, as SciPy's expn does", {
   expect_identical(sc_expn(c(NaN, 1), 1), c(NaN, sc_expn(1, 1)))
 })
 
+test_that("NA in another argument wins over a NaN order", {
+  # NA is missing data and NaN a value (design 6.3), so an element with both
+  # is NA, as the glue decides for every other argument.
+  na_only <- function(x) is.na(x) & !is.nan(x)
+  expect_true(na_only(sc_expn(NaN, NA)))
+  expect_identical(
+    na_only(sc_expn(c(NaN, 1, NaN), c(1, NA, 2))),
+    c(FALSE, TRUE, FALSE)
+  )
+  expect_true(is.nan(sc_expn(NaN, 1)))
+  expect_true(na_only(sc_lambertw(NA, NaN)))
+  expect_true(na_only(sc_spherical_jn(NaN, NA_complex_)))
+  expect_true(na_only(sc_spherical_jn(NaN, complex(real = 1, imaginary = NA))))
+})
+
 test_that("lengths are measured as doubles, so long vectors are accepted", {
   prep <- zsp_prep(list(a = 1, b = 1:3))
   expect_type(prep$n, "double")
