@@ -15,6 +15,15 @@
 
 #define ZSP_NCODES 10
 
+/* Every 4096 elements, let the user interrupt. The loops hold only
+   PROTECTed objects and each call starts by clearing the error state, so
+   the longjmp leaks nothing. 4096 keeps the slowest kernels (hyperu, about
+   50 us an element) responsive within a quarter second. */
+#define ZSP_POLL(i)                                                           \
+  if ((i) > 0 && ((i) & 4095) == 0) {                                         \
+    R_CheckUserInterrupt();                                                   \
+  }
+
 /* Counts and indices are R_xlen_t, and go to R as doubles, so long vectors
    are reported exactly. */
 typedef struct {
@@ -312,6 +321,7 @@ SEXP zsp_call_d(SEXP name, SEXP x) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(px[i])) {
       po[i] = NA_REAL;
       continue;
@@ -338,6 +348,7 @@ SEXP zsp_call_c(SEXP name, SEXP z) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -371,6 +382,7 @@ SEXP zsp_call_dd(SEXP name, SEXP a, SEXP b) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa[i]) || R_IsNA(pb[i])) {
       po[i] = NA_REAL;
       continue;
@@ -399,6 +411,7 @@ SEXP zsp_call_ddd(SEXP name, SEXP a, SEXP b, SEXP c) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa[i]) || R_IsNA(pb[i]) || R_IsNA(pc[i])) {
       po[i] = NA_REAL;
       continue;
@@ -427,6 +440,7 @@ SEXP zsp_call_id(SEXP name, SEXP k, SEXP x) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (pk[i] == NA_INTEGER || R_IsNA(px[i])) {
       po[i] = NA_REAL;
       continue;
@@ -455,6 +469,7 @@ SEXP zsp_call_dc(SEXP name, SEXP v, SEXP z) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pv[i]) || R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -489,6 +504,7 @@ SEXP zsp_call_ic(SEXP name, SEXP k, SEXP z) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (pk[i] == NA_INTEGER || R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -527,6 +543,7 @@ SEXP zsp_call_d4(SEXP name, SEXP x) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(px[i])) {
       for (int j = 0; j < 4; j++) {
         po[j][i] = NA_REAL;
@@ -563,6 +580,7 @@ SEXP zsp_call_c4(SEXP name, SEXP z) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pz[i].r) || R_IsNA(pz[i].i)) {
       for (int j = 0; j < 4; j++) {
         po[j][i].r = NA_REAL;
@@ -606,6 +624,7 @@ SEXP zsp_call_dddd(SEXP name, SEXP a0, SEXP a1, SEXP a2, SEXP a3) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa0[i]) || R_IsNA(pa1[i]) || R_IsNA(pa2[i]) || R_IsNA(pa3[i])) {
       po[i] = NA_REAL;
       continue;
@@ -638,6 +657,7 @@ SEXP zsp_call_dddc(SEXP name, SEXP a0, SEXP a1, SEXP a2, SEXP a3) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa0[i]) || R_IsNA(pa1[i]) || R_IsNA(pa2[i]) || R_IsNA(pa3[i].r) || R_IsNA(pa3[i].i)) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -674,6 +694,7 @@ SEXP zsp_call_ddc(SEXP name, SEXP a0, SEXP a1, SEXP a2) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa0[i]) || R_IsNA(pa1[i]) || R_IsNA(pa2[i].r) || R_IsNA(pa2[i].i)) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -708,6 +729,7 @@ SEXP zsp_call_cd(SEXP name, SEXP a0, SEXP a1) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa0[i].r) || R_IsNA(pa0[i].i) || R_IsNA(pa1[i])) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -744,6 +766,7 @@ SEXP zsp_call_cid(SEXP name, SEXP a0, SEXP a1, SEXP a2) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pa0[i].r) || R_IsNA(pa0[i].i) || pa1[i] == NA_INTEGER || R_IsNA(pa2[i])) {
       po[i].r = NA_REAL;
       po[i].i = NA_REAL;
@@ -781,6 +804,7 @@ SEXP zsp_call_dd4(SEXP name, SEXP u, SEXP m) {
   zsp_report r = {{0}, {0}};
   zsp_err_take();
   for (R_xlen_t i = 0; i < n; i++) {
+    ZSP_POLL(i);
     if (R_IsNA(pu[i]) || R_IsNA(pm[i])) {
       for (int j = 0; j < 4; j++) {
         po[j][i] = NA_REAL;

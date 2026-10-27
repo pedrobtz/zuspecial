@@ -255,6 +255,10 @@ R result: double or complex vector, or a named list for multi-output
   and returns a `{double re, im}` struct and converts by member.
 - Multi-output functions (`airy`, `airye`, `ellipj`) fill several output
   arrays in one kernel call, as xsf's signatures do.
+- **Added 2026-10-27 (#30):** the glue's loops call
+  `R_CheckUserInterrupt()` every 4096 elements, outside the kernel call.
+  They hold only protected objects and each call first clears the error
+  state, so the jump leaks nothing.
 
 ## 5. Public R API (complete v0.1.0 surface)
 
