@@ -63,15 +63,17 @@ test_that("the glue refuses a bad kernel name and malformed arguments", {
 test_that("a long loop can be interrupted", {
   skip_on_cran()
   # R checks its elapsed-time limit in R_CheckUserInterrupt(), so the limit
-  # stops the loop early only if the loop polls. Uninterrupted, this call
-  # takes several seconds.
-  x <- rep(c(0.3, 1.7), 2e6)
+  # stops the loop early only if the loop polls. hyperu(30, 0.5, 8) costs
+  # about 120 us an element, so uninterrupted this call takes about two
+  # minutes. The bound leaves room for gctorture's slow R and valgrind's
+  # slow C (its first poll comes after 4096 elements).
+  x <- rep(8, 1e6)
   elapsed <- system.time({
     setTimeLimit(elapsed = 0.1, transient = TRUE)
     withr::defer(setTimeLimit())
-    expect_error(sc_hyperu(2.5, 1.3, x), "time limit")
+    expect_error(sc_hyperu(30, 0.5, x), "time limit")
   })[["elapsed"]]
-  expect_lt(elapsed, 2)
+  expect_lt(elapsed, 60)
 })
 
 test_that("order-real, argument-complex loop handles NA in either argument", {
