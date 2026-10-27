@@ -112,17 +112,21 @@ is treated as complex and the result is always complex.
 
 A complex \code{z} takes the complex path and returns complex; a real \code{z} stays
 real, so \code{sc_jv(0.5, -1)} is \code{NaN} while \code{sc_jv(0.5, -1+0i)} is complex,
-as in SciPy. The order \code{v} must be real. Arguments are recycled, \code{NA}
-gives \code{NA}, and the result takes its dimensions, or else its names, from
-the arguments as base R arithmetic does; see \code{\link[=sc_seterr]{sc_seterr()}} for the
-conditions the kernels raise.
+as in SciPy. The order \code{v} must be real.
+
+Arguments are recycled: each must have length one or the common length.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Windows}{
 
 R on Windows is built with Rtools, whose C library (mingw-w64 v11)
 evaluates \code{sin()} and \code{cos()} inaccurately for arguments beyond about
-\code{1e5}, as base R's own \code{sin()} shows there. Arguments that large are
-correspondingly inaccurate on Windows only.
+\code{1e5}, as base R's own \code{sin()} shows there. Complex arguments with a part
+that large, and real ones where the kernel takes a sine of such a value,
+are correspondingly inaccurate on Windows only.
 }
 
 \section{Branch cuts}{

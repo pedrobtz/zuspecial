@@ -8,17 +8,16 @@
 #' - `sc_hyp2f1()`: the Gauss \eqn{{}_2F_1(a,b;c;z)}, complex `z`.
 #' - `sc_hyperu()`: Tricomi's \eqn{U(a, b, x)} for real `x >= 0`.
 #'
-#' Only the last argument may be complex; the parameters are real. Arguments
-#' are recycled, `NA` gives `NA`, and the result takes its dimensions, or else
-#' its names, from the arguments as base R arithmetic does; see
-#' [sc_seterr()] for the conditions the kernels raise.
+#' Only the last argument may be complex; the parameters are real.
+#'
+#' @template args-results
 #'
 #' @param v,a,b,c Numeric vectors of parameters.
 #' @param z,x Numeric vector; complex too, except for `sc_hyperu()`.
 #' @returns A double vector, or a complex vector for complex input.
 #' @section Branch cuts:
 #' `sc_hyp2f1()` has a branch cut on the real axis from 1 to infinity, as in
-#' SciPy. `sc_hyp0f1()` and `sc_hyp1f1()` are entire in `z`.
+#' SciPy. `sc_hyp0f1()` is entire in `z`, and `sc_hyp1f1()` in `x`.
 #'
 #' @section Other packages:
 #' In `gsl`, for real arguments: `hyperg_0F1()`, `hyperg_1F1()`,
@@ -69,9 +68,7 @@ sc_hyperu <- function(a, b, x) {
 #' - `sc_ellipj()`: \eqn{sn}, \eqn{cn}, \eqn{dn} and the amplitude
 #'   \eqn{\phi}, as a named list, as SciPy returns a tuple.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and results take their
-#' dimensions, or else their names, from the arguments as base R arithmetic
-#' does; see [sc_seterr()] for the conditions the kernels raise.
+#' @template args-results
 #'
 #' @param m Numeric vector of parameters.
 #' @param p Numeric vector, \eqn{1 - m}.
@@ -84,6 +81,7 @@ sc_hyperu <- function(a, b, x) {
 #' computes `sin()` and `cos()` with x87 argument reduction. Near a zero of
 #' the cosine it loses relative accuracy, and `sc_ellipj(u, 0)`, which is
 #' `cos(u)` exactly, inherits that for `u` near `pi / 2` on Windows only.
+#'
 #' @section Other packages:
 #' In `gsl`: `ellint_Kcomp()`, `ellint_Ecomp()`, `ellint_F()` and
 #' `ellint_E()`, which take the modulus \eqn{k} where SciPy takes the
@@ -140,9 +138,7 @@ sc_ellipj <- function(u, m) {
 #' - `sc_struve()`, `sc_modstruve()`: the Struve functions \eqn{H_v(x)} and
 #'   \eqn{L_v(x)}.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and the result takes its
-#' dimensions, or else its names, from the arguments as base R arithmetic
-#' does; see [sc_seterr()] for the conditions the kernels raise.
+#' @template args-results
 #'
 #' @param x Numeric vector; for `sc_zeta()`, also complex.
 #' @param q `NULL`, or a numeric vector of Hurwitz parameters.

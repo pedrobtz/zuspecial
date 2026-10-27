@@ -50,9 +50,11 @@ elliptic functions.
 \eqn{\phi}, as a named list, as SciPy returns a tuple.
 }
 
-Arguments are recycled, \code{NA} gives \code{NA}, and results take their
-dimensions, or else their names, from the arguments as base R arithmetic
-does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+Arguments are recycled: each must have length one or the common length.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Windows}{
 

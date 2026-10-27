@@ -60,9 +60,11 @@ on the real axis, and is \code{NaN} (a \code{domain} condition) elsewhere.
 }
 }
 \details{
-Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
+Arguments are recycled: each must have length one or the common length.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Branch cuts}{
 

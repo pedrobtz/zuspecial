@@ -7,10 +7,10 @@
 \alias{sc_erfcx}
 \alias{sc_erfi}
 \alias{sc_erfcinv}
+\alias{sc_erfinv}
 \alias{sc_dawsn}
 \alias{sc_wofz}
 \alias{sc_voigt_profile}
-\alias{sc_erfinv}
 \title{Error functions and the Faddeeva function}
 \usage{
 sc_erf(z)
@@ -23,13 +23,13 @@ sc_erfi(z)
 
 sc_erfcinv(y)
 
+sc_erfinv(y)
+
 sc_dawsn(x)
 
 sc_wofz(z)
 
 sc_voigt_profile(x, sigma, gamma)
-
-sc_erfinv(y)
 }
 \arguments{
 \item{z, x}{Numeric vector; for \code{z}, and for \code{x} in \code{sc_erfc()},
@@ -58,7 +58,7 @@ uses (the MIT Faddeeva package for complex arguments). Functions marked
 \eqn{e^{x^2} \mathrm{erfc}(x)}, complex.
 \item \code{sc_erfi()}: the imaginary error function \eqn{-i\,\mathrm{erf}(iz)},
 complex.
-\item \code{sc_erfcinv()}: the inverse of \code{sc_erfc()} on \eqn{(0, 2)}.
+\item \code{sc_erfcinv()}: the inverse of \code{sc_erfc()} on \eqn{[0, 2]}.
 \item \code{sc_erfinv()}: the inverse of \code{sc_erf()} on \eqn{[-1, 1]}, evaluated
 with Boost.Math (from the BH package), as SciPy does.
 \item \code{sc_dawsn()}: Dawson's integral, complex.
@@ -70,9 +70,11 @@ density with standard deviation \code{sigma} and a Cauchy density with half
 width \code{gamma}.
 }
 
-Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
+Arguments are recycled: each must have length one or the common length.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Windows}{
 

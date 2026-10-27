@@ -10,16 +10,16 @@
 \alias{sc_psi}
 \alias{sc_beta}
 \alias{sc_betaln}
+\alias{sc_betainc}
+\alias{sc_betaincc}
+\alias{sc_betaincinv}
+\alias{sc_betainccinv}
 \alias{sc_binom}
 \alias{sc_poch}
 \alias{sc_gammainc}
 \alias{sc_gammaincc}
 \alias{sc_gammaincinv}
 \alias{sc_gammainccinv}
-\alias{sc_betainc}
-\alias{sc_betaincc}
-\alias{sc_betaincinv}
-\alias{sc_betainccinv}
 \title{Gamma and beta functions}
 \usage{
 sc_gamma(z)
@@ -38,6 +38,14 @@ sc_beta(a, b)
 
 sc_betaln(a, b)
 
+sc_betainc(a, b, x)
+
+sc_betaincc(a, b, x)
+
+sc_betaincinv(a, b, y)
+
+sc_betainccinv(a, b, y)
+
 sc_binom(x, y)
 
 sc_poch(z, m)
@@ -49,17 +57,9 @@ sc_gammaincc(a, x)
 sc_gammaincinv(a, y)
 
 sc_gammainccinv(a, y)
-
-sc_betainc(a, b, x)
-
-sc_betaincc(a, b, x)
-
-sc_betaincinv(a, b, y)
-
-sc_betainccinv(a, b, y)
 }
 \arguments{
-\item{z, x}{Numeric vector; for \code{z}, also complex.}
+\item{z, x}{Numeric vector; for \code{z}, also complex, except in \code{sc_poch()}.}
 
 \item{a, b, y, m}{Numeric vectors; for the incomplete gamma functions \code{a} is
 the shape and \code{y} a probability.}
@@ -109,8 +109,8 @@ SciPy, with Boost.Math (from the BH package) rather than xsf.
 Arguments are recycled: each must have length one or the common length.
 \code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does. Conditions the kernels raise, such as a pole, are handled as
-\code{\link[=sc_seterr]{sc_seterr()}} says.
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Windows}{
 

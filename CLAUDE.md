@@ -272,6 +272,8 @@ entry.
 ## Editing rules
 
 - roxygen comments are the source. Never edit `man/` or `NAMESPACE` by hand.
+- Paragraphs that several help pages share live once in `man-roxygen/`
+  and are included with `@template`.
 - Edit `README.Rmd`, not the generated `README.md`.
 - Keep prose simple and short. One idea per sentence.
 - Wrap roxygen text at 80 characters and run `air format .` on R sources.

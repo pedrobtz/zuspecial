@@ -38,20 +38,22 @@ family.
 \details{
 \itemize{
 \item \code{sc_ndtr()}: the cumulative distribution function \eqn{\Phi(x)},
-complex. Base R: \code{\link[=pnorm]{pnorm()}}.
+complex. Base R: \code{\link[stats:pnorm]{stats::pnorm()}}.
 \item \code{sc_log_ndtr()}: \eqn{\log \Phi(x)}, accurate far into the lower
 tail, complex. Base R: \code{pnorm(x, log.p = TRUE)}.
 \item \code{sc_ndtri()}: the quantile function, the inverse of \code{sc_ndtr()}. Base R:
-\code{\link[=qnorm]{qnorm()}}.
+\code{\link[stats:qnorm]{stats::qnorm()}}.
 \item \code{sc_ndtri_exp()}: the inverse of \code{sc_log_ndtr()}, for log probabilities
 too small for \code{exp()}. Base R: \code{qnorm(y, log.p = TRUE)}.
 \item \code{sc_owens_t()}: Owen's T function \eqn{T(h, a)}, which gives bivariate
 and skew-normal probabilities.
 }
 
-Arguments are recycled, \code{NA} gives \code{NA}, and the result takes its
+Arguments are recycled: each must have length one or the common length.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see \code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Other packages}{
 

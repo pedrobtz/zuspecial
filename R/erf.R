@@ -11,7 +11,7 @@
 #'   \eqn{e^{x^2} \mathrm{erfc}(x)}, complex.
 #' - `sc_erfi()`: the imaginary error function \eqn{-i\,\mathrm{erf}(iz)},
 #'   complex.
-#' - `sc_erfcinv()`: the inverse of `sc_erfc()` on \eqn{(0, 2)}.
+#' - `sc_erfcinv()`: the inverse of `sc_erfc()` on \eqn{[0, 2]}.
 #' - `sc_erfinv()`: the inverse of `sc_erf()` on \eqn{[-1, 1]}, evaluated
 #'   with Boost.Math (from the BH package), as SciPy does.
 #' - `sc_dawsn()`: Dawson's integral, complex.
@@ -22,9 +22,7 @@
 #'   density with standard deviation `sigma` and a Cauchy density with half
 #'   width `gamma`.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and the result takes its
-#' dimensions, or else its names, from the arguments as base R arithmetic
-#' does; see [sc_seterr()] for the conditions the kernels raise.
+#' @template args-results
 #'
 #' @param z,x Numeric vector; for `z`, and for `x` in `sc_erfc()`,
 #'   `sc_erfcx()` and `sc_dawsn()`, also complex.
@@ -33,12 +31,7 @@
 #' @param sigma,gamma Numeric vectors, the Voigt profile's parameters.
 #' @returns A double vector, or a complex vector for complex input (always
 #'   complex for `sc_wofz()`).
-#' @section Windows:
-#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
-#' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
-#' `1e5`, as base R's own `sin()` shows there. Complex arguments with a part
-#' that large, and real ones where the kernel takes a sine of such a value,
-#' are correspondingly inaccurate on Windows only.
+#' @template windows-trig
 #'
 #' @section Other packages:
 #' In `gsl`, for real arguments only: `erf()`, `erfc()`, `log_erfc()` and
@@ -76,6 +69,10 @@ sc_erfcinv <- function(y) zsp_eval("erfcinv", list(y = y))
 
 #' @rdname error-functions
 #' @export
+sc_erfinv <- function(y) zsp_eval("erfinv", list(y = y))
+
+#' @rdname error-functions
+#' @export
 sc_dawsn <- function(x) zsp_eval("dawsn", list(x = x), "x")
 
 #' @rdname error-functions
@@ -87,7 +84,3 @@ sc_wofz <- function(z) zsp_eval("wofz", list(z = z), "z", complex_only = TRUE)
 sc_voigt_profile <- function(x, sigma, gamma) {
   zsp_eval("voigt_profile", list(x = x, sigma = sigma, gamma = gamma))
 }
-
-#' @rdname error-functions
-#' @export
-sc_erfinv <- function(y) zsp_eval("erfinv", list(y = y))

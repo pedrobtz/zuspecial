@@ -5,19 +5,17 @@
 #' family.
 #'
 #' - `sc_ndtr()`: the cumulative distribution function \eqn{\Phi(x)},
-#'   complex. Base R: [pnorm()].
+#'   complex. Base R: [stats::pnorm()].
 #' - `sc_log_ndtr()`: \eqn{\log \Phi(x)}, accurate far into the lower
 #'   tail, complex. Base R: `pnorm(x, log.p = TRUE)`.
 #' - `sc_ndtri()`: the quantile function, the inverse of `sc_ndtr()`. Base R:
-#'   [qnorm()].
+#'   [stats::qnorm()].
 #' - `sc_ndtri_exp()`: the inverse of `sc_log_ndtr()`, for log probabilities
 #'   too small for `exp()`. Base R: `qnorm(y, log.p = TRUE)`.
 #' - `sc_owens_t()`: Owen's T function \eqn{T(h, a)}, which gives bivariate
 #'   and skew-normal probabilities.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and the result takes its
-#' dimensions, or else its names, from the arguments as base R arithmetic
-#' does; see [sc_seterr()] for the conditions the kernels raise.
+#' @template args-results
 #'
 #' @param x Numeric or complex vector.
 #' @param y Numeric vector: probabilities for `sc_ndtri()`, log
