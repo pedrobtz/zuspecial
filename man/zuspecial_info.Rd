@@ -8,9 +8,10 @@ zuspecial_info()
 }
 \value{
 A list with \code{xsf_commit}, \code{scipy_version}, \code{xsref_commit},
-\code{boost_version}, \code{compiler} and \code{functions}, a data frame with one row per exported function: \code{r_name},
-\code{scipy_name}, \code{backend} (the library that evaluates it) and \code{complex}
-(whether it takes complex arguments).
+\code{boost_version}, \code{compiler} and \code{functions}. \code{functions} is a data frame
+with one row per exported function: \code{r_name}, \code{scipy_name}, \code{backend}
+(the library that evaluates real arguments; complex arguments always go
+to xsf) and \code{complex} (whether it takes complex arguments).
 }
 \description{
 Reports what this build of zuspecial evaluates with: the vendored xsf

@@ -36,6 +36,11 @@ zsp_default_errstate <- function() {
 #' @examples
 #' sc_geterr()
 #' sc_errstate(sc_gamma(-1), singular = "warn")
+#'
+#' # sc_seterr() returns the previous state; restore it with do.call().
+#' old <- sc_seterr(domain = "warn")
+#' sc_geterr()[["domain"]]
+#' do.call(sc_seterr, as.list(old))
 #' @name errstate
 NULL
 
@@ -129,12 +134,8 @@ zsp_seterr <- function(actions, call) {
 sc_errstate <- function(expr, ...) {
   actions <- list(...)
   unknown <- setdiff(names(actions), c("all", zsp_codes))
-  if (
-    length(actions) > 0L &&
-      (is.null(names(actions)) ||
-        any(!nzchar(names(actions))) ||
-        length(unknown) > 0L)
-  ) {
+  unnamed <- is.null(names(actions)) || any(!nzchar(names(actions)))
+  if (length(actions) > 0L && (unnamed || length(unknown) > 0L)) {
     zsp_abort(
       "zuspecial_invalid_argument",
       "Actions in `...` must be named `all` or an error code.",
@@ -142,7 +143,9 @@ sc_errstate <- function(expr, ...) {
       call = sys.call()
     )
   }
-  old <- zsp_seterr(actions, sys.call())
+  # Restore the option as it was, unset included.
+  old <- getOption("zuspecial.errstate")
+  zsp_seterr(actions, sys.call())
   on.exit(options(zuspecial.errstate = old), add = TRUE)
   expr
 }

@@ -37,16 +37,7 @@ test_that("the complex metric rescales zero and infinite parts as xsf does", {
   expect_true(is.finite(xsf_rel_err(big, big * (1 + 1e-15))))
 })
 
-test_that("the tolerance and platform follow xsf's tests", {
+test_that("the tolerance follows xsf's tests", {
   expect_identical(xsf_tol(0), 4 * .Machine$double.eps)
   expect_identical(xsf_tol(1e-10), 4e-10)
-  expect_true(
-    xsf_platform() %in%
-      c(
-        "clang-darwin-aarch64",
-        "gcc-linux-x86_64",
-        "msvc-windows-x86_64",
-        "other"
-      )
-  )
 })

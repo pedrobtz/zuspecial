@@ -35,22 +35,13 @@
 #' The incomplete beta functions and their inverses are evaluated, as in
 #' SciPy, with Boost.Math (from the BH package) rather than xsf.
 #'
-#' Arguments are recycled: each must have length one or the common length.
-#' `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
-#' dimensions, or else its names, from the arguments as base R arithmetic
-#' does. Conditions the kernels raise, such as a pole, are handled as
-#' [sc_seterr()] says.
+#' @template args-results
 #'
-#' @param z,x Numeric vector; for `z`, also complex.
+#' @param z,x Numeric vector; for `z`, also complex, except in `sc_poch()`.
 #' @param a,b,y,m Numeric vectors; for the incomplete gamma functions `a` is
 #'   the shape and `y` a probability.
 #' @returns A double vector, or a complex vector for complex input.
-#' @section Windows:
-#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
-#' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
-#' `1e5`, as base R's own `sin()` shows there. Complex arguments with a part
-#' that large, and real ones where the kernel takes a sine of such a value,
-#' are correspondingly inaccurate on Windows only.
+#' @template windows-trig
 #'
 #' @section Other packages:
 #' In `gsl`: `lngamma()`, `lngamma_complex()` (the complex
@@ -101,30 +92,6 @@ sc_betaln <- function(a, b) zsp_eval("betaln", list(a = a, b = b))
 
 #' @rdname gamma-functions
 #' @export
-sc_binom <- function(x, y) zsp_eval("binom", list(x = x, y = y))
-
-#' @rdname gamma-functions
-#' @export
-sc_poch <- function(z, m) zsp_eval("poch", list(z = z, m = m))
-
-#' @rdname gamma-functions
-#' @export
-sc_gammainc <- function(a, x) zsp_eval("gammainc", list(a = a, x = x))
-
-#' @rdname gamma-functions
-#' @export
-sc_gammaincc <- function(a, x) zsp_eval("gammaincc", list(a = a, x = x))
-
-#' @rdname gamma-functions
-#' @export
-sc_gammaincinv <- function(a, y) zsp_eval("gammaincinv", list(a = a, y = y))
-
-#' @rdname gamma-functions
-#' @export
-sc_gammainccinv <- function(a, y) zsp_eval("gammainccinv", list(a = a, y = y))
-
-#' @rdname gamma-functions
-#' @export
 sc_betainc <- function(a, b, x) {
   zsp_eval("betainc", list(a = a, b = b, x = x))
 }
@@ -146,3 +113,27 @@ sc_betaincinv <- function(a, b, y) {
 sc_betainccinv <- function(a, b, y) {
   zsp_eval("betainccinv", list(a = a, b = b, y = y))
 }
+
+#' @rdname gamma-functions
+#' @export
+sc_binom <- function(x, y) zsp_eval("binom", list(x = x, y = y))
+
+#' @rdname gamma-functions
+#' @export
+sc_poch <- function(z, m) zsp_eval("poch", list(z = z, m = m))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammainc <- function(a, x) zsp_eval("gammainc", list(a = a, x = x))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammaincc <- function(a, x) zsp_eval("gammaincc", list(a = a, x = x))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammaincinv <- function(a, y) zsp_eval("gammaincinv", list(a = a, y = y))
+
+#' @rdname gamma-functions
+#' @export
+sc_gammainccinv <- function(a, y) zsp_eval("gammainccinv", list(a = a, y = y))

@@ -4,7 +4,7 @@
 
 test_that("the public header compiles on its own as C99", {
   skip_if_not_installed_layout()
-  skip_on_cran()
+  skip_on_cran_unless_covr()
   header <- system.file("include", "zuspecial.h", package = "zuspecial")
   expect_true(file.exists(header))
   cc <- strsplit(r_cmd("CMD", "config", "CC"), " ")[[1]]
@@ -34,7 +34,7 @@ test_that("the public header compiles on its own as C99", {
 
 test_that("a consumer package calls the table: real, complex, error code", {
   skip_if_not_installed_layout()
-  skip_on_cran()
+  skip_on_cran_unless_covr()
   lib <- withr::local_tempdir()
   fixture <- file.path(withr::local_tempdir(), "zsconsumer")
   dir.create(fixture)

@@ -3,9 +3,9 @@
 # any error codes under the current actions.
 #
 # `name` is the kernel's SciPy name and `fn` the R function conditions name.
-# `whole` names integer-order arguments,
-# which go to the C loop as integers. `complex_only` is for functions SciPy
-# registers only for complex input (wofz): real input is promoted.
+# `whole` names integer-order arguments, which go to the C loop as integers.
+# `complex_only` is for functions SciPy registers only for complex input
+# (wofz): real input is promoted.
 zsp_eval <- function(
   name,
   args,
@@ -50,7 +50,8 @@ zsp_eval <- function(
       "d"
     }
   }
-  signature <- paste0(paste(types, collapse = ""), length(outputs) %|0|% "")
+  n_out <- length(outputs)
+  signature <- paste0(paste(types, collapse = ""), if (n_out > 1L) n_out)
   # A direct .Call with the routine named literally, as R CMD check wants;
   # the signature fixes the argument count. do.call() costs more than the
   # loop for short vectors.
@@ -71,14 +72,23 @@ zsp_eval <- function(
     cid = .Call(zsp_call_cid, name, a[[1]], a[[2]], a[[3]]),
     dddd = .Call(zsp_call_dddd, name, a[[1]], a[[2]], a[[3]], a[[4]]),
     dddc = .Call(zsp_call_dddc, name, a[[1]], a[[2]], a[[3]], a[[4]]),
-    stop("internal: no loop for signature ", signature)
+    zsp_abort(
+      "zuspecial_internal_error",
+      paste0("Internal error: no loop for signature `", signature, "`."),
+      call = call
+    )
   )
 
   report <- attr(value, "zsp_err")
   attr(value, "zsp_err") <- NULL
   if (is.null(outputs)) {
     if (!is.null(nan_order)) {
-      value[nan_order] <- NaN
+      # NaN in both parts on the complex path, as complex kernels return.
+      value[nan_order] <- if (is.complex(value)) {
+        complex(real = NaN, imaginary = NaN)
+      } else {
+        NaN
+      }
     }
     value <- zsp_finish(value, prep$template)
   } else {
@@ -90,9 +100,6 @@ zsp_eval <- function(
   }
   value
 }
-
-# The output count in a loop's signature: none for one output.
-`%|0|%` <- function(n, empty) if (n <= 1L) empty else n
 
 # R's NA, not NaN; complex when either part is NA, as the glue's test is.
 zsp_is_na <- function(x) {

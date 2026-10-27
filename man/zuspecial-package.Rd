@@ -6,7 +6,7 @@
 \alias{zuspecial-package}
 \title{zuspecial: Special Functions from 'SciPy' for Real and Complex Arguments}
 \description{
-Evaluates the special functions of mathematical physics and statistics, including gamma, beta, error, Bessel, Airy, hypergeometric, elliptic and zeta functions, for real and complex arguments, using the same kernels as the 'SciPy' library's 'scipy.special' module (\url{https://docs.scipy.org/doc/scipy/reference/special.html}). Functions keep 'SciPy' names and argument order so that code translates directly between 'Python' and R, and results agree with 'SciPy' to within its own test tolerances. A registered C interface lets other packages call the functions from compiled code.
+Evaluates the special functions of mathematical physics and statistics, including gamma, beta, error, Bessel, Airy, hypergeometric, elliptic and zeta functions, for real and complex arguments, using the same kernels as the 'SciPy' library's 'scipy.special' module (\url{https://docs.scipy.org/doc/scipy/reference/special.html}). Functions keep 'SciPy' names and argument order so that code translates directly between 'Python' and 'R', and results agree with 'SciPy' to within its own test tolerances. 'SciPy' is described in Virtanen et al. (2020) \doi{10.1038/s41592-019-0686-2}. A registered C interface lets other packages call the functions from compiled code.
 }
 \seealso{
 Useful links:
@@ -43,6 +43,13 @@ Other contributors:
   \item Albert Steppi (ndtri_exp, ported from SciPy) [copyright holder]
   \item Piers Lawrence (Wright omega function, ported from SciPy) [copyright holder]
   \item NumPy developers (complex power, ported from NumPy) [copyright holder]
+  \item Donald E. Amos (author of the AMOS Bessel code in the bundled xsf library) [contributor]
+  \item Steven G. Johnson (author of the Faddeeva code in the bundled xsf library) [contributor]
+  \item Yozo Hida (author of the qd code in the bundled xsf library) [contributor]
+  \item David H. Bailey (double-double package the bundled qd code is based on) [contributor]
+  \item Keith Briggs (double-double package the bundled qd code borrows from) [contributor]
+  \item Josh Wilson (code in the bundled xsf library) [contributor]
+  \item Matt Haberland (complex zeta code in the bundled xsf library) [contributor]
 }
 
 }

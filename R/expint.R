@@ -5,9 +5,7 @@
 #' - `sc_expi()`: \eqn{\mathrm{Ei}(x)}, complex.
 #' - `sc_expn()`: the generalised \eqn{E_n(x)} for whole `n`.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and the result takes its
-#' dimensions, or else its names, from the arguments as base R arithmetic
-#' does; see [sc_seterr()] for the conditions the kernels raise.
+#' @template args-results
 #'
 #' @param z Numeric or complex vector.
 #' @param x Numeric vector; in `sc_expi()`, also complex.
@@ -16,12 +14,7 @@
 #'   and zuspecial refuses it so that a fractional order cannot slip
 #'   through.
 #' @returns A double vector, or a complex vector for complex input.
-#' @section Windows:
-#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
-#' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
-#' `1e5`, as base R's own `sin()` shows there. Complex arguments with a part
-#' that large, and real ones where the kernel takes a sine of such a value,
-#' are correspondingly inaccurate on Windows only.
+#' @template windows-trig
 #'
 #' @section Other packages:
 #' In `gsl`, for real arguments: `expint_E1()`, `expint_Ei()` and

@@ -3,7 +3,7 @@ e28d89b1e6c248e98d1f02c946f52556e76e8757bec371cf5a67bffe7aa43cac  src/vendor/xsf
 d768b593ea691c89a29a2f4312835f4ccf994fd4aa0105b201de5fa8d8daa3ae  src/vendor/xsf/include/xsf/airy.h
 e89b775255d4be86e45150f5d6605f5a50d0b686677de641739eaacbaf2a2638  src/vendor/xsf/include/xsf/alg.h
 576892289022b4cb061d23c11e624ece40e141b0a7a6ccb0755f474bc0176f09  src/vendor/xsf/include/xsf/amos.h
-226d1227abc27d5b5b47396dc520b91468a1a05a91c6a0aa2eb07c57b263b3d1  src/vendor/xsf/include/xsf/amos/amos.h
+d9e8b7e84360047f611182c5e2b5864a3871abcaad1b989e5af360691af8bb90  src/vendor/xsf/include/xsf/amos/amos.h
 f946dc914ba951b0c43d445a021ac9c44df75bd6479d8f7cde3c7ec11286b246  src/vendor/xsf/include/xsf/bessel.h
 0444051e496d175932f25ac602bb807a652b4abb49bead7ca9a043134b6d5839  src/vendor/xsf/include/xsf/beta.h
 24efec81d1fe8fa24a269bd51bad00a1fa058637fe36c9172ba8d3cb8e0f601e  src/vendor/xsf/include/xsf/binom.h

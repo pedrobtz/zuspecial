@@ -255,6 +255,10 @@ R result: double or complex vector, or a named list for multi-output
   and returns a `{double re, im}` struct and converts by member.
 - Multi-output functions (`airy`, `airye`, `ellipj`) fill several output
   arrays in one kernel call, as xsf's signatures do.
+- **Added 2026-10-27 (#30):** the glue's loops call
+  `R_CheckUserInterrupt()` every 4096 elements, outside the kernel call.
+  They hold only protected objects and each call first clears the error
+  state, so the jump leaks nothing.
 
 ## 5. Public R API (complete v0.1.0 surface)
 
@@ -317,7 +321,9 @@ per exported function: R name, SciPy name, backend (`"xsf"` or
   the first full-length argument that has them, else `names` from the
   first that has them; a zero-length input keeps its `dim`. Classed
   numbers (dates, difftimes) are refused with `zuspecial_invalid_argument`
-  rather than stripped.
+  rather than stripped. **Added 2026-10-27 (#32):** full-length arrays
+  with different `dim` are refused with `zuspecial_recycle_error`, as base
+  R refuses non-conformable arrays.
 - Integer and logical input is converted to double; character, factor
   and list input is refused with `zuspecial_invalid_argument`.
 
@@ -505,7 +511,10 @@ the lengths), `zuspecial_<code>_error` for each sf_error code raised
 under `"raise"` (`zuspecial_domain_error`, `zuspecial_overflow_error`
 and so on, with `fn`, `count` and `first_index`),
 `zuspecial_internal_error`. Warnings inherit `zuspecial_warning` and
-carry the same fields.
+carry the same fields. **As built (2026-10-27, #33):** the R layer raises
+`zuspecial_internal_error` for a signature with no loop. The C glue's own
+checks (kernel name, argument type and length) stay plain `Rf_error()`s:
+only a direct `.Call` reaches them.
 
 ## 10. Testing
 

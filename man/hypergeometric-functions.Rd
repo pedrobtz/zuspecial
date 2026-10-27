@@ -36,15 +36,18 @@ The confluent and Gauss hypergeometric functions, with the kernels
 \item \code{sc_hyperu()}: Tricomi's \eqn{U(a, b, x)} for real \code{x >= 0}.
 }
 
-Only the last argument may be complex; the parameters are real. Arguments
-are recycled, \code{NA} gives \code{NA}, and the result takes its dimensions, or else
-its names, from the arguments as base R arithmetic does; see
-\code{\link[=sc_seterr]{sc_seterr()}} for the conditions the kernels raise.
+Only the last argument may be complex; the parameters are real.
+
+Arguments are recycled: each must have length one or the common length.
+\code{NA} gives \code{NA}; \code{NaN} is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as \code{\link[=sc_seterr]{sc_seterr()}} says.
 }
 \section{Branch cuts}{
 
 \code{sc_hyp2f1()} has a branch cut on the real axis from 1 to infinity, as in
-SciPy. \code{sc_hyp0f1()} and \code{sc_hyp1f1()} are entire in \code{z}.
+SciPy. \code{sc_hyp0f1()} is entire in \code{z}, and \code{sc_hyp1f1()} in \code{x}.
 }
 
 \section{Other packages}{

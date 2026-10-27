@@ -74,3 +74,37 @@ test_that("info reports the xsref commit the shipped tables come from", {
     expect_identical(readRDS(file)$commit, zuspecial_info()$scipy_version)
   }
 })
+
+test_that("every function has shipped oracle tables", {
+  fns <- zuspecial_info()$functions
+  read_meta <- function(dir) {
+    files <- list.files(test_path(dir), "\\.rds$", full.names = TRUE)
+    meta <- lapply(files, function(f) {
+      readRDS(f)[c("r_name", "sig", "no_xsref")]
+    })
+    data.frame(
+      r_name = vapply(meta, `[[`, "", "r_name"),
+      sig = vapply(meta, `[[`, "", "sig"),
+      no_xsref = vapply(meta, function(m) isTRUE(m$no_xsref), NA)
+    )
+  }
+  scipy <- read_meta("scipy")
+  xsref <- read_meta("xsref")
+  # SciPy values for every function; xsref values for every function xsref
+  # has a table for; a complex table for every complex function.
+  expect_setequal(unique(scipy$r_name), fns$r_name)
+  expect_setequal(
+    unique(xsref$r_name),
+    unique(scipy$r_name[!scipy$no_xsref])
+  )
+  complex_tables <- unique(scipy$r_name[grepl("c", scipy$sig)])
+  expect_setequal(complex_tables, fns$r_name[fns$complex])
+
+  # From a source tree, the list the tables are generated from matches too.
+  tsv <- test_path("..", "..", "tools", "xsref", "functions.tsv")
+  skip_if_not(file.exists(tsv), "tools/ is not in the installed tests")
+  listed <- utils::read.delim(tsv)
+  expect_setequal(listed$r_name, fns$r_name)
+  sigs <- unlist(strsplit(listed$sigs, ",", fixed = TRUE))
+  expect_setequal(unique(scipy$sig), unique(sigs))
+})

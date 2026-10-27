@@ -60,6 +60,11 @@ directly is completed from the defaults, and refused if malformed.
 \examples{
 sc_geterr()
 sc_errstate(sc_gamma(-1), singular = "warn")
+
+# sc_seterr() returns the previous state; restore it with do.call().
+old <- sc_seterr(domain = "warn")
+sc_geterr()[["domain"]]
+do.call(sc_seterr, as.list(old))
 }
 \seealso{
 \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.seterr.html}

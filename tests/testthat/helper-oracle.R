@@ -74,25 +74,6 @@ xsf_rel_err <- function(actual, desired) {
 
 xsf_tol <- function(recorded) 4 * pmax(.Machine$double.eps, recorded)
 
-# The Err_ table xsf's tests would read on this build (testing_utils.h). R on
-# Windows builds with Rtools' GCC, which xsf calls "other" (design 10).
-xsf_platform <- function() {
-  compiler <- zuspecial_info()$compiler
-  os <- Sys.info()[["sysname"]]
-  arch <- R.version$arch
-  if (
-    startsWith(compiler, "clang") &&
-      os == "Darwin" &&
-      arch %in% c("aarch64", "arm64")
-  ) {
-    "clang-darwin-aarch64"
-  } else if (startsWith(compiler, "gcc") && os == "Linux" && arch == "x86_64") {
-    "gcc-linux-x86_64"
-  } else {
-    "other"
-  }
-}
-
 # Base R has %||% only from 4.4; the package supports 4.1.
 `%||%` <- function(x, y) if (is.null(x)) y else x
 

@@ -123,3 +123,20 @@ test_that("Airy functions: Wronskian, scaling and shape", {
   expect_identical(dim(sc_airy(m)$bi), c(2L, 2L))
   expect_type(sc_airy(1 + 1i)$ai, "complex")
 })
+
+test_that("orders of 2^31 or more give SciPy's x86-64 values everywhere", {
+  # SciPy 1.18.1 on x86-64. Patch 0003 makes AMOS's order-to-int
+  # conversions give x86-64's INT_MIN on every platform.
+  z <- 1e9 + 1e9i
+  nan_c <- complex(real = NaN, imaginary = NaN)
+  for (v in c(3e9, -3e9)) {
+    expect_identical(sc_jv(v, z), 0 + 0i)
+    expect_identical(sc_jve(v, z), 0 + 0i)
+    expect_identical(sc_iv(v, z), nan_c)
+    expect_identical(sc_kv(v, z), nan_c)
+    expect_identical(sc_yv(v, z), nan_c)
+    expect_identical(sc_kve(v, z), nan_c)
+    expect_identical(sc_hankel1(v, z), nan_c)
+    expect_identical(sc_hankel2(v, z), nan_c)
+  }
+})

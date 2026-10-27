@@ -21,21 +21,17 @@
 #'
 #' A complex `z` takes the complex path and returns complex; a real `z` stays
 #' real, so `sc_jv(0.5, -1)` is `NaN` while `sc_jv(0.5, -1+0i)` is complex,
-#' as in SciPy. The order `v` must be real. Arguments are recycled, `NA`
-#' gives `NA`, and the result takes its dimensions, or else its names, from
-#' the arguments as base R arithmetic does; see [sc_seterr()] for the
-#' conditions the kernels raise.
+#' as in SciPy. The order `v` must be real.
+#'
+#' @template args-results
 #'
 #' @param v Numeric vector of orders.
 #' @param z Numeric or complex vector of arguments.
 #' @param x Numeric vector.
 #' @returns A double vector, or a complex vector for complex `z` (always for
 #'   the Hankel functions).
-#' @section Windows:
-#' R on Windows is built with Rtools, whose C library (mingw-w64 v11)
-#' evaluates `sin()` and `cos()` inaccurately for arguments beyond about
-#' `1e5`, as base R's own `sin()` shows there. Arguments that large are
-#' correspondingly inaccurate on Windows only.
+#' @template windows-trig
+#'
 #' @section Branch cuts:
 #' For complex `z`, as in SciPy: \eqn{J_v} and \eqn{I_v} are entire in `z`
 #' for a whole order `v`, and otherwise have a branch cut on the negative
@@ -175,9 +171,7 @@ sc_k1e <- function(x) zsp_eval("k1e", list(x = x))
 #' - `sc_spherical_in()`, `sc_spherical_kn()`: the modified functions
 #'   \eqn{i_n(z)} and \eqn{k_n(z)}.
 #'
-#' Arguments are recycled, `NA` gives `NA`, and the result takes its
-#' dimensions, or else its names, from the arguments as base R arithmetic
-#' does; see [sc_seterr()] for the conditions the kernels raise.
+#' @template args-results
 #'
 #' @param n Whole numbers within integer range, the orders.
 #' @param z Numeric or complex vector of arguments.

@@ -46,7 +46,34 @@ test_that("two- and three-argument loops and the integer-order loop", {
 })
 
 test_that("an unknown kernel is an error before the loop", {
+  # The glue's own checks are plain Rf_error()s, reachable only through a
+  # direct .Call; there is no class to test, so the message is matched.
   expect_error(.Call(zsp_call_d, "nosuch", 1), "nosuch")
+})
+
+test_that("the glue refuses a bad kernel name and malformed arguments", {
+  expect_error(.Call(zsp_call_d, 1, 1), "kernel name must be a string")
+  expect_error(
+    .Call(zsp_call_dd, "beta", 1, c(1, 2)),
+    "wrong type or length"
+  )
+  expect_error(.Call(zsp_call_d, "gamma", 1L), "wrong type or length")
+})
+
+test_that("a long loop can be interrupted", {
+  skip_on_cran()
+  # R checks its elapsed-time limit in R_CheckUserInterrupt(), so the limit
+  # stops the loop early only if the loop polls. hyperu(30, 0.5, 8) costs
+  # about 120 us an element, so uninterrupted this call takes about two
+  # minutes. The bound leaves room for gctorture's slow R and valgrind's
+  # slow C (its first poll comes after 4096 elements).
+  x <- rep(8, 1e6)
+  elapsed <- system.time({
+    setTimeLimit(elapsed = 0.1, transient = TRUE)
+    withr::defer(setTimeLimit())
+    expect_error(sc_hyperu(30, 0.5, x), "time limit")
+  })[["elapsed"]]
+  expect_lt(elapsed, 60)
 })
 
 test_that("order-real, argument-complex loop handles NA in either argument", {

@@ -45,6 +45,13 @@
   of floating-point condition is ignored, warns or raises, after
   `scipy.special`.
 
+* Arguments recycle as in base R arithmetic, and arrays of different
+  dimensions are refused, as base R refuses non-conformable arrays. Long
+  calls can be interrupted.
+
+* Complex Bessel functions of orders of 2^31 or more give SciPy's x86-64
+  values on every platform, including arm64.
+
 * A registered C interface, `zuspecial_api_v1` (`inst/include/zuspecial.h`),
   lets other packages call 32 of the functions from C through `LinkingTo:`,
   each returning its value and the error code it raised.

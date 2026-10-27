@@ -32,6 +32,12 @@ Patches:    tools/patches/*.patch, applied in order by tools/vendor/vendor-xsf.
             behaviour unchanged below 2^31, SciPy's values kept above it.
             Added to scipy/xsf#338.
 
+  0003-amos-order-to-int.patch (2026-10-27)
+            amos/amos.h: the eleven other conversions of the order to int.
+            Outside int range or for NaN they now give INT_MIN, what x86-64
+            gives, so arm64 matches SciPy on x86-64 for orders of 2^31 or
+            more, and UBSan has nothing to report. Added to scipy/xsf#338.
+
 Update procedure
 ----------------
 1. tools/vendor/vendor-xsf <scipy-tag>   (a SciPy release tag, e.g. v1.19.0);

@@ -16,3 +16,4 @@
 ^\.superpowers$
 ^\.worktrees$
 ^README\.Rmd$
+^man-roxygen$

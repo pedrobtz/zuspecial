@@ -89,16 +89,14 @@ zsp_functions <- local({
     ",",
     fixed = TRUE
   )
+  scipy_name <- vapply(rows, `[[`, "", 1L)
   data.frame(
-    scipy_name = vapply(rows, `[[`, "", 1L),
+    r_name = paste0("sc_", scipy_name),
+    scipy_name = scipy_name,
     backend = vapply(rows, `[[`, "", 2L),
     complex = as.logical(vapply(rows, `[[`, "", 3L))
   )
 })
-zsp_functions <- cbind(
-  r_name = paste0("sc_", zsp_functions$scipy_name),
-  zsp_functions
-)
 
 #' Versions and functions
 #'
@@ -109,9 +107,10 @@ zsp_functions <- cbind(
 #' the compiler, and the table of exported functions.
 #'
 #' @returns A list with `xsf_commit`, `scipy_version`, `xsref_commit`,
-#'   `boost_version`, `compiler` and `functions`, a data frame with one row per exported function: `r_name`,
-#'   `scipy_name`, `backend` (the library that evaluates it) and `complex`
-#'   (whether it takes complex arguments).
+#'   `boost_version`, `compiler` and `functions`. `functions` is a data frame
+#'   with one row per exported function: `r_name`, `scipy_name`, `backend`
+#'   (the library that evaluates real arguments; complex arguments always go
+#'   to xsf) and `complex` (whether it takes complex arguments).
 #' @examples
 #' info <- zuspecial_info()
 #' info$scipy_version
@@ -119,15 +118,19 @@ zsp_functions <- cbind(
 #' @export
 zuspecial_info <- function() {
   native <- .Call(zsp_info)
+  names(native) <- c("xsf_commit", "scipy_tag", "compiler", "xsref_commit")
+  boost <- .Call(zsp_boost_version_r)
   list(
-    xsf_commit = native[[1]],
-    scipy_version = sub("^v", "", native[[2]]),
-    xsref_commit = native[[4]],
-    boost_version = local({
-      v <- .Call(zsp_boost_version_r)
-      sprintf("%d.%d.%d", v %/% 100000L, v %/% 100L %% 1000L, v %% 100L)
-    }),
-    compiler = native[[3]],
+    xsf_commit = native[["xsf_commit"]],
+    scipy_version = sub("^v", "", native[["scipy_tag"]]),
+    xsref_commit = native[["xsref_commit"]],
+    boost_version = sprintf(
+      "%d.%d.%d",
+      boost %/% 100000L,
+      boost %/% 100L %% 1000L,
+      boost %% 100L
+    ),
+    compiler = native[["compiler"]],
     functions = zsp_functions
   )
 }

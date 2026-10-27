@@ -19,7 +19,7 @@ typedef struct {
    sf_error_t code xsf raised since the last call. */
 unsigned int zsp_err_take(void) ZSP_NOEXCEPT;
 
-/* Gamma and beta family: src/zsp_shim_gamma.cpp. */
+/* Gamma and beta family: src/zsp_shim_gamma.h. */
 double zsp_gamma_d(double x) ZSP_NOEXCEPT;
 double zsp_gammaln_d(double x) ZSP_NOEXCEPT;
 double zsp_loggamma_d(double x) ZSP_NOEXCEPT;
@@ -39,7 +39,7 @@ double zsp_gammaincc_dd(double a, double x) ZSP_NOEXCEPT;
 double zsp_gammaincinv_dd(double a, double y) ZSP_NOEXCEPT;
 double zsp_gammainccinv_dd(double a, double y) ZSP_NOEXCEPT;
 
-/* Error functions and exponential integrals: src/zsp_shim_error.cpp. */
+/* Error functions and exponential integrals: src/zsp_shim_error.h. */
 double zsp_erf_d(double x) ZSP_NOEXCEPT;
 double zsp_erfc_d(double x) ZSP_NOEXCEPT;
 double zsp_erfcx_d(double x) ZSP_NOEXCEPT;

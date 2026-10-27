@@ -24,7 +24,14 @@
  * what a code means. R's NA is not special-cased; it is a NaN like any other.
  *
  * Every member is reentrant, allocates nothing through R and is safe from
- * any thread: the codes are collected in thread-local storage.
+ * any thread: the codes are collected in thread-local storage. Getting the
+ * table is not: zuspecial_api_get() calls R and fills a static cache, so
+ * call it once on R's main thread (in R_init_<pkg>, or before a parallel
+ * region) and pass the pointer to the workers.
+ *
+ * Some members are named after C functions (erf, erfc, gamma). <tgmath.h>
+ * defines those names as function-like macros, so a consumer that includes
+ * it writes (api->erf)(x) rather than api->erf(x).
  *
  * ---- versioning ---------------------------------------------------------
  *   * struct_size versions THIS TABLE. Members are appended, never reordered
@@ -99,7 +106,12 @@ typedef struct {
  * to the real signature compiles, but clang rejects it under
  * -Wcast-function-type; reading the pointer back through a union avoids the
  * cast. R_GetCCallable() raises an R error itself when zuspecial's
- * namespace is not loaded or the name is unknown. */
+ * namespace is not loaded or the name is unknown.
+ *
+ * Call it first on R's main thread (see "members" above). The cached
+ * pointer stays valid while zuspecial's DLL is loaded; a consumer that
+ * outlives an unload and reload of zuspecial (pkgload, during development)
+ * must be reloaded too. */
 static const zuspecial_api *
 zuspecial_api_get(void) {
   static const zuspecial_api *api = NULL;

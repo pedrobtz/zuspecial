@@ -114,6 +114,19 @@ test_that("attributes follow base R arithmetic", {
   expect_named(sc_beta(c(x = 1, y = 2), c(a = 1, b = 2)), c("x", "y"))
 })
 
+test_that("arrays of different shapes are refused, as base R does", {
+  expect_error(
+    sc_beta(matrix(1:6, 2), matrix(1:6, 3)),
+    class = "zuspecial_recycle_error"
+  )
+  expect_error(
+    sc_beta(matrix(1:4, 2), array(1:4, c(2, 2, 1))),
+    class = "zuspecial_recycle_error"
+  )
+  m <- matrix(1:6, 2)
+  expect_identical(dim(sc_beta(m, m + 1)), c(2L, 3L))
+})
+
 test_that("classed numbers such as dates are refused", {
   expect_error(
     sc_gamma(as.difftime(5, units = "days")),
@@ -124,6 +137,16 @@ test_that("classed numbers such as dates are refused", {
 
 test_that("a NaN order gives NaN, as SciPy's expn does", {
   expect_identical(sc_expn(c(NaN, 1), 1), c(NaN, sc_expn(1, 1)))
+  # On the complex path, NaN in both parts.
+  out <- sc_spherical_jn(NaN, 1 + 1i)
+  expect_true(is.nan(Re(out)) && is.nan(Im(out)))
+})
+
+test_that("a signature with no loop is an internal error", {
+  expect_error(
+    zsp_eval("gamma", list(x = 1), outputs = c("a", "b", "c")),
+    class = "zuspecial_internal_error"
+  )
 })
 
 test_that("NA in another argument wins over a NaN order", {
