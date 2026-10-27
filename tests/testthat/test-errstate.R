@@ -80,8 +80,18 @@ test_that("errstate applies actions and restores state after an error", {
   inside <- sc_errstate(sc_geterr()[["overflow"]], overflow = "warn")
   expect_identical(inside, "warn")
   expect_identical(sc_geterr()[["overflow"]], "ignore")
-  expect_error(sc_errstate(stop("boom"), all = "raise"))
+  expect_error(sc_errstate(stop("boom"), all = "raise"), class = "simpleError")
   expect_identical(sc_geterr()[["singular"]], "ignore")
+  # An unset option is left unset.
+  expect_null(getOption("zuspecial.errstate"))
+})
+
+test_that("sc_seterr()'s returned state restores through do.call()", {
+  withr::local_options(zuspecial.errstate = NULL)
+  old <- sc_seterr(domain = "warn", overflow = "raise")
+  expect_identical(sc_geterr()[["domain"]], "warn")
+  do.call(sc_seterr, as.list(old))
+  expect_identical(sc_geterr(), old)
 })
 
 test_that("a report signals each code once under its action", {

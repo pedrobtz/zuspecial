@@ -16,40 +16,49 @@ zsp_prep <- function(args, complex_ok = character(), call = NULL) {
     zsp_check_type(args[[j]], arg_names[[j]], can_complex[[j]], call)
   }
 
-  lengths <- as.double(lengths(args))
-  names(lengths) <- arg_names
-  n <- if (any(lengths == 0)) 0 else max(lengths)
-  bad <- n > 0 & lengths != 1 & lengths != n
+  arg_lengths <- as.double(lengths(args))
+  names(arg_lengths) <- arg_names
+  n <- if (any(arg_lengths == 0)) 0 else max(arg_lengths)
+  bad <- n > 0 & arg_lengths != 1 & arg_lengths != n
   if (any(bad)) {
     zsp_abort(
       "zuspecial_recycle_error",
       sprintf(
         "Arguments must have length one or a common length; got %s.",
-        paste0("`", names(args), "` ", lengths, collapse = ", ")
+        paste0("`", names(args), "` ", arg_lengths, collapse = ", ")
       ),
-      lengths = lengths,
+      lengths = arg_lengths,
       call = call
     )
   }
 
-  complex <- FALSE
+  is_complex <- FALSE
   for (j in which(can_complex)) {
     if (is.complex(args[[j]])) {
-      complex <- TRUE
+      is_complex <- TRUE
       break
     }
   }
 
-  # The template: the first full-length argument with a dim, else the first
-  # with names, else the first of full length.
   template <- NULL
   first_full <- NULL
   first_named <- NULL
-  for (j in which(lengths == n)) {
+  for (j in which(arg_lengths == n)) {
     x <- args[[j]]
     if (!is.null(dim(x))) {
-      template <- x
-      break
+      if (is.null(template)) {
+        template <- x
+      } else if (!identical(dim(x), dim(template))) {
+        # As base R's arithmetic: arrays of one length but different
+        # shapes do not conform.
+        zsp_abort(
+          "zuspecial_recycle_error",
+          "Array arguments must have the same dimensions.",
+          lengths = arg_lengths,
+          call = call
+        )
+      }
+      next
     }
     if (is.null(first_named) && !is.null(names(x))) {
       first_named <- x
@@ -62,16 +71,16 @@ zsp_prep <- function(args, complex_ok = character(), call = NULL) {
 
   for (j in seq_along(args)) {
     x <- args[[j]]
-    x <- if (complex && can_complex[[j]]) as.complex(x) else as.double(x)
+    x <- if (is_complex && can_complex[[j]]) as.complex(x) else as.double(x)
     # rep_len() copies even at full length; skip it there.
     args[[j]] <- if (length(x) == n) x else rep_len(x, n)
   }
 
-  list(args = args, n = n, complex = complex, template = template)
+  list(args = args, n = n, complex = is_complex, template = template)
 }
 
-zsp_check_type <- function(x, name, complex_ok, call) {
-  ok_types <- c("double", "integer", "logical", if (complex_ok) "complex")
+zsp_check_type <- function(x, name, can_complex, call) {
+  ok_types <- c("double", "integer", "logical", if (can_complex) "complex")
   # Classed numbers (factors, dates, difftimes) carry meaning the kernels
   # would discard; plain matrices and arrays are fine.
   classed <- is.object(x) && !all(class(x) %in% c("matrix", "array"))
@@ -86,7 +95,7 @@ zsp_check_type <- function(x, name, complex_ok, call) {
       sprintf(
         "`%s` must be %s, not %s.",
         name,
-        if (complex_ok) "numeric or complex" else "numeric",
+        if (can_complex) "numeric or complex" else "numeric",
         what
       ),
       argument = name,
@@ -121,9 +130,9 @@ zsp_whole <- function(x, name, call = NULL) {
     zsp_abort(
       "zuspecial_invalid_argument",
       sprintf(
-        "`%s` must hold whole numbers within integer range; element %d is %s.",
+        "`%s` must hold whole numbers within integer range; element %s is %s.",
         name,
-        index,
+        format(index, scientific = FALSE),
         format(x[[index]])
       ),
       argument = name,

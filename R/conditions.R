@@ -43,10 +43,11 @@ zsp_warn <- function(class, message, ..., call = NULL) {
 # signalled once, under its action in sc_geterr().
 zsp_signal_report <- function(report, fn, call = NULL) {
   actions <- sc_geterr()
-  for (k in which(report[1:10] > 0)) {
+  n_codes <- length(zsp_codes)
+  for (k in which(report[seq_len(n_codes)] > 0)) {
     code <- zsp_codes[[k]]
     count <- report[[k]]
-    first <- report[[10L + k]]
+    first <- report[[n_codes + k]]
     message <- sprintf(
       "%s: %s in %s element%s, first at index %s.",
       fn,
@@ -55,6 +56,7 @@ zsp_signal_report <- function(report, fn, call = NULL) {
       if (count == 1) "" else "s",
       format(first, scientific = FALSE)
     )
+    # "ignore" matches no branch, so nothing is signalled.
     switch(
       actions[[code]],
       warn = zsp_warn(
