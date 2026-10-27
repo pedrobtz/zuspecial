@@ -11,3 +11,12 @@ skip_if_not_installed_layout <- function() {
 r_cmd <- function(...) {
   system2(file.path(R.home("bin"), "R"), c(...), stdout = TRUE, stderr = TRUE)
 }
+
+# Building a consumer package is too slow for CRAN, but covr runs with
+# NOT_CRAN unset too, and should count the C table as tested. covr sets
+# R_COVR while it runs.
+skip_on_cran_unless_covr <- function() {
+  if (!identical(Sys.getenv("R_COVR"), "true")) {
+    skip_on_cran()
+  }
+}

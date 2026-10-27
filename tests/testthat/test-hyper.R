@@ -14,6 +14,19 @@ test_that("hypergeometric functions at closed forms", {
   expect_type(sc_hyp2f1(1, 1, 2, z), "complex")
 })
 
+test_that("real hyp1f1 satisfies Kummer's transformation", {
+  # Real hyp1f1 is Boost's, with no xsref table: this holds its precision
+  # off CI, where the shipped SciPy table is only a smoke check.
+  a <- c(0.3, 2.5, -1.7, 7)
+  b <- c(1.1, 0.6, 3.2, 12.5)
+  x <- c(-4, 0.7, 2.3, 15)
+  expect_equal(
+    sc_hyp1f1(a, b, x),
+    exp(x) * sc_hyp1f1(b - a, b, -x),
+    tolerance = 1e-13
+  )
+})
+
 test_that("elliptic integrals and Jacobi functions", {
   m <- c(0, 0.3, 0.9)
   expect_equal(sc_ellipk(0), pi / 2)

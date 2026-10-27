@@ -44,6 +44,9 @@ test_that("domain errors follow the error state", {
 test_that("erfinv inverts erf and has SciPy's endpoints", {
   x <- c(-3, -0.5, 0, 0.1, 2.7)
   expect_equal(sc_erfinv(sc_erf(x)), x, tolerance = 1e-13)
+  # Independently of sc_erf(): erfinv(y) = qnorm((1 + y) / 2) / sqrt(2).
+  y <- c(-0.999, -0.3, 0.01, 0.5, 0.9999)
+  expect_equal(sc_erfinv(y), qnorm((1 + y) / 2) / sqrt(2), tolerance = 1e-13)
   expect_identical(sc_erfinv(c(-1, 1)), c(-Inf, Inf))
   expect_true(is.nan(sc_erfinv(1.5)))
 })
