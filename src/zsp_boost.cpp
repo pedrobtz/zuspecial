@@ -1,6 +1,6 @@
 // The functions SciPy 1.18.1 evaluates with Boost.Math rather than xsf
-// (design section 12.1): betainc, betaincc, betaincinv, betainccinv and
-// erfinv. Ported from scipy/special/boost_special_functions.h (BSD-3-Clause,
+// (design section 12.1): betainc, betaincc, betaincinv, betainccinv,
+// erfinv and real hyp1f1. Ported from scipy/special/boost_special_functions.h (BSD-3-Clause,
 // SciPy developers): the same policies, the same special cases before the
 // call, and Boost's exceptions caught into the same sf_error codes, through
 // xsf::set_error.
@@ -36,7 +36,11 @@ typedef boost::math::policies::policy<
 const double zsp_nan = std::numeric_limits<double>::quiet_NaN();
 const double zsp_inf = std::numeric_limits<double>::infinity();
 
-// Calls f, mapping Boost's exceptions as SciPy's wrappers do.
+// Calls f, mapping Boost's exceptions as SciPy's wrappers do. The last
+// handler takes what the default policy throws besides those three,
+// boost::math::evaluation_error (no convergence) and rounding_error, and
+// std::bad_alloc. No known input reaches it, so no test does; hyp1f1's
+// copy of these handlers below is the same.
 template <typename F>
 double guarded(const char *name, F f) noexcept {
   try {

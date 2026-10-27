@@ -15,6 +15,12 @@ test_that("ndtri_exp inverts log_ndtr across its three branches", {
   expect_equal(sc_ndtri_exp(y), qnorm(y, log.p = TRUE), tolerance = 1e-12)
   expect_equal(sc_log_ndtr(sc_ndtri_exp(y)), y, tolerance = 1e-12)
   expect_identical(sc_ndtri_exp(c(-Inf, 0)), c(-Inf, Inf))
+  # Below -DBL_MAX / 2 the shim takes its own branch; SciPy 1.18.1's values.
+  expect_equal(
+    sc_ndtri_exp(c(-1e308, -.Machine$double.xmax)),
+    c(-1.4142135623730953e+154, -1.8961503816218352e+154),
+    tolerance = 1e-15
+  )
 })
 
 test_that("owens_t at closed forms", {
