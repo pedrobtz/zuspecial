@@ -337,8 +337,10 @@ upstream release" is deliberate: the release pinned is SciPy's.
 `src/vendor/PROVENANCE` gives the update procedure, and
 `vendor-upstream.yml` opens an issue when SciPy releases. Local patches live
 in `tools/patches/`, which `tools/vendor/vendor-xsf` applies in order; each
-is listed in `src/vendor/PROVENANCE` with its reason. There is one: `0001`
-guards float-to-int conversions UBSan flags (2026-10-24). The build also
+is listed in `src/vendor/PROVENANCE` with its reason. There are three, all
+float-to-int conversions UBSan flags: `0001` and `0002` (2026-10-24), and
+`0003` (2026-10-27), which gives AMOS orders of 2^31 or more x86-64's
+`INT_MIN` on every platform. The build also
 defines `NDEBUG`, because of a bare `assert` in `specfun/specfun.h`.
 
 - Pin a stable upstream release, never `master` or a release candidate.

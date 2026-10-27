@@ -100,6 +100,16 @@
 namespace xsf {
 namespace amos {
 
+    // Patched (zuspecial 0003): (int)fnu is undefined when fnu is outside
+    // int range or NaN. This gives what x86-64 gives there, INT_MIN, on
+    // every platform, so arm64 matches SciPy on x86-64.
+    inline int zsp_order_int(double fnu) {
+        if (fnu > -2147483649.0 && fnu < 2147483648.0) {
+            return static_cast<int>(fnu);
+        }
+        return -2147483647 - 1;
+    }
+
     int acai(std::complex<double>, double, int, int, int, std::complex<double> *, double, double, double, double);
     int
     acon(std::complex<double>, double, int, int, int, std::complex<double> *, double, double, double, double, double);
@@ -474,7 +484,7 @@ namespace amos {
         // CALCULATE CSPN=EXP(FNU*PI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE
         // WHEN FNU IS LARGE
         //
-        inu = (int)fnu;
+        inu = zsp_order_int(fnu);
         arg = (fnu - inu) * sgn;
         cpn = std::cos(arg);
         spn = std::sin(arg);
@@ -541,7 +551,7 @@ namespace amos {
                     yy = -std::imag(zn);
                     csgn *= std::complex<double>(std::cos(yy), std::sin(yy));
                 }
-                inu = (int)fnu;
+                inu = zsp_order_int(fnu);
                 arg = (fnu - inu) * sgn;
                 cspn = std::complex<double>(std::cos(arg), std::sin(arg));
                 if (inu % 2 == 1) {
@@ -1070,7 +1080,7 @@ namespace amos {
             yy = std::imag(z);
             p1 = 0.;
             if (yy != 0.) {
-                inu = (int)fnu;
+                inu = zsp_order_int(fnu);
                 arg = (fnu - inu) * pi;
                 inu += n - il;
                 ak = -std::sin(arg);
@@ -1497,7 +1507,7 @@ namespace amos {
         // CALCULATE EXP(FNU*HPI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE
         // WHEN FNU IS LARGE
         //
-        inu = (int)fnu;
+        inu = zsp_order_int(fnu);
         inuh = inu / 2;
         ir = inu - 2 * inuh;
         arg = (fnu - (inu - ir)) * sgn;
@@ -1750,7 +1760,7 @@ namespace amos {
             // CALCULATE CSGN=EXP(FNU*PI*I) TO MINIMIZE LOSSES OF SIGNIFICANCE
             // WHEN FNU IS LARGE
             //
-            inu = (int)fnu;
+            inu = zsp_order_int(fnu);
             arg = (fnu - inu) * pi;
             if (yy < 0.0) {
                 arg = -arg;
@@ -2008,7 +2018,7 @@ namespace amos {
         // WHEN FNU IS LARGE
         //
         ci.imag(1);
-        inu = (int)fnu;
+        inu = zsp_order_int(fnu);
         inuh = inu / 2;
         ir = inu - 2 * inuh;
         arg = (fnu - (inu - ir)) * hpi;
@@ -3183,7 +3193,7 @@ namespace amos {
         iflag = 0;
         koded = kode;
         rz = 2. / z;
-        inu = (int)(fnu + 0.5);
+        inu = zsp_order_int(fnu + 0.5);
         dnu = fnu - inu;
         // Definitions for silencing initialization warnings.
         s1 = 0.0;
@@ -3943,7 +3953,7 @@ namespace amos {
         az = std::abs(z);
         x = std::real(z);
         iaz = (int)az;
-        ifnu = (int)fnu;
+        ifnu = zsp_order_int(fnu);
         inu = ifnu + n - 1;
         at = iaz + 1;
         ck = at / z;
@@ -4223,7 +4233,7 @@ namespace amos {
         int i, id, idnu, inu, itime, k, kk, magz;
 
         az = std::abs(z);
-        inu = (int)fnu;
+        inu = zsp_order_int(fnu);
         idnu = inu + n - 1;
         fdnu = idnu;
         magz = az;
@@ -5158,7 +5168,7 @@ namespace amos {
         zn = -z * ci;
         zb = z;
         cid = -ci;
-        inu = (int)fnu;
+        inu = zsp_order_int(fnu);
         ang = hpi * (fnu - inu);
         c2 = std::complex<double>(std::cos(ang), std::sin(ang));
         zar = c2;
@@ -5668,7 +5678,7 @@ namespace amos {
         // CSPN AND CSGN ARE COEFF OF K AND I FUNCIONS RESP.
         //
         csgn = std::complex<double>(0.0, sgn);
-        inu = (int)fnu;
+        inu = zsp_order_int(fnu);
         fnf = fnu - inu;
         ifn = inu + n - 1;
         ang = fnf * sgn;
