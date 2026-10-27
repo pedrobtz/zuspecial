@@ -40,13 +40,14 @@ A double vector, or a complex vector for complex input.
 ## Details
 
 - `sc_ndtr()`: the cumulative distribution function \\\Phi(x)\\,
-  complex. Base R: [`pnorm()`](https://rdrr.io/r/stats/Normal.html).
+  complex. Base R:
+  [`stats::pnorm()`](https://rdrr.io/r/stats/Normal.html).
 
 - `sc_log_ndtr()`: \\\log \Phi(x)\\, accurate far into the lower tail,
   complex. Base R: `pnorm(x, log.p = TRUE)`.
 
 - `sc_ndtri()`: the quantile function, the inverse of `sc_ndtr()`. Base
-  R: [`qnorm()`](https://rdrr.io/r/stats/Normal.html).
+  R: [`stats::qnorm()`](https://rdrr.io/r/stats/Normal.html).
 
 - `sc_ndtri_exp()`: the inverse of `sc_log_ndtr()`, for log
   probabilities too small for
@@ -56,11 +57,13 @@ A double vector, or a complex vector for complex input.
 - `sc_owens_t()`: Owen's T function \\T(h, a)\\, which gives bivariate
   and skew-normal probabilities.
 
-Arguments are recycled, `NA` gives `NA`, and the result takes its
+Arguments are recycled: each must have length one or the common length.
+`NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
-for the conditions the kernels raise.
+says.
 
 ## Other packages
 

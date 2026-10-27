@@ -6,9 +6,11 @@ zeta functions, for real and complex arguments, using the same kernels
 as the 'SciPy' library's 'scipy.special' module
 (<https://docs.scipy.org/doc/scipy/reference/special.html>). Functions
 keep 'SciPy' names and argument order so that code translates directly
-between 'Python' and R, and results agree with 'SciPy' to within its own
-test tolerances. A registered C interface lets other packages call the
-functions from compiled code.
+between 'Python' and 'R', and results agree with 'SciPy' to within its
+own test tolerances. 'SciPy' is described in Virtanen et al. (2020)
+[doi:10.1038/s41592-019-0686-2](https://doi.org/10.1038/s41592-019-0686-2)
+. A registered C interface lets other packages call the functions from
+compiled code.
 
 ## See also
 
@@ -74,3 +76,23 @@ Other contributors:
 
 - NumPy developers (complex power, ported from NumPy) \[copyright
   holder\]
+
+- Donald E. Amos (author of the AMOS Bessel code in the bundled xsf
+  library) \[contributor\]
+
+- Steven G. Johnson (author of the Faddeeva code in the bundled xsf
+  library) \[contributor\]
+
+- Yozo Hida (author of the qd code in the bundled xsf library)
+  \[contributor\]
+
+- David H. Bailey (double-double package the bundled qd code is based
+  on) \[contributor\]
+
+- Keith Briggs (double-double package the bundled qd code borrows from)
+  \[contributor\]
+
+- Josh Wilson (code in the bundled xsf library) \[contributor\]
+
+- Matt Haberland (complex zeta code in the bundled xsf library)
+  \[contributor\]

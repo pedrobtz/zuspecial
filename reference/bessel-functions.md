@@ -99,11 +99,15 @@ Hankel functions).
 
 A complex `z` takes the complex path and returns complex; a real `z`
 stays real, so `sc_jv(0.5, -1)` is `NaN` while `sc_jv(0.5, -1+0i)` is
-complex, as in SciPy. The order `v` must be real. Arguments are
-recycled, `NA` gives `NA`, and the result takes its dimensions, or else
-its names, from the arguments as base R arithmetic does; see
+complex, as in SciPy. The order `v` must be real.
+
+Arguments are recycled: each must have length one or the common length.
+`NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
-for the conditions the kernels raise.
+says.
 
 ## Windows
 
@@ -111,8 +115,9 @@ R on Windows is built with Rtools, whose C library (mingw-w64 v11)
 evaluates [`sin()`](https://rdrr.io/r/base/Trig.html) and
 [`cos()`](https://rdrr.io/r/base/Trig.html) inaccurately for arguments
 beyond about `1e5`, as base R's own
-[`sin()`](https://rdrr.io/r/base/Trig.html) shows there. Arguments that
-large are correspondingly inaccurate on Windows only.
+[`sin()`](https://rdrr.io/r/base/Trig.html) shows there. Complex
+arguments with a part that large, and real ones where the kernel takes a
+sine of such a value, are correspondingly inaccurate on Windows only.
 
 ## Branch cuts
 

@@ -157,7 +157,7 @@
 <li>
 <strong>Independent oracles are Suggests</strong>: <code>gsl</code>, <code>Bessel</code>, <code>hypergeo</code>, <code>lamW</code>, <code>expint</code> (<code>test-oracle-packages.R</code>) and <code>Rmpfr</code> (<code>test-mpfr.R</code>), each behind <code>skip_if_not_installed()</code>. A disagreement is explained in the test, never silenced by a looser tolerance.</li>
 <li>
-<strong>Helpers live in <code>tests/testthat/helper-*.R</code>.</strong> <a href="tests/testthat/helper-oracle.R">helper-oracle.R</a> ports xsf’s <code>extended_relative_error</code> (<code>xsf_rel_err()</code>), its tolerance (<code>xsf_tol()</code>) and its platform choice (<code>xsf_platform()</code>). Change them only to follow xsf.</li>
+<strong>Helpers live in <code>tests/testthat/helper-*.R</code>.</strong> <a href="tests/testthat/helper-oracle.R">helper-oracle.R</a> ports xsf’s <code>extended_relative_error</code> (<code>xsf_rel_err()</code>) and its tolerance (<code>xsf_tol()</code>). Change them only to follow xsf. The xsref check reads the <code>other</code> table on every platform (design §10), so xsf’s platform choice is not ported.</li>
 <li>
 <strong>Keep the suite inside the CRAN time budget.</strong> About 5 s locally with every Suggests installed (2026-10-24); the design’s limit is 15 s.</li>
 </ul></div>
@@ -181,6 +181,7 @@
 <div class="section level2">
 <h2 id="editing-rules">Editing rules<a class="anchor" aria-label="anchor" href="#editing-rules"></a></h2>
 <ul><li>roxygen comments are the source. Never edit <code>man/</code> or <code>NAMESPACE</code> by hand.</li>
+<li>Paragraphs that several help pages share live once in <code>man-roxygen/</code> and are included with <code>@template</code>.</li>
 <li>Edit <code>README.Rmd</code>, not the generated <code>README.md</code>.</li>
 <li>Keep prose simple and short. One idea per sentence.</li>
 <li>Wrap roxygen text at 80 characters and run <code>air format .</code> on R sources.</li>
@@ -215,7 +216,7 @@
 </div>
 <div class="section level2">
 <h2 id="vendored-native-code">Vendored native code<a class="anchor" aria-label="anchor" href="#vendored-native-code"></a></h2>
-<p>xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun code; <code>inst/COPYRIGHTS</code> lists every notice) is vendored in <code>src/vendor/xsf/</code> at <code>f7b85f5</code>, the commit SciPy v1.18.1’s <code>subprojects/xsf</code> gitlink names, without <code>numpy.h</code> and <code>third_party/</code>. The pin follows SciPy releases, not xsf tags (design D12), so this one exception to “pin a stable upstream release” is deliberate: the release pinned is SciPy’s. <code>tools/vendor/manifest.tsv</code> and <code>tools/vendor/checksums.sha256</code> record it, <code>src/vendor/PROVENANCE</code> gives the update procedure, and <code>vendor-upstream.yml</code> opens an issue when SciPy releases. Local patches live in <code>tools/patches/</code>, which <code>tools/vendor/vendor-xsf</code> applies in order; each is listed in <code>src/vendor/PROVENANCE</code> with its reason. There is one: <code>0001</code> guards float-to-int conversions UBSan flags (2026-10-24). The build also defines <code>NDEBUG</code>, because of a bare <code>assert</code> in <code>specfun/specfun.h</code>.</p>
+<p>xsf (BSD-3-Clause, with bundled Cephes, Faddeeva, qd, AMOS and specfun code; <code>inst/COPYRIGHTS</code> lists every notice) is vendored in <code>src/vendor/xsf/</code> at <code>f7b85f5</code>, the commit SciPy v1.18.1’s <code>subprojects/xsf</code> gitlink names, without <code>numpy.h</code> and <code>third_party/</code>. The pin follows SciPy releases, not xsf tags (design D12), so this one exception to “pin a stable upstream release” is deliberate: the release pinned is SciPy’s. <code>tools/vendor/manifest.tsv</code> and <code>tools/vendor/checksums.sha256</code> record it, <code>src/vendor/PROVENANCE</code> gives the update procedure, and <code>vendor-upstream.yml</code> opens an issue when SciPy releases. Local patches live in <code>tools/patches/</code>, which <code>tools/vendor/vendor-xsf</code> applies in order; each is listed in <code>src/vendor/PROVENANCE</code> with its reason. There are three, all float-to-int conversions UBSan flags: <code>0001</code> and <code>0002</code> (2026-10-24), and <code>0003</code> (2026-10-27), which gives AMOS orders of 2^31 or more x86-64’s <code>INT_MIN</code> on every platform. The build also defines <code>NDEBUG</code>, because of a bare <code>assert</code> in <code>specfun/specfun.h</code>.</p>
 <ul><li>Pin a stable upstream release, never <code>master</code> or a release candidate.</li>
 <li>Record the tag, the commit and the checksums, and write down the update procedure so the next bump is mechanical.</li>
 <li>Keep upstream <code>LICENSE</code> and <code>NOTICE</code> under <code>src/vendor/&lt;lib&gt;/</code>, declare the vendored code in <code>DESCRIPTION</code> and <code>inst/COPYRIGHTS</code>.</li>

@@ -61,9 +61,10 @@ the compiler, and the table of exported functions.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with <code>xsf_commit</code>, <code>scipy_version</code>, <code>xsref_commit</code>,
-<code>boost_version</code>, <code>compiler</code> and <code>functions</code>, a data frame with one row per exported function: <code>r_name</code>,
-<code>scipy_name</code>, <code>backend</code> (the library that evaluates it) and <code>complex</code>
-(whether it takes complex arguments).</p>
+<code>boost_version</code>, <code>compiler</code> and <code>functions</code>. <code>functions</code> is a data frame
+with one row per exported function: <code>r_name</code>, <code>scipy_name</code>, <code>backend</code>
+(the library that evaluates real arguments; complex arguments always go
+to xsf) and <code>complex</code> (whether it takes complex arguments).</p>
     </div>
 
     <div class="section level2">

@@ -80,4 +80,10 @@ sc_geterr()
 sc_errstate(sc_gamma(-1), singular = "warn")
 #> Warning: sc_gamma: singular in 1 element, first at index 1.
 #> [1] NaN
+
+# sc_seterr() returns the previous state; restore it with do.call().
+old <- sc_seterr(domain = "warn")
+sc_geterr()[["domain"]]
+#> [1] "warn"
+do.call(sc_seterr, as.list(old))
 ```

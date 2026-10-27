@@ -140,10 +140,12 @@ is treated as complex and the result is always complex.</p></li>
 0 and 1 for real <code>x</code>, faster than the general functions.</p></li>
 </ul><p>A complex <code>z</code> takes the complex path and returns complex; a real <code>z</code> stays
 real, so <code>sc_jv(0.5, -1)</code> is <code>NaN</code> while <code>sc_jv(0.5, -1+0i)</code> is complex,
-as in SciPy. The order <code>v</code> must be real. Arguments are recycled, <code>NA</code>
-gives <code>NA</code>, and the result takes its dimensions, or else its names, from
-the arguments as base R arithmetic does; see <code><a href="errstate.html">sc_seterr()</a></code> for the
-conditions the kernels raise.</p>
+as in SciPy. The order <code>v</code> must be real.</p>
+<p>Arguments are recycled: each must have length one or the common length.
+<code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as <code><a href="errstate.html">sc_seterr()</a></code> says.</p>
     </div>
     <div class="section level2">
     <h2 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a></h2>
@@ -151,8 +153,9 @@ conditions the kernels raise.</p>
 
 <p>R on Windows is built with Rtools, whose C library (mingw-w64 v11)
 evaluates <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> and <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos()</a></code> inaccurately for arguments beyond about
-<code>1e5</code>, as base R's own <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> shows there. Arguments that large are
-correspondingly inaccurate on Windows only.</p>
+<code>1e5</code>, as base R's own <code><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin()</a></code> shows there. Complex arguments with a part
+that large, and real ones where the kernel takes a sine of such a value,
+are correspondingly inaccurate on Windows only.</p>
     </div>
     <div class="section level2">
     <h2 id="branch-cuts">Branch cuts<a class="anchor" aria-label="anchor" href="#branch-cuts"></a></h2>

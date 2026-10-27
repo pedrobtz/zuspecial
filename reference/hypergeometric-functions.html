@@ -78,17 +78,19 @@ scipy.special uses (Boost.Math for real hyp1f1, as in SciPy)."></head><body>
 <li><p><code>sc_hyp1f1()</code>: Kummer's \({}_1F_1(a;b;x)\), complex <code>x</code>.</p></li>
 <li><p><code>sc_hyp2f1()</code>: the Gauss \({}_2F_1(a,b;c;z)\), complex <code>z</code>.</p></li>
 <li><p><code>sc_hyperu()</code>: Tricomi's \(U(a, b, x)\) for real <code>x &gt;= 0</code>.</p></li>
-</ul><p>Only the last argument may be complex; the parameters are real. Arguments
-are recycled, <code>NA</code> gives <code>NA</code>, and the result takes its dimensions, or else
-its names, from the arguments as base R arithmetic does; see
-<code><a href="errstate.html">sc_seterr()</a></code> for the conditions the kernels raise.</p>
+</ul><p>Only the last argument may be complex; the parameters are real.</p>
+<p>Arguments are recycled: each must have length one or the common length.
+<code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as <code><a href="errstate.html">sc_seterr()</a></code> says.</p>
     </div>
     <div class="section level2">
     <h2 id="branch-cuts">Branch cuts<a class="anchor" aria-label="anchor" href="#branch-cuts"></a></h2>
 
 
 <p><code>sc_hyp2f1()</code> has a branch cut on the real axis from 1 to infinity, as in
-SciPy. <code>sc_hyp0f1()</code> and <code>sc_hyp1f1()</code> are entire in <code>z</code>.</p>
+SciPy. <code>sc_hyp0f1()</code> is entire in <code>z</code>, and <code>sc_hyp1f1()</code> in <code>x</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="other-packages">Other packages<a class="anchor" aria-label="anchor" href="#other-packages"></a></h2>

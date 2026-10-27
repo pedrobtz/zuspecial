@@ -259,9 +259,10 @@ code.
   is explained in the test, never silenced by a looser tolerance.
 - **Helpers live in `tests/testthat/helper-*.R`.**
   [helper-oracle.R](https://pedrobtz.github.io/zuspecial/tests/testthat/helper-oracle.R)
-  ports xsf’s `extended_relative_error` (`xsf_rel_err()`), its tolerance
-  (`xsf_tol()`) and its platform choice (`xsf_platform()`). Change them
-  only to follow xsf.
+  ports xsf’s `extended_relative_error` (`xsf_rel_err()`) and its
+  tolerance (`xsf_tol()`). Change them only to follow xsf. The xsref
+  check reads the `other` table on every platform (design §10), so xsf’s
+  platform choice is not ported.
 - **Keep the suite inside the CRAN time budget.** About 5 s locally with
   every Suggests installed (2026-10-24); the design’s limit is 15 s.
 
@@ -300,6 +301,8 @@ documentation and a `NEWS.md` entry.
 
 - roxygen comments are the source. Never edit `man/` or `NAMESPACE` by
   hand.
+- Paragraphs that several help pages share live once in `man-roxygen/`
+  and are included with `@template`.
 - Edit `README.Rmd`, not the generated `README.md`.
 - Keep prose simple and short. One idea per sentence.
 - Wrap roxygen text at 80 characters and run `air format .` on R
@@ -372,9 +375,11 @@ pinned is SciPy’s. `tools/vendor/manifest.tsv` and
 the update procedure, and `vendor-upstream.yml` opens an issue when
 SciPy releases. Local patches live in `tools/patches/`, which
 `tools/vendor/vendor-xsf` applies in order; each is listed in
-`src/vendor/PROVENANCE` with its reason. There is one: `0001` guards
-float-to-int conversions UBSan flags (2026-10-24). The build also
-defines `NDEBUG`, because of a bare `assert` in `specfun/specfun.h`.
+`src/vendor/PROVENANCE` with its reason. There are three, all
+float-to-int conversions UBSan flags: `0001` and `0002` (2026-10-24),
+and `0003` (2026-10-27), which gives AMOS orders of 2^31 or more
+x86-64’s `INT_MIN` on every platform. The build also defines `NDEBUG`,
+because of a bare `assert` in `specfun/specfun.h`.
 
 - Pin a stable upstream release, never `master` or a release candidate.
 - Record the tag, the commit and the checksums, and write down the

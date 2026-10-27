@@ -138,9 +138,11 @@ for <code>sc_lambertw()</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Arguments are recycled, <code>NA</code> gives <code>NA</code>, and the result takes its
+    <p>Arguments are recycled: each must have length one or the common length.
+<code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see <code><a href="errstate.html">sc_seterr()</a></code> for the conditions the kernels raise.</p>
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as <code><a href="errstate.html">sc_seterr()</a></code> says.</p>
     </div>
     <div class="section level2">
     <h2 id="branch-cuts">Branch cuts<a class="anchor" aria-label="anchor" href="#branch-cuts"></a></h2>

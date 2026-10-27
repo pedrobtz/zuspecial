@@ -133,6 +133,12 @@ directly is completed from the defaults, and refused if malformed.</p>
 <span class="r-in"><span><span class="fu">sc_errstate</span><span class="op">(</span><span class="fu"><a href="gamma-functions.html">sc_gamma</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>, singular <span class="op">=</span> <span class="st">"warn"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>sc_gamma: singular in 1 element, first at index 1.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NaN</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># sc_seterr() returns the previous state; restore it with do.call().</span></span></span>
+<span class="r-in"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">sc_seterr</span><span class="op">(</span>domain <span class="op">=</span> <span class="st">"warn"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">sc_geterr</span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"domain"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "warn"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">sc_seterr</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

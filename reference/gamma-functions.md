@@ -24,6 +24,14 @@ sc_beta(a, b)
 
 sc_betaln(a, b)
 
+sc_betainc(a, b, x)
+
+sc_betaincc(a, b, x)
+
+sc_betaincinv(a, b, y)
+
+sc_betainccinv(a, b, y)
+
 sc_binom(x, y)
 
 sc_poch(z, m)
@@ -35,21 +43,13 @@ sc_gammaincc(a, x)
 sc_gammaincinv(a, y)
 
 sc_gammainccinv(a, y)
-
-sc_betainc(a, b, x)
-
-sc_betaincc(a, b, x)
-
-sc_betaincinv(a, b, y)
-
-sc_betainccinv(a, b, y)
 ```
 
 ## Arguments
 
 - z, x:
 
-  Numeric vector; for `z`, also complex.
+  Numeric vector; for `z`, also complex, except in `sc_poch()`.
 
 - a, b, y, m:
 
@@ -110,7 +110,8 @@ SciPy, with Boost.Math (from the BH package) rather than xsf.
 Arguments are recycled: each must have length one or the common length.
 `NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does. Conditions the kernels raise, such as a pole, are handled as
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
 says.
 

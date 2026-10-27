@@ -40,16 +40,19 @@ A double vector, or a complex vector for complex input.
 - `sc_hyperu()`: Tricomi's \\U(a, b, x)\\ for real `x >= 0`.
 
 Only the last argument may be complex; the parameters are real.
-Arguments are recycled, `NA` gives `NA`, and the result takes its
+
+Arguments are recycled: each must have length one or the common length.
+`NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
-for the conditions the kernels raise.
+says.
 
 ## Branch cuts
 
 `sc_hyp2f1()` has a branch cut on the real axis from 1 to infinity, as
-in SciPy. `sc_hyp0f1()` and `sc_hyp1f1()` are entire in `z`.
+in SciPy. `sc_hyp0f1()` is entire in `z`, and `sc_hyp1f1()` in `x`.
 
 ## Other packages
 

@@ -55,11 +55,13 @@ A double vector; for `sc_ellipj()`, a list with `sn`, `cn`, `dn` and
 - `sc_ellipj()`: \\sn\\, \\cn\\, \\dn\\ and the amplitude \\\phi\\, as a
   named list, as SciPy returns a tuple.
 
-Arguments are recycled, `NA` gives `NA`, and results take their
-dimensions, or else their names, from the arguments as base R arithmetic
-does; see
+Arguments are recycled: each must have length one or the common length.
+`NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
+dimensions, or else its names, from the arguments as base R arithmetic
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
-for the conditions the kernels raise.
+says.
 
 ## Windows
 

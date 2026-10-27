@@ -85,18 +85,20 @@ probabilities (at most 0) for <code>sc_ndtri_exp()</code>.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
 <ul><li><p><code>sc_ndtr()</code>: the cumulative distribution function \(\Phi(x)\),
-complex. Base R: <code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm()</a></code>.</p></li>
+complex. Base R: <code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">stats::pnorm()</a></code>.</p></li>
 <li><p><code>sc_log_ndtr()</code>: \(\log \Phi(x)\), accurate far into the lower
 tail, complex. Base R: <code>pnorm(x, log.p = TRUE)</code>.</p></li>
 <li><p><code>sc_ndtri()</code>: the quantile function, the inverse of <code>sc_ndtr()</code>. Base R:
-<code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm()</a></code>.</p></li>
+<code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">stats::qnorm()</a></code>.</p></li>
 <li><p><code>sc_ndtri_exp()</code>: the inverse of <code>sc_log_ndtr()</code>, for log probabilities
 too small for <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp()</a></code>. Base R: <code>qnorm(y, log.p = TRUE)</code>.</p></li>
 <li><p><code>sc_owens_t()</code>: Owen's T function \(T(h, a)\), which gives bivariate
 and skew-normal probabilities.</p></li>
-</ul><p>Arguments are recycled, <code>NA</code> gives <code>NA</code>, and the result takes its
+</ul><p>Arguments are recycled: each must have length one or the common length.
+<code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see <code><a href="errstate.html">sc_seterr()</a></code> for the conditions the kernels raise.</p>
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as <code><a href="errstate.html">sc_seterr()</a></code> says.</p>
     </div>
     <div class="section level2">
     <h2 id="other-packages">Other packages<a class="anchor" aria-label="anchor" href="#other-packages"></a></h2>

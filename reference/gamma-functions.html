@@ -68,6 +68,14 @@ complex; real input always stays real (<code>sc_gamma(-1)</code> is <code>NaN</c
 <span></span>
 <span><span class="fu">sc_betaln</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">sc_betainc</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betaincc</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betaincinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sc_betainccinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">sc_binom</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">sc_poch</span><span class="op">(</span><span class="va">z</span>, <span class="va">m</span><span class="op">)</span></span>
@@ -78,15 +86,7 @@ complex; real input always stays real (<code>sc_gamma(-1)</code> is <code>NaN</c
 <span></span>
 <span><span class="fu">sc_gammaincinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">y</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sc_gammainccinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">y</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sc_betainc</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sc_betaincc</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sc_betaincinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sc_betainccinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sc_gammainccinv</span><span class="op">(</span><span class="va">a</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -94,7 +94,7 @@ complex; real input always stays real (<code>sc_gamma(-1)</code> is <code>NaN</c
 
 
 <dl><dt id="arg-z-x">z, x<a class="anchor" aria-label="anchor" href="#arg-z-x"></a></dt>
-<dd><p>Numeric vector; for <code>z</code>, also complex.</p></dd>
+<dd><p>Numeric vector; for <code>z</code>, also complex, except in <code>sc_poch()</code>.</p></dd>
 
 
 <dt id="arg-a-b-y-m">a, b, y, m<a class="anchor" aria-label="anchor" href="#arg-a-b-y-m"></a></dt>
@@ -140,8 +140,8 @@ SciPy, with Boost.Math (from the BH package) rather than xsf.</p>
 <p>Arguments are recycled: each must have length one or the common length.
 <code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does. Conditions the kernels raise, such as a pole, are handled as
-<code><a href="errstate.html">sc_seterr()</a></code> says.</p>
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as <code><a href="errstate.html">sc_seterr()</a></code> says.</p>
     </div>
     <div class="section level2">
     <h2 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a></h2>

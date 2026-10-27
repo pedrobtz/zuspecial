@@ -17,13 +17,13 @@ sc_erfi(z)
 
 sc_erfcinv(y)
 
+sc_erfinv(y)
+
 sc_dawsn(x)
 
 sc_wofz(z)
 
 sc_voigt_profile(x, sigma, gamma)
-
-sc_erfinv(y)
 ```
 
 ## Arguments
@@ -59,7 +59,7 @@ for `sc_wofz()`).
 - `sc_erfi()`: the imaginary error function \\-i\\\mathrm{erf}(iz)\\,
   complex.
 
-- `sc_erfcinv()`: the inverse of `sc_erfc()` on \\(0, 2)\\.
+- `sc_erfcinv()`: the inverse of `sc_erfc()` on \\\[0, 2\]\\.
 
 - `sc_erfinv()`: the inverse of `sc_erf()` on \\\[-1, 1\]\\, evaluated
   with Boost.Math (from the BH package), as SciPy does.
@@ -74,11 +74,13 @@ for `sc_wofz()`).
   density with standard deviation `sigma` and a Cauchy density with half
   width `gamma`.
 
-Arguments are recycled, `NA` gives `NA`, and the result takes its
+Arguments are recycled: each must have length one or the common length.
+`NA` gives `NA`; `NaN` is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as
 [`sc_seterr()`](https://pedrobtz.github.io/zuspecial/reference/errstate.md)
-for the conditions the kernels raise.
+says.
 
 ## Windows
 

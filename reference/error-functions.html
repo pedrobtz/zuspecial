@@ -59,13 +59,13 @@ uses (the MIT Faddeeva package for complex arguments). Functions marked
 <span></span>
 <span><span class="fu">sc_erfcinv</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">sc_erfinv</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">sc_dawsn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">sc_wofz</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sc_voigt_profile</span><span class="op">(</span><span class="va">x</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sc_erfinv</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sc_voigt_profile</span><span class="op">(</span><span class="va">x</span>, <span class="va">sigma</span>, <span class="va">gamma</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -101,7 +101,7 @@ complex for <code>sc_wofz()</code>).</p>
 \(e^{x^2} \mathrm{erfc}(x)\), complex.</p></li>
 <li><p><code>sc_erfi()</code>: the imaginary error function \(-i\,\mathrm{erf}(iz)\),
 complex.</p></li>
-<li><p><code>sc_erfcinv()</code>: the inverse of <code>sc_erfc()</code> on \((0, 2)\).</p></li>
+<li><p><code>sc_erfcinv()</code>: the inverse of <code>sc_erfc()</code> on \([0, 2]\).</p></li>
 <li><p><code>sc_erfinv()</code>: the inverse of <code>sc_erf()</code> on \([-1, 1]\), evaluated
 with Boost.Math (from the BH package), as SciPy does.</p></li>
 <li><p><code>sc_dawsn()</code>: Dawson's integral, complex.</p></li>
@@ -111,9 +111,11 @@ input is treated as complex and the result is always complex.</p></li>
 <li><p><code>sc_voigt_profile()</code>: the Voigt profile, the convolution of a normal
 density with standard deviation <code>sigma</code> and a Cauchy density with half
 width <code>gamma</code>.</p></li>
-</ul><p>Arguments are recycled, <code>NA</code> gives <code>NA</code>, and the result takes its
+</ul><p>Arguments are recycled: each must have length one or the common length.
+<code>NA</code> gives <code>NA</code>; <code>NaN</code> is evaluated as SciPy does. The result takes its
 dimensions, or else its names, from the arguments as base R arithmetic
-does; see <code><a href="errstate.html">sc_seterr()</a></code> for the conditions the kernels raise.</p>
+does, and so does each element of a list result. Conditions the kernels
+raise, such as a pole, are handled as <code><a href="errstate.html">sc_seterr()</a></code> says.</p>
     </div>
     <div class="section level2">
     <h2 id="windows">Windows<a class="anchor" aria-label="anchor" href="#windows"></a></h2>

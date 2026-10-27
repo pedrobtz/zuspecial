@@ -15,9 +15,10 @@ zuspecial_info()
 ## Value
 
 A list with `xsf_commit`, `scipy_version`, `xsref_commit`,
-`boost_version`, `compiler` and `functions`, a data frame with one row
-per exported function: `r_name`, `scipy_name`, `backend` (the library
-that evaluates it) and `complex` (whether it takes complex arguments).
+`boost_version`, `compiler` and `functions`. `functions` is a data frame
+with one row per exported function: `r_name`, `scipy_name`, `backend`
+(the library that evaluates real arguments; complex arguments always go
+to xsf) and `complex` (whether it takes complex arguments).
 
 ## Examples
 
