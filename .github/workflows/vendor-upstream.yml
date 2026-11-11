@@ -2,7 +2,7 @@
 # pin is vendored. The pin follows SciPy releases (design section 8).
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "19 23 * * 0"
   workflow_dispatch:
 
 name: vendor-upstream
